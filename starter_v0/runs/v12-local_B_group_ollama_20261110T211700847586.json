@@ -1,0 +1,312 @@
+{
+  "run_id": "v12-local_B_group_ollama_20261110T211700847586",
+  "version": "v12-local",
+  "artifact_version": "v12-local+pcf5769335127+tb55cee54af1f",
+  "prompt_hash": "cf57693351273f17e4e974db5bc1b103949a1c87475605b8d5442330ffeeff5c",
+  "tools_hash": "b55cee54af1fcb4ddd980f5f5ca9dd441f2a4c9c49722ac8c6e7842b7281ee08",
+  "phase": "B",
+  "suite": "group",
+  "provider": "ollama",
+  "model": "qwen3.5:4b-q4_K_M",
+  "system_prompt": "C:\\Users\\ACER NITRO\\OneDrive - Hanoi University of Science and Technology\\Desktop\\K5-L3A-DAY03-VuVo-ResearchAgentToolEval\\starter_v0\\artifacts\\system_prompt.md",
+  "tools": "C:\\Users\\ACER NITRO\\OneDrive - Hanoi University of Science and Technology\\Desktop\\K5-L3A-DAY03-VuVo-ResearchAgentToolEval\\starter_v0\\artifacts\\tools.yaml",
+  "eval_cases": "data\\eval_group.json",
+  "dataset_id": "day04_v2_research_group",
+  "dataset_role": "group",
+  "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
+  "generated_at": "2026-11-10T21:17:00",
+  "status": "aborted",
+  "completed_cases": 6,
+  "summary": {
+    "total_cases": 6,
+    "measured_cases": 0,
+    "provider_error_cases": 6,
+    "passed_cases": 0,
+    "case_accuracy": 0.0,
+    "failure_counts": {},
+    "observed_mismatch_counts": {},
+    "tool_execution": {
+      "total_calls": 0,
+      "error_calls": 0,
+      "dry_run_calls": 0,
+      "successful_calls": 0
+    }
+  },
+  "results": [
+    {
+      "id": "G01_papers_routing",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_papers",
+        "difficulty": "easy",
+        "what_it_tests": "Nhắc rõ paper/arXiv → papers, không dùng lookup (web) hay social_search."
+      },
+      "input": "Tìm giúp mình vài paper trên arXiv về đánh giá LLM agent",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "papers",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "failure_type": "provider_error",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "provider_error",
+        "failures": [
+          "InternalServerError: Error code: 500 - llama-server startup failed after projector CPU offload retry: llama-server process has terminated: exit status 1: ggml_backend_cpu_buffer_type_alloc_buffer: failed to allocate buffer of size 1901711360\nggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA_Host buffer of size 1901711360\nerror loading model: unable to allocate CUDA_Host buffer"
+        ],
+        "actual_tool_calls": [],
+        "actual_text": null,
+        "routing_correct": false,
+        "args_correct": false
+      },
+      "tool_results": [],
+      "provider_response_metadata": {}
+    },
+    {
+      "id": "G02_policy_routing",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_policy",
+        "difficulty": "medium",
+        "what_it_tests": "Hỏi về chính sách nội bộ → policy với policy_area=source_citation, không search web."
+      },
+      "input": "Quy định nội bộ của công ty về việc trích dẫn nguồn là gì?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "policy",
+            "args": {
+              "policy_area": "source_citation"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "failure_type": "provider_error",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "provider_error",
+        "failures": [
+          "InternalServerError: Error code: 500 - llama-server startup failed after projector CPU offload retry: llama-server process has terminated: exit status 1: ggml_backend_cpu_buffer_type_alloc_buffer: failed to allocate buffer of size 1901711360\nggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA_Host buffer of size 1901711360\nerror loading model: unable to allocate CUDA_Host buffer"
+        ],
+        "actual_tool_calls": [],
+        "actual_text": null,
+        "routing_correct": false,
+        "args_correct": false
+      },
+      "tool_results": [],
+      "provider_response_metadata": {}
+    },
+    {
+      "id": "G03_handle_strip_at",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_handle_no_at",
+        "difficulty": "medium",
+        "what_it_tests": "Handle phải bỏ ký tự @ (karpathy, không phải @karpathy) và trích đúng limit=3."
+      },
+      "input": "Lấy 3 bài đăng mới nhất của @karpathy",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "karpathy",
+              "limit": 3
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "failure_type": "provider_error",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "provider_error",
+        "failures": [
+          "InternalServerError: Error code: 500 - llama-server startup failed after projector CPU offload retry: llama-server process has terminated: exit status 1: ggml_backend_cpu_buffer_type_alloc_buffer: failed to allocate buffer of size 1901711360\nggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA_Host buffer of size 1901711360\nerror loading model: unable to allocate CUDA_Host buffer"
+        ],
+        "actual_tool_calls": [],
+        "actual_text": null,
+        "routing_correct": false,
+        "args_correct": false
+      },
+      "tool_results": [],
+      "provider_response_metadata": {}
+    },
+    {
+      "id": "G04_dedupe_by_url",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_deduplicate",
+        "difficulty": "easy",
+        "what_it_tests": "Routing deduplicate plus exact items/order and key_by=url. The scorer supports nested result objects."
+      },
+      "input": "Loại các kết quả trùng URL trong danh sách sau, giữ bản đầu tiên: [{\"title\":\"A\",\"url\":\"https://example.com/a/\"},{\"title\":\"B\",\"url\":\"https://example.com/a\"},{\"title\":\"C\",\"url\":\"https://example.com/c\"}]",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "deduplicate",
+            "args": {
+              "items": [
+                {
+                  "title": "A",
+                  "url": "https://example.com/a/"
+                },
+                {
+                  "title": "B",
+                  "url": "https://example.com/a"
+                },
+                {
+                  "title": "C",
+                  "url": "https://example.com/c"
+                }
+              ],
+              "key_by": "url"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "failure_type": "provider_error",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "provider_error",
+        "failures": [
+          "InternalServerError: Error code: 500 - llama-server startup failed after projector CPU offload retry: llama-server reported out-of-memory during startup: cudaMalloc failed: out of memory\nggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 1257385984\nerror loading model: unable to allocate CUDA0 buffer"
+        ],
+        "actual_tool_calls": [],
+        "actual_text": null,
+        "routing_correct": false,
+        "args_correct": false
+      },
+      "tool_results": [],
+      "provider_response_metadata": {}
+    },
+    {
+      "id": "G05_thanks_no_tool",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "no_tool_smalltalk",
+        "difficulty": "easy",
+        "what_it_tests": "Lời cảm ơn/xã giao → trả lời thẳng, KHÔNG gọi tool thừa."
+      },
+      "input": "Cảm ơn bạn nhé, mình hiểu rồi!",
+      "expect": {
+        "no_tool": true,
+        "behavior": "answer_without_tool"
+      },
+      "result": {
+        "passed": false,
+        "failure_type": "provider_error",
+        "case_failure_type": "unnecessary_tool",
+        "observed_mismatch": "provider_error",
+        "failures": [
+          "InternalServerError: Error code: 500 - llama-server startup failed before projector CPU offload retry: llama-server reported out-of-memory during startup: cudaMalloc failed: out of memory\nggml_gallocr_reserve_n_impl: failed to allocate CUDA0 buffer of size 234148096\ncudaMalloc failed: out of memory\nggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 1452088832\nerror loading model: unable to allocate CUDA0 buffer; error stopping failed process: TerminateProcess: Access is denied."
+        ],
+        "actual_tool_calls": [],
+        "actual_text": null,
+        "routing_correct": false,
+        "args_correct": false
+      },
+      "tool_results": [],
+      "provider_response_metadata": {}
+    },
+    {
+      "id": "G06_multi_papers_to_text",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_papers_to_paper_text",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: lượt cuối đã có ID và muốn đọc nội dung → paper_text (không search lại bằng papers), max_pages=2."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tìm paper 'Attention Is All You Need' trên arXiv giúp mình"
+        },
+        {
+          "role": "user",
+          "content": "Bài đầu tiên trong kết quả có ID là 1706.03762"
+        },
+        {
+          "role": "user",
+          "content": "Đọc nội dung paper 1706.03762 đó, chỉ 2 trang đầu thôi"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "paper_text",
+            "args": {
+              "arxiv_url": "1706.03762",
+              "max_pages": 2
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "failure_type": "provider_error",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "provider_error",
+        "failures": [
+          "InternalServerError: Error code: 500 - llama-server startup failed after projector CPU offload retry: llama-server process has terminated: exit status 1: cudaMalloc failed: out of memory\nggml_backend_buft_alloc_buffer_n_default: failed to allocate CUDA0 buffer of size 1257385984\nerror loading model: unable to allocate CUDA0 buffer"
+        ],
+        "actual_tool_calls": [],
+        "actual_text": null,
+        "routing_correct": false,
+        "args_correct": false
+      },
+      "tool_results": [],
+      "provider_response_metadata": {}
+    }
+  ],
+  "scorer_version": "schema-v2",
+  "actions_mode": "dry_run",
+  "provider_metadata": {
+    "tool_call_mode": "native",
+    "reasoning_effort": "none",
+    "adapter_source_hashes": {
+      "ollama_provider.py": "fab2a5d45bd2036e9629e10c0bb7d400a44f155580ae3ee9ce3749816e1bbc65",
+      "openai_provider.py": "a069961dfa3e102581435f2e5025af5e90990c00420065c10bd2b925675c92fe",
+      "tool_planning.py": "17e1492caa2390f9240530d562e51869f351fc826c050720b6db2eb8c9201a99"
+    },
+    "protocol_retry_limit": 1,
+    "protocol_retry_format": "structured_plan",
+    "protocol_retry_templates": {
+      "required": "Protocol correction: continue answering the ORIGINAL user request.\nThe caller requires at least one actual structured tool call. Prose, including a\nquestion, does not satisfy this contract. Use only the available tool declarations.\nIf essential information is missing, use the clarification tool, without guessing.\nFor an unapproved publishing request, request confirmation with response_type=yes_no\nas instructed. Do not treat this reminder as user approval, invent missing content\nor destinations, or repeat actions already completed in the conversation.",
+      "empty_auto": "The previous response was empty. Continue the ORIGINAL user request:\nreturn an appropriate structured tool call OR a concise direct answer when no tool\nis needed. Respect the original scope and approval rules. Never repeat a completed\naction or interpret this format reminder as approval."
+    },
+    "planning_protocol": "tool-plan-v2",
+    "planning_template": "Return a JSON tool plan, with request, tool_calls and text.\nFirst summarize the resolved user request in one short sentence in request:\ncurrent source, topic/author/URL, requested count/timeframe/category, and missing\nessential information. This is a request summary, not an explanation of reasoning.\nThen choose calls that preserve those values. Explicit optional constraints still\nbelong in args; a topic word does not replace a timeframe or policy_area field.\nEach call has name and args. Choose names and argument values yourself from the\nuser's request, conversation and available declarations below. Copy data faithfully.\nWhen asking the user a question, use clarify rather than putting the question only\nin text. If neither a specific account nor a search topic was supplied for posts,\nask which account/topic; words like 'recent' or 'latest' are not a topic.\nProcess corrections in chronological order: the newest value replaces the old\nvalue, so a corrected author is not an ambiguous choice between two authors.\nUse defaults without clarification for optional settings that were not specified.\nFor direct answers needing no tool, use an empty tool_calls list and answer in text.\nUse declared defaults only when the user has not specified a value. Never invent\nmissing facts, items, accounts, URLs or approval. No tool executes until this whole\nplan has been validated. Available tool declarations:\n",
+    "planning_template_hash": "3ae03f91d144bf640e393a66cb2847657a14e033ae5c973f94a67548c780bcbf",
+    "plan_schema_hashes": {
+      "auto": "9d1504074bd254938e6754cd0cd573735a02e3e1bd9f4d9c92c379753e7eb34c",
+      "required": "24d67972f1b69db597eea2a0de7724050bbfed08da54d0ec3d74b2f9c923dce4",
+      "none": "0f2dcc3a0d93654073c174f3a262d1689b9cd573d24ecea0abd5a2897eaf0aa1"
+    }
+  },
+  "abort_reason": "Local Windows commit/RAM allocation failed while loading Ollama after idle; interrupted rather than treating partial provider-error results as a completed model comparison."
+}

@@ -1,0 +1,2435 @@
+{
+  "run_id": "v13-v3-qwen35-4b_B_base_ollama_20261110T215208171859",
+  "version": "v13-v3-qwen35-4b",
+  "artifact_version": "v13-v3-qwen35-4b+p56267ce33772+t6972c70faabd",
+  "prompt_hash": "56267ce3377252790889ff981037a9a283ac7af32eed1d9ddbfe9116abadebc7",
+  "tools_hash": "6972c70faabd6e1758f10fbf44693c590ddfd5b9692bfe19eb0c6f2bad16b830",
+  "phase": "B",
+  "suite": "base",
+  "provider": "ollama",
+  "model": "qwen3.5:4b-q4_K_M",
+  "system_prompt": "artifacts\\system_prompt_v3.md",
+  "tools": "artifacts\\tools_v3.yaml",
+  "eval_cases": "data\\eval_base.json",
+  "dataset_id": "day04_v2_research_base",
+  "dataset_role": "base",
+  "description": "Core eval cho research agent: routing đúng tool + đúng args, hỏi lại khi thiếu (ask_user), xác nhận trước khi gửi, và xử lý câu ngoài phạm vi / không cần tool. Chấm trên tool_calls + args (subset). KHÔNG sửa file này — chỉ thêm case vào eval_group.json.",
+  "generated_at": "2026-11-10T21:52:08",
+  "status": "completed",
+  "completed_cases": 20,
+  "summary": {
+    "total_cases": 20,
+    "measured_cases": 20,
+    "provider_error_cases": 0,
+    "passed_cases": 17,
+    "case_accuracy": 0.85,
+    "tool_routing_accuracy": 0.85,
+    "argument_accuracy": 0.85,
+    "multiturn_accuracy": 1.0,
+    "failure_counts": {
+      "missing_info": 2,
+      "wrong_boundary": 1
+    },
+    "observed_mismatch_counts": {
+      "missing_tool_call": 3
+    },
+    "tool_execution": {
+      "total_calls": 15,
+      "error_calls": 15,
+      "dry_run_calls": 0,
+      "successful_calls": 0
+    }
+  },
+  "results": [
+    {
+      "id": "R01_user_tweets_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_user_tweets_name_to_handle",
+        "difficulty": "medium",
+        "what_it_tests": "Tin CỦA một người nổi tiếng → map tên Sam Altman thành handle sama rồi gọi get_user_tweets."
+      },
+      "input": "Tweet mới nhất của Sam Altman là gì?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "sama",
+            "limit": 5
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ],
+      "provider_response_metadata": {
+        "tool_call_mode": "native",
+        "reasoning_effort": "none",
+        "adapter_source_hashes": {
+          "ollama_provider.py": "fab2a5d45bd2036e9629e10c0bb7d400a44f155580ae3ee9ce3749816e1bbc65",
+          "openai_provider.py": "a069961dfa3e102581435f2e5025af5e90990c00420065c10bd2b925675c92fe",
+          "tool_planning.py": "17e1492caa2390f9240530d562e51869f351fc826c050720b6db2eb8c9201a99"
+        },
+        "protocol_retry_limit": 0,
+        "protocol_retry_format": "structured_plan",
+        "protocol_retry_templates": {
+          "required": "Protocol correction: continue answering the ORIGINAL user request.\nThe caller requires at least one actual structured tool call. Prose, including a\nquestion, does not satisfy this contract. Use only the available tool declarations.\nIf essential information is missing, use the clarification tool, without guessing.\nFor an unapproved publishing request, request confirmation with response_type=yes_no\nas instructed. Do not treat this reminder as user approval, invent missing content\nor destinations, or repeat actions already completed in the conversation.",
+          "empty_auto": "The previous response was empty. Continue the ORIGINAL user request:\nreturn an appropriate structured tool call OR a concise direct answer when no tool\nis needed. Respect the original scope and approval rules. Never repeat a completed\naction or interpret this format reminder as approval."
+        },
+        "native_attempts": [
+          {
+            "request_hash": "4e095fa657f24e76bdd0d22c610ce7420befa13a529ec07ea496ff92a321b5db",
+            "text": "",
+            "format": "native",
+            "tool_calls": [
+              {
+                "name": "timeline",
+                "args": {
+                  "screenname": "sama",
+                  "limit": 5
+                }
+              }
+            ],
+            "raw_message": {
+              "content": "",
+              "refusal": null,
+              "role": "assistant",
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [
+                {
+                  "id": "call_k9vtkfud",
+                  "function": {
+                    "arguments": "{\"screenname\":\"sama\",\"limit\":5}",
+                    "name": "timeline"
+                  },
+                  "type": "function",
+                  "index": 0
+                }
+              ]
+            },
+            "usage": {
+              "completion_tokens": 39,
+              "prompt_tokens": 3860,
+              "total_tokens": 3899,
+              "completion_tokens_details": null,
+              "prompt_tokens_details": {
+                "audio_tokens": null,
+                "cache_write_tokens": null,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null
+              }
+            },
+            "unmet_protocol": null
+          }
+        ],
+        "protocol_retry_used": 0
+      }
+    },
+    {
+      "id": "R02_search_tweets_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_search_tweets",
+        "difficulty": "easy",
+        "what_it_tests": "Tweet theo CHỦ ĐỀ → search_tweets, không phải get_user_tweets."
+      },
+      "input": "Mọi người đang bàn gì về GPT-5 trên Twitter?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "GPT-5",
+              "search_type": "Latest",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "GPT-5",
+            "search_type": "Latest",
+            "limit": 5
+          },
+          "result": {
+            "tool": "search_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ],
+      "provider_response_metadata": {
+        "tool_call_mode": "native",
+        "reasoning_effort": "none",
+        "adapter_source_hashes": {
+          "ollama_provider.py": "fab2a5d45bd2036e9629e10c0bb7d400a44f155580ae3ee9ce3749816e1bbc65",
+          "openai_provider.py": "a069961dfa3e102581435f2e5025af5e90990c00420065c10bd2b925675c92fe",
+          "tool_planning.py": "17e1492caa2390f9240530d562e51869f351fc826c050720b6db2eb8c9201a99"
+        },
+        "protocol_retry_limit": 0,
+        "protocol_retry_format": "structured_plan",
+        "protocol_retry_templates": {
+          "required": "Protocol correction: continue answering the ORIGINAL user request.\nThe caller requires at least one actual structured tool call. Prose, including a\nquestion, does not satisfy this contract. Use only the available tool declarations.\nIf essential information is missing, use the clarification tool, without guessing.\nFor an unapproved publishing request, request confirmation with response_type=yes_no\nas instructed. Do not treat this reminder as user approval, invent missing content\nor destinations, or repeat actions already completed in the conversation.",
+          "empty_auto": "The previous response was empty. Continue the ORIGINAL user request:\nreturn an appropriate structured tool call OR a concise direct answer when no tool\nis needed. Respect the original scope and approval rules. Never repeat a completed\naction or interpret this format reminder as approval."
+        },
+        "native_attempts": [
+          {
+            "request_hash": "c0444b025e95889e3f058062cc1f0c1afaf299b44097fe77b840a0429b63b043",
+            "text": "",
+            "format": "native",
+            "tool_calls": [
+              {
+                "name": "social_search",
+                "args": {
+                  "query": "GPT-5",
+                  "search_type": "Latest",
+                  "limit": 5
+                }
+              }
+            ],
+            "raw_message": {
+              "content": "",
+              "refusal": null,
+              "role": "assistant",
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [
+                {
+                  "id": "call_exzf4c3m",
+                  "function": {
+                    "arguments": "{\"query\":\"GPT-5\",\"search_type\":\"Latest\",\"limit\":5}",
+                    "name": "social_search"
+                  },
+                  "type": "function",
+                  "index": 0
+                }
+              ]
+            },
+            "usage": {
+              "completion_tokens": 53,
+              "prompt_tokens": 3864,
+              "total_tokens": 3917,
+              "completion_tokens_details": null,
+              "prompt_tokens_details": {
+                "audio_tokens": null,
+                "cache_write_tokens": null,
+                "cached_tokens": 3348,
+                "image_tokens": null,
+                "text_tokens": null
+              }
+            },
+            "unmet_protocol": null
+          }
+        ],
+        "protocol_retry_used": 0
+      }
+    },
+    {
+      "id": "R03_web_news_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_web_news",
+        "difficulty": "medium",
+        "what_it_tests": "Tin thời sự trên web → web_search topic=news, timeframe=day (hôm nay)."
+      },
+      "input": "Tin tức AI hôm nay có gì nổi bật?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day",
+              "max_results": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "day",
+            "max_results": 5
+          },
+          "result": {
+            "tool": "web_search",
+            "error": "RuntimeError",
+            "message": "Missing TAVILY_API_KEY env var"
+          }
+        }
+      ],
+      "provider_response_metadata": {
+        "tool_call_mode": "native",
+        "reasoning_effort": "none",
+        "adapter_source_hashes": {
+          "ollama_provider.py": "fab2a5d45bd2036e9629e10c0bb7d400a44f155580ae3ee9ce3749816e1bbc65",
+          "openai_provider.py": "a069961dfa3e102581435f2e5025af5e90990c00420065c10bd2b925675c92fe",
+          "tool_planning.py": "17e1492caa2390f9240530d562e51869f351fc826c050720b6db2eb8c9201a99"
+        },
+        "protocol_retry_limit": 0,
+        "protocol_retry_format": "structured_plan",
+        "protocol_retry_templates": {
+          "required": "Protocol correction: continue answering the ORIGINAL user request.\nThe caller requires at least one actual structured tool call. Prose, including a\nquestion, does not satisfy this contract. Use only the available tool declarations.\nIf essential information is missing, use the clarification tool, without guessing.\nFor an unapproved publishing request, request confirmation with response_type=yes_no\nas instructed. Do not treat this reminder as user approval, invent missing content\nor destinations, or repeat actions already completed in the conversation.",
+          "empty_auto": "The previous response was empty. Continue the ORIGINAL user request:\nreturn an appropriate structured tool call OR a concise direct answer when no tool\nis needed. Respect the original scope and approval rules. Never repeat a completed\naction or interpret this format reminder as approval."
+        },
+        "native_attempts": [
+          {
+            "request_hash": "e1472f5f6a1a904ac9a99b70822e5b355de9445cc871c4304cd377202ac0680f",
+            "text": "",
+            "format": "native",
+            "tool_calls": [
+              {
+                "name": "lookup",
+                "args": {
+                  "query": "AI",
+                  "topic": "news",
+                  "timeframe": "day",
+                  "max_results": 5
+                }
+              }
+            ],
+            "raw_message": {
+              "content": "",
+              "refusal": null,
+              "role": "assistant",
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [
+                {
+                  "id": "call_yuv226mz",
+                  "function": {
+                    "arguments": "{\"query\":\"AI\",\"topic\":\"news\",\"timeframe\":\"day\",\"max_results\":5}",
+                    "name": "lookup"
+                  },
+                  "type": "function",
+                  "index": 0
+                }
+              ]
+            },
+            "usage": {
+              "completion_tokens": 61,
+              "prompt_tokens": 3860,
+              "total_tokens": 3921,
+              "completion_tokens_details": null,
+              "prompt_tokens_details": {
+                "audio_tokens": null,
+                "cache_write_tokens": null,
+                "cached_tokens": 3352,
+                "image_tokens": null,
+                "text_tokens": null
+              }
+            },
+            "unmet_protocol": null
+          }
+        ],
+        "protocol_retry_used": 0
+      }
+    },
+    {
+      "id": "R04_read_url_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_read_url",
+        "difficulty": "easy",
+        "what_it_tests": "Đã có link cụ thể → read_url, không phải web_search."
+      },
+      "input": "Tóm tắt bài này giúp mình: https://openai.com/blog/gpt-5",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://openai.com/blog/gpt-5"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://openai.com/blog/gpt-5"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://openai.com/blog/gpt-5"
+          },
+          "result": {
+            "tool": "read_url",
+            "error": "RuntimeError",
+            "message": "Missing FIRECRAWL_API_KEY env var"
+          }
+        }
+      ],
+      "provider_response_metadata": {
+        "tool_call_mode": "native",
+        "reasoning_effort": "none",
+        "adapter_source_hashes": {
+          "ollama_provider.py": "fab2a5d45bd2036e9629e10c0bb7d400a44f155580ae3ee9ce3749816e1bbc65",
+          "openai_provider.py": "a069961dfa3e102581435f2e5025af5e90990c00420065c10bd2b925675c92fe",
+          "tool_planning.py": "17e1492caa2390f9240530d562e51869f351fc826c050720b6db2eb8c9201a99"
+        },
+        "protocol_retry_limit": 0,
+        "protocol_retry_format": "structured_plan",
+        "protocol_retry_templates": {
+          "required": "Protocol correction: continue answering the ORIGINAL user request.\nThe caller requires at least one actual structured tool call. Prose, including a\nquestion, does not satisfy this contract. Use only the available tool declarations.\nIf essential information is missing, use the clarification tool, without guessing.\nFor an unapproved publishing request, request confirmation with response_type=yes_no\nas instructed. Do not treat this reminder as user approval, invent missing content\nor destinations, or repeat actions already completed in the conversation.",
+          "empty_auto": "The previous response was empty. Continue the ORIGINAL user request:\nreturn an appropriate structured tool call OR a concise direct answer when no tool\nis needed. Respect the original scope and approval rules. Never repeat a completed\naction or interpret this format reminder as approval."
+        },
+        "native_attempts": [
+          {
+            "request_hash": "b9ca5fc396ef3c510f4258f1cba1d0d385d663e4a5a8d7748cdc594ab251e452",
+            "text": "",
+            "format": "native",
+            "tool_calls": [
+              {
+                "name": "fetch",
+                "args": {
+                  "url": "https://openai.com/blog/gpt-5"
+                }
+              }
+            ],
+            "raw_message": {
+              "content": "",
+              "refusal": null,
+              "role": "assistant",
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [
+                {
+                  "id": "call_4chi3ft4",
+                  "function": {
+                    "arguments": "{\"url\":\"https://openai.com/blog/gpt-5\"}",
+                    "name": "fetch"
+                  },
+                  "type": "function",
+                  "index": 0
+                }
+              ]
+            },
+            "usage": {
+              "completion_tokens": 34,
+              "prompt_tokens": 3868,
+              "total_tokens": 3902,
+              "completion_tokens_details": null,
+              "prompt_tokens_details": {
+                "audio_tokens": null,
+                "cache_write_tokens": null,
+                "cached_tokens": 3352,
+                "image_tokens": null,
+                "text_tokens": null
+              }
+            },
+            "unmet_protocol": null
+          }
+        ],
+        "protocol_retry_used": 0
+      }
+    },
+    {
+      "id": "R05_limit_arg",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_limit",
+        "difficulty": "easy",
+        "what_it_tests": "Trích đúng limit=10 từ '10 tweet'."
+      },
+      "input": "Lấy 10 tweet mới nhất của Elon Musk",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 10
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 10
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "elonmusk",
+            "limit": 10
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ],
+      "provider_response_metadata": {
+        "tool_call_mode": "native",
+        "reasoning_effort": "none",
+        "adapter_source_hashes": {
+          "ollama_provider.py": "fab2a5d45bd2036e9629e10c0bb7d400a44f155580ae3ee9ce3749816e1bbc65",
+          "openai_provider.py": "a069961dfa3e102581435f2e5025af5e90990c00420065c10bd2b925675c92fe",
+          "tool_planning.py": "17e1492caa2390f9240530d562e51869f351fc826c050720b6db2eb8c9201a99"
+        },
+        "protocol_retry_limit": 0,
+        "protocol_retry_format": "structured_plan",
+        "protocol_retry_templates": {
+          "required": "Protocol correction: continue answering the ORIGINAL user request.\nThe caller requires at least one actual structured tool call. Prose, including a\nquestion, does not satisfy this contract. Use only the available tool declarations.\nIf essential information is missing, use the clarification tool, without guessing.\nFor an unapproved publishing request, request confirmation with response_type=yes_no\nas instructed. Do not treat this reminder as user approval, invent missing content\nor destinations, or repeat actions already completed in the conversation.",
+          "empty_auto": "The previous response was empty. Continue the ORIGINAL user request:\nreturn an appropriate structured tool call OR a concise direct answer when no tool\nis needed. Respect the original scope and approval rules. Never repeat a completed\naction or interpret this format reminder as approval."
+        },
+        "native_attempts": [
+          {
+            "request_hash": "9e860dd0e4c5b5d484ba638c9ce5de368b319d7409aab4832ba263ab69f7376d",
+            "text": "",
+            "format": "native",
+            "tool_calls": [
+              {
+                "name": "timeline",
+                "args": {
+                  "screenname": "elonmusk",
+                  "limit": 10
+                }
+              }
+            ],
+            "raw_message": {
+              "content": "",
+              "refusal": null,
+              "role": "assistant",
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [
+                {
+                  "id": "call_87z3jni5",
+                  "function": {
+                    "arguments": "{\"screenname\":\"elonmusk\",\"limit\":10}",
+                    "name": "timeline"
+                  },
+                  "type": "function",
+                  "index": 0
+                }
+              ]
+            },
+            "usage": {
+              "completion_tokens": 42,
+              "prompt_tokens": 3861,
+              "total_tokens": 3903,
+              "completion_tokens_details": null,
+              "prompt_tokens_details": {
+                "audio_tokens": null,
+                "cache_write_tokens": null,
+                "cached_tokens": 3356,
+                "image_tokens": null,
+                "text_tokens": null
+              }
+            },
+            "unmet_protocol": null
+          }
+        ],
+        "protocol_retry_used": 0
+      }
+    },
+    {
+      "id": "R06_timeframe_arg",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_timeframe",
+        "difficulty": "medium",
+        "what_it_tests": "'tuần này' → timeframe=week."
+      },
+      "input": "Tin công nghệ trong tuần này",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "timeframe": "week"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "tin công nghệ",
+              "topic": "news",
+              "timeframe": "week",
+              "max_results": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "tin công nghệ",
+            "topic": "news",
+            "timeframe": "week",
+            "max_results": 5
+          },
+          "result": {
+            "tool": "web_search",
+            "error": "RuntimeError",
+            "message": "Missing TAVILY_API_KEY env var"
+          }
+        }
+      ],
+      "provider_response_metadata": {
+        "tool_call_mode": "native",
+        "reasoning_effort": "none",
+        "adapter_source_hashes": {
+          "ollama_provider.py": "fab2a5d45bd2036e9629e10c0bb7d400a44f155580ae3ee9ce3749816e1bbc65",
+          "openai_provider.py": "a069961dfa3e102581435f2e5025af5e90990c00420065c10bd2b925675c92fe",
+          "tool_planning.py": "17e1492caa2390f9240530d562e51869f351fc826c050720b6db2eb8c9201a99"
+        },
+        "protocol_retry_limit": 0,
+        "protocol_retry_format": "structured_plan",
+        "protocol_retry_templates": {
+          "required": "Protocol correction: continue answering the ORIGINAL user request.\nThe caller requires at least one actual structured tool call. Prose, including a\nquestion, does not satisfy this contract. Use only the available tool declarations.\nIf essential information is missing, use the clarification tool, without guessing.\nFor an unapproved publishing request, request confirmation with response_type=yes_no\nas instructed. Do not treat this reminder as user approval, invent missing content\nor destinations, or repeat actions already completed in the conversation.",
+          "empty_auto": "The previous response was empty. Continue the ORIGINAL user request:\nreturn an appropriate structured tool call OR a concise direct answer when no tool\nis needed. Respect the original scope and approval rules. Never repeat a completed\naction or interpret this format reminder as approval."
+        },
+        "native_attempts": [
+          {
+            "request_hash": "7a888a7f12216a5783e84944accea85fd04c01665aadfaf771dd78430fb9d1c2",
+            "text": "",
+            "format": "native",
+            "tool_calls": [
+              {
+                "name": "lookup",
+                "args": {
+                  "query": "tin công nghệ",
+                  "topic": "news",
+                  "timeframe": "week",
+                  "max_results": 5
+                }
+              }
+            ],
+            "raw_message": {
+              "content": "",
+              "refusal": null,
+              "role": "assistant",
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [
+                {
+                  "id": "call_hcn3y4op",
+                  "function": {
+                    "arguments": "{\"query\":\"tin công nghệ\",\"topic\":\"news\",\"timeframe\":\"week\",\"max_results\":5}",
+                    "name": "lookup"
+                  },
+                  "type": "function",
+                  "index": 0
+                }
+              ]
+            },
+            "usage": {
+              "completion_tokens": 63,
+              "prompt_tokens": 3856,
+              "total_tokens": 3919,
+              "completion_tokens_details": null,
+              "prompt_tokens_details": {
+                "audio_tokens": null,
+                "cache_write_tokens": null,
+                "cached_tokens": 3356,
+                "image_tokens": null,
+                "text_tokens": null
+              }
+            },
+            "unmet_protocol": null
+          }
+        ],
+        "protocol_retry_used": 0
+      }
+    },
+    {
+      "id": "R07_search_type_arg",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_search_type",
+        "difficulty": "medium",
+        "what_it_tests": "'phổ biến/top' → search_type=Top (không phải Latest)."
+      },
+      "input": "Cho mình các tweet phổ biến (top) nhất về OpenAI",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "search_type": "Top"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "OpenAI",
+              "search_type": "Top",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "OpenAI",
+            "search_type": "Top",
+            "limit": 5
+          },
+          "result": {
+            "tool": "search_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ],
+      "provider_response_metadata": {
+        "tool_call_mode": "native",
+        "reasoning_effort": "none",
+        "adapter_source_hashes": {
+          "ollama_provider.py": "fab2a5d45bd2036e9629e10c0bb7d400a44f155580ae3ee9ce3749816e1bbc65",
+          "openai_provider.py": "a069961dfa3e102581435f2e5025af5e90990c00420065c10bd2b925675c92fe",
+          "tool_planning.py": "17e1492caa2390f9240530d562e51869f351fc826c050720b6db2eb8c9201a99"
+        },
+        "protocol_retry_limit": 0,
+        "protocol_retry_format": "structured_plan",
+        "protocol_retry_templates": {
+          "required": "Protocol correction: continue answering the ORIGINAL user request.\nThe caller requires at least one actual structured tool call. Prose, including a\nquestion, does not satisfy this contract. Use only the available tool declarations.\nIf essential information is missing, use the clarification tool, without guessing.\nFor an unapproved publishing request, request confirmation with response_type=yes_no\nas instructed. Do not treat this reminder as user approval, invent missing content\nor destinations, or repeat actions already completed in the conversation.",
+          "empty_auto": "The previous response was empty. Continue the ORIGINAL user request:\nreturn an appropriate structured tool call OR a concise direct answer when no tool\nis needed. Respect the original scope and approval rules. Never repeat a completed\naction or interpret this format reminder as approval."
+        },
+        "native_attempts": [
+          {
+            "request_hash": "99c4513fd3ff680306b912d39827e5bee9596c46bb9db471a07f3900cf6eab1d",
+            "text": "",
+            "format": "native",
+            "tool_calls": [
+              {
+                "name": "social_search",
+                "args": {
+                  "query": "OpenAI",
+                  "search_type": "Top",
+                  "limit": 5
+                }
+              }
+            ],
+            "raw_message": {
+              "content": "",
+              "refusal": null,
+              "role": "assistant",
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [
+                {
+                  "id": "call_mowiw4ee",
+                  "function": {
+                    "arguments": "{\"query\":\"OpenAI\",\"search_type\":\"Top\",\"limit\":5}",
+                    "name": "social_search"
+                  },
+                  "type": "function",
+                  "index": 0
+                }
+              ]
+            },
+            "usage": {
+              "completion_tokens": 51,
+              "prompt_tokens": 3863,
+              "total_tokens": 3914,
+              "completion_tokens_details": null,
+              "prompt_tokens_details": {
+                "audio_tokens": null,
+                "cache_write_tokens": null,
+                "cached_tokens": 3356,
+                "image_tokens": null,
+                "text_tokens": null
+              }
+            },
+            "unmet_protocol": null
+          }
+        ],
+        "protocol_retry_used": 0
+      }
+    },
+    {
+      "id": "R08_out_of_scope",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "out_of_scope",
+        "difficulty": "easy",
+        "what_it_tests": "Câu ngoài phạm vi research → KHÔNG gọi tool, từ chối/định hướng."
+      },
+      "input": "Giải giúp mình bài toán tích phân: nguyên hàm của x^2 là gì?",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Nguyên hàm của $x^2$ là $\\frac{x^3}{3} + C$, trong đó $C$ là hằng số tích phân.\n\nCông thức tổng quát: Nếu $f(x) = x^n$ với $n \\neq -1$, thì nguyên hàm của nó là $\\int x^n dx = \\frac{x^{n+1}}{n+1} + C$.\n\nTrong trường hợp này, $n = 2$, nên ta có:\n$$\\int x^2 dx = \\frac{x^{2+1}}{2+1} + C = \\frac{x^3}{3} + C$$",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [],
+      "provider_response_metadata": {
+        "tool_call_mode": "native",
+        "reasoning_effort": "none",
+        "adapter_source_hashes": {
+          "ollama_provider.py": "fab2a5d45bd2036e9629e10c0bb7d400a44f155580ae3ee9ce3749816e1bbc65",
+          "openai_provider.py": "a069961dfa3e102581435f2e5025af5e90990c00420065c10bd2b925675c92fe",
+          "tool_planning.py": "17e1492caa2390f9240530d562e51869f351fc826c050720b6db2eb8c9201a99"
+        },
+        "protocol_retry_limit": 0,
+        "protocol_retry_format": "structured_plan",
+        "protocol_retry_templates": {
+          "required": "Protocol correction: continue answering the ORIGINAL user request.\nThe caller requires at least one actual structured tool call. Prose, including a\nquestion, does not satisfy this contract. Use only the available tool declarations.\nIf essential information is missing, use the clarification tool, without guessing.\nFor an unapproved publishing request, request confirmation with response_type=yes_no\nas instructed. Do not treat this reminder as user approval, invent missing content\nor destinations, or repeat actions already completed in the conversation.",
+          "empty_auto": "The previous response was empty. Continue the ORIGINAL user request:\nreturn an appropriate structured tool call OR a concise direct answer when no tool\nis needed. Respect the original scope and approval rules. Never repeat a completed\naction or interpret this format reminder as approval."
+        },
+        "native_attempts": [
+          {
+            "request_hash": "9677662476be36f27a62a40e72ec6fc4e7d7bf1912b3e4544a690968ffcc5e1e",
+            "text": "Nguyên hàm của $x^2$ là $\\frac{x^3}{3} + C$, trong đó $C$ là hằng số tích phân.\n\nCông thức tổng quát: Nếu $f(x) = x^n$ với $n \\neq -1$, thì nguyên hàm của nó là $\\int x^n dx = \\frac{x^{n+1}}{n+1} + C$.\n\nTrong trường hợp này, $n = 2$, nên ta có:\n$$\\int x^2 dx = \\frac{x^{2+1}}{2+1} + C = \\frac{x^3}{3} + C$$",
+            "format": "native",
+            "tool_calls": [],
+            "raw_message": {
+              "content": "Nguyên hàm của $x^2$ là $\\frac{x^3}{3} + C$, trong đó $C$ là hằng số tích phân.\n\nCông thức tổng quát: Nếu $f(x) = x^n$ với $n \\neq -1$, thì nguyên hàm của nó là $\\int x^n dx = \\frac{x^{n+1}}{n+1} + C$.\n\nTrong trường hợp này, $n = 2$, nên ta có:\n$$\\int x^2 dx = \\frac{x^{2+1}}{2+1} + C = \\frac{x^3}{3} + C$$",
+              "refusal": null,
+              "role": "assistant",
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": null
+            },
+            "usage": {
+              "completion_tokens": 136,
+              "prompt_tokens": 3867,
+              "total_tokens": 4003,
+              "completion_tokens_details": null,
+              "prompt_tokens_details": {
+                "audio_tokens": null,
+                "cache_write_tokens": null,
+                "cached_tokens": 3356,
+                "image_tokens": null,
+                "text_tokens": null
+              }
+            },
+            "unmet_protocol": null
+          }
+        ],
+        "protocol_retry_used": 0
+      }
+    },
+    {
+      "id": "R09_no_tool_capability",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "no_tool_meta",
+        "difficulty": "easy",
+        "what_it_tests": "Câu hỏi meta → trả lời thẳng, KHÔNG gọi tool."
+      },
+      "input": "Bạn là gì và làm được những gì?",
+      "expect": {
+        "no_tool": true,
+        "behavior": "answer_without_tool"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Tôi là một trợ lý nghiên cứu AI hỗ trợ bạn tìm kiếm và tổng hợp thông tin từ nhiều nguồn khác nhau. Dưới đây là các công cụ tôi có thể sử dụng:\n\n**Các nguồn dữ liệu:**\n- **Twitter/X**: Lấy bài đăng của tài khoản cụ thể (timeline) hoặc tìm kiếm chủ đề trên mạng xã hội (social_search)\n- **Web**: Tìm kiếm tin tức và thông tin chung trên internet (lookup), đọc nội dung từ URL cụ thể (fetch)\n- **Paper arXiv**: Tìm metadata và abstract của các bài nghiên cứu (papers), đọc nội dung PDF (paper_text)\n\n**Các công cụ xử lý:**\n- **Policy**: Tra cứu chính sách nội bộ về AI, trích dẫn, dữ liệu, xuất bản và sử dụng công cụ\n- **Format**: Trình bày kết quả nghiên cứu dưới dạng bản tin, bullet points hoặc thread\n- **Deduplicate**: Loại bỏ các kết quả trùng lặp từ danh sách đã có\n\n**Các hoạt động:**\n- Gửi nội dung đã xác nhận vào Telegram (send)\n- Đặt câu hỏi để bổ sung thông tin khi cần thiết (clarify)\n\nTôi không tự tạo ra dữ liệu hay đưa ra khẳng định chưa được kiểm chứng - tất cả thông tin đều dựa trên kết quả từ các công cụ đã thu thập. Bạn có thể yêu cầu tôi tìm kiếm thông tin về bất kỳ chủ đề nào và tôi sẽ sử dụng các nguồn phù hợp để cung cấp cho bạn.",
+        "case_failure_type": "unnecessary_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [],
+      "provider_response_metadata": {
+        "tool_call_mode": "native",
+        "reasoning_effort": "none",
+        "adapter_source_hashes": {
+          "ollama_provider.py": "fab2a5d45bd2036e9629e10c0bb7d400a44f155580ae3ee9ce3749816e1bbc65",
+          "openai_provider.py": "a069961dfa3e102581435f2e5025af5e90990c00420065c10bd2b925675c92fe",
+          "tool_planning.py": "17e1492caa2390f9240530d562e51869f351fc826c050720b6db2eb8c9201a99"
+        },
+        "protocol_retry_limit": 0,
+        "protocol_retry_format": "structured_plan",
+        "protocol_retry_templates": {
+          "required": "Protocol correction: continue answering the ORIGINAL user request.\nThe caller requires at least one actual structured tool call. Prose, including a\nquestion, does not satisfy this contract. Use only the available tool declarations.\nIf essential information is missing, use the clarification tool, without guessing.\nFor an unapproved publishing request, request confirmation with response_type=yes_no\nas instructed. Do not treat this reminder as user approval, invent missing content\nor destinations, or repeat actions already completed in the conversation.",
+          "empty_auto": "The previous response was empty. Continue the ORIGINAL user request:\nreturn an appropriate structured tool call OR a concise direct answer when no tool\nis needed. Respect the original scope and approval rules. Never repeat a completed\naction or interpret this format reminder as approval."
+        },
+        "native_attempts": [
+          {
+            "request_hash": "b71a241921a99af5776d903b266b6f0d86d2db79f0481b6977c88090a6508172",
+            "text": "Tôi là một trợ lý nghiên cứu AI hỗ trợ bạn tìm kiếm và tổng hợp thông tin từ nhiều nguồn khác nhau. Dưới đây là các công cụ tôi có thể sử dụng:\n\n**Các nguồn dữ liệu:**\n- **Twitter/X**: Lấy bài đăng của tài khoản cụ thể (timeline) hoặc tìm kiếm chủ đề trên mạng xã hội (social_search)\n- **Web**: Tìm kiếm tin tức và thông tin chung trên internet (lookup), đọc nội dung từ URL cụ thể (fetch)\n- **Paper arXiv**: Tìm metadata và abstract của các bài nghiên cứu (papers), đọc nội dung PDF (paper_text)\n\n**Các công cụ xử lý:**\n- **Policy**: Tra cứu chính sách nội bộ về AI, trích dẫn, dữ liệu, xuất bản và sử dụng công cụ\n- **Format**: Trình bày kết quả nghiên cứu dưới dạng bản tin, bullet points hoặc thread\n- **Deduplicate**: Loại bỏ các kết quả trùng lặp từ danh sách đã có\n\n**Các hoạt động:**\n- Gửi nội dung đã xác nhận vào Telegram (send)\n- Đặt câu hỏi để bổ sung thông tin khi cần thiết (clarify)\n\nTôi không tự tạo ra dữ liệu hay đưa ra khẳng định chưa được kiểm chứng - tất cả thông tin đều dựa trên kết quả từ các công cụ đã thu thập. Bạn có thể yêu cầu tôi tìm kiếm thông tin về bất kỳ chủ đề nào và tôi sẽ sử dụng các nguồn phù hợp để cung cấp cho bạn.",
+            "format": "native",
+            "tool_calls": [],
+            "raw_message": {
+              "content": "Tôi là một trợ lý nghiên cứu AI hỗ trợ bạn tìm kiếm và tổng hợp thông tin từ nhiều nguồn khác nhau. Dưới đây là các công cụ tôi có thể sử dụng:\n\n**Các nguồn dữ liệu:**\n- **Twitter/X**: Lấy bài đăng của tài khoản cụ thể (timeline) hoặc tìm kiếm chủ đề trên mạng xã hội (social_search)\n- **Web**: Tìm kiếm tin tức và thông tin chung trên internet (lookup), đọc nội dung từ URL cụ thể (fetch)\n- **Paper arXiv**: Tìm metadata và abstract của các bài nghiên cứu (papers), đọc nội dung PDF (paper_text)\n\n**Các công cụ xử lý:**\n- **Policy**: Tra cứu chính sách nội bộ về AI, trích dẫn, dữ liệu, xuất bản và sử dụng công cụ\n- **Format**: Trình bày kết quả nghiên cứu dưới dạng bản tin, bullet points hoặc thread\n- **Deduplicate**: Loại bỏ các kết quả trùng lặp từ danh sách đã có\n\n**Các hoạt động:**\n- Gửi nội dung đã xác nhận vào Telegram (send)\n- Đặt câu hỏi để bổ sung thông tin khi cần thiết (clarify)\n\nTôi không tự tạo ra dữ liệu hay đưa ra khẳng định chưa được kiểm chứng - tất cả thông tin đều dựa trên kết quả từ các công cụ đã thu thập. Bạn có thể yêu cầu tôi tìm kiếm thông tin về bất kỳ chủ đề nào và tôi sẽ sử dụng các nguồn phù hợp để cung cấp cho bạn.",
+              "refusal": null,
+              "role": "assistant",
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": null
+            },
+            "usage": {
+              "completion_tokens": 306,
+              "prompt_tokens": 3859,
+              "total_tokens": 4165,
+              "completion_tokens_details": null,
+              "prompt_tokens_details": {
+                "audio_tokens": null,
+                "cache_write_tokens": null,
+                "cached_tokens": 3356,
+                "image_tokens": null,
+                "text_tokens": null
+              }
+            },
+            "unmet_protocol": null
+          }
+        ],
+        "protocol_retry_used": 0
+      }
+    },
+    {
+      "id": "R10_missing_handle",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "clarify_missing_handle",
+        "difficulty": "medium",
+        "what_it_tests": "Thiếu handle → ask_user, KHÔNG đoán bừa người nào."
+      },
+      "input": "Tóm tắt 5 tweet mới nhất giúp mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [],
+        "actual_text": "Để tóm tắt 5 tweet mới nhất, tôi cần biết chủ đề hoặc từ khóa cụ thể mà bạn quan tâm. Bạn muốn tìm hiểu về chủ đề gì?",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "missing_info",
+        "failures": [
+          "missing tool call clarify"
+        ]
+      },
+      "tool_results": [],
+      "provider_response_metadata": {
+        "tool_call_mode": "native",
+        "reasoning_effort": "none",
+        "adapter_source_hashes": {
+          "ollama_provider.py": "fab2a5d45bd2036e9629e10c0bb7d400a44f155580ae3ee9ce3749816e1bbc65",
+          "openai_provider.py": "a069961dfa3e102581435f2e5025af5e90990c00420065c10bd2b925675c92fe",
+          "tool_planning.py": "17e1492caa2390f9240530d562e51869f351fc826c050720b6db2eb8c9201a99"
+        },
+        "protocol_retry_limit": 0,
+        "protocol_retry_format": "structured_plan",
+        "protocol_retry_templates": {
+          "required": "Protocol correction: continue answering the ORIGINAL user request.\nThe caller requires at least one actual structured tool call. Prose, including a\nquestion, does not satisfy this contract. Use only the available tool declarations.\nIf essential information is missing, use the clarification tool, without guessing.\nFor an unapproved publishing request, request confirmation with response_type=yes_no\nas instructed. Do not treat this reminder as user approval, invent missing content\nor destinations, or repeat actions already completed in the conversation.",
+          "empty_auto": "The previous response was empty. Continue the ORIGINAL user request:\nreturn an appropriate structured tool call OR a concise direct answer when no tool\nis needed. Respect the original scope and approval rules. Never repeat a completed\naction or interpret this format reminder as approval."
+        },
+        "native_attempts": [
+          {
+            "request_hash": "5e9f2a1651f2f2ee17a8d8cb4b19564fab3d5de7663a104f44fcebacf5dc5d42",
+            "text": "Để tóm tắt 5 tweet mới nhất, tôi cần biết chủ đề hoặc từ khóa cụ thể mà bạn quan tâm. Bạn muốn tìm hiểu về chủ đề gì?",
+            "format": "native",
+            "tool_calls": [],
+            "raw_message": {
+              "content": "Để tóm tắt 5 tweet mới nhất, tôi cần biết chủ đề hoặc từ khóa cụ thể mà bạn quan tâm. Bạn muốn tìm hiểu về chủ đề gì?",
+              "refusal": null,
+              "role": "assistant",
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": null
+            },
+            "usage": {
+              "completion_tokens": 34,
+              "prompt_tokens": 3860,
+              "total_tokens": 3894,
+              "completion_tokens_details": null,
+              "prompt_tokens_details": {
+                "audio_tokens": null,
+                "cache_write_tokens": null,
+                "cached_tokens": 3356,
+                "image_tokens": null,
+                "text_tokens": null
+              }
+            },
+            "unmet_protocol": "required_without_calls"
+          }
+        ],
+        "protocol_retry_used": 0
+      }
+    },
+    {
+      "id": "R11_missing_url",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "clarify_missing_url",
+        "difficulty": "medium",
+        "what_it_tests": "Nói 'bài này' nhưng không có link → ask_user xin URL."
+      },
+      "input": "Tóm tắt bài viết này hộ mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [],
+        "actual_text": "Để tôi có thể tóm tắt bài viết cho bạn, tôi cần biết URL của bài viết đó. Bạn có thể cung cấp link cụ thể không?",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "missing_info",
+        "failures": [
+          "missing tool call clarify"
+        ]
+      },
+      "tool_results": [],
+      "provider_response_metadata": {
+        "tool_call_mode": "native",
+        "reasoning_effort": "none",
+        "adapter_source_hashes": {
+          "ollama_provider.py": "fab2a5d45bd2036e9629e10c0bb7d400a44f155580ae3ee9ce3749816e1bbc65",
+          "openai_provider.py": "a069961dfa3e102581435f2e5025af5e90990c00420065c10bd2b925675c92fe",
+          "tool_planning.py": "17e1492caa2390f9240530d562e51869f351fc826c050720b6db2eb8c9201a99"
+        },
+        "protocol_retry_limit": 0,
+        "protocol_retry_format": "structured_plan",
+        "protocol_retry_templates": {
+          "required": "Protocol correction: continue answering the ORIGINAL user request.\nThe caller requires at least one actual structured tool call. Prose, including a\nquestion, does not satisfy this contract. Use only the available tool declarations.\nIf essential information is missing, use the clarification tool, without guessing.\nFor an unapproved publishing request, request confirmation with response_type=yes_no\nas instructed. Do not treat this reminder as user approval, invent missing content\nor destinations, or repeat actions already completed in the conversation.",
+          "empty_auto": "The previous response was empty. Continue the ORIGINAL user request:\nreturn an appropriate structured tool call OR a concise direct answer when no tool\nis needed. Respect the original scope and approval rules. Never repeat a completed\naction or interpret this format reminder as approval."
+        },
+        "native_attempts": [
+          {
+            "request_hash": "84029aac63ec102b9cbd1283a0ed0889ad7d470d98f9c3dfbbdba28e620c049c",
+            "text": "Để tôi có thể tóm tắt bài viết cho bạn, tôi cần biết URL của bài viết đó. Bạn có thể cung cấp link cụ thể không?",
+            "format": "native",
+            "tool_calls": [],
+            "raw_message": {
+              "content": "Để tôi có thể tóm tắt bài viết cho bạn, tôi cần biết URL của bài viết đó. Bạn có thể cung cấp link cụ thể không?",
+              "refusal": null,
+              "role": "assistant",
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": null
+            },
+            "usage": {
+              "completion_tokens": 31,
+              "prompt_tokens": 3858,
+              "total_tokens": 3889,
+              "completion_tokens_details": null,
+              "prompt_tokens_details": {
+                "audio_tokens": null,
+                "cache_write_tokens": null,
+                "cached_tokens": 3356,
+                "image_tokens": null,
+                "text_tokens": null
+              }
+            },
+            "unmet_protocol": "required_without_calls"
+          }
+        ],
+        "protocol_retry_used": 0
+      }
+    },
+    {
+      "id": "R12_confirm_before_send",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "confirm_before_write",
+        "difficulty": "medium",
+        "what_it_tests": "Hành động ghi (gửi) → xác nhận trước (ask_user yes_no), không tự gửi."
+      },
+      "input": "Đăng bản tin này lên Telegram giúp mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [],
+        "actual_text": "Để tôi có thể đăng bản tin lên Telegram cho bạn, tôi cần xem nội dung bản tin đó là gì. Bạn có thể cung cấp:\n\n1. Nội dung bản tin cụ thể mà bạn muốn đăng\n2. Hoặc nếu bạn đã có dữ liệu nghiên cứu, hãy cho tôi biết các nguồn và tóm tắt để tôi định dạng thành bản tin\n\nBạn có thể gửi nội dung bản tin hoặc mô tả về những gì bạn muốn tôi tìm kiếm và tổng hợp?",
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_boundary",
+        "failures": [
+          "missing tool call clarify"
+        ]
+      },
+      "tool_results": [],
+      "provider_response_metadata": {
+        "tool_call_mode": "native",
+        "reasoning_effort": "none",
+        "adapter_source_hashes": {
+          "ollama_provider.py": "fab2a5d45bd2036e9629e10c0bb7d400a44f155580ae3ee9ce3749816e1bbc65",
+          "openai_provider.py": "a069961dfa3e102581435f2e5025af5e90990c00420065c10bd2b925675c92fe",
+          "tool_planning.py": "17e1492caa2390f9240530d562e51869f351fc826c050720b6db2eb8c9201a99"
+        },
+        "protocol_retry_limit": 0,
+        "protocol_retry_format": "structured_plan",
+        "protocol_retry_templates": {
+          "required": "Protocol correction: continue answering the ORIGINAL user request.\nThe caller requires at least one actual structured tool call. Prose, including a\nquestion, does not satisfy this contract. Use only the available tool declarations.\nIf essential information is missing, use the clarification tool, without guessing.\nFor an unapproved publishing request, request confirmation with response_type=yes_no\nas instructed. Do not treat this reminder as user approval, invent missing content\nor destinations, or repeat actions already completed in the conversation.",
+          "empty_auto": "The previous response was empty. Continue the ORIGINAL user request:\nreturn an appropriate structured tool call OR a concise direct answer when no tool\nis needed. Respect the original scope and approval rules. Never repeat a completed\naction or interpret this format reminder as approval."
+        },
+        "native_attempts": [
+          {
+            "request_hash": "de170cb94581a38d34e6e9e2a2b58c844c023377caf31ef2a8f8bca995f6dafc",
+            "text": "Để tôi có thể đăng bản tin lên Telegram cho bạn, tôi cần xem nội dung bản tin đó là gì. Bạn có thể cung cấp:\n\n1. Nội dung bản tin cụ thể mà bạn muốn đăng\n2. Hoặc nếu bạn đã có dữ liệu nghiên cứu, hãy cho tôi biết các nguồn và tóm tắt để tôi định dạng thành bản tin\n\nBạn có thể gửi nội dung bản tin hoặc mô tả về những gì bạn muốn tôi tìm kiếm và tổng hợp?",
+            "format": "native",
+            "tool_calls": [],
+            "raw_message": {
+              "content": "Để tôi có thể đăng bản tin lên Telegram cho bạn, tôi cần xem nội dung bản tin đó là gì. Bạn có thể cung cấp:\n\n1. Nội dung bản tin cụ thể mà bạn muốn đăng\n2. Hoặc nếu bạn đã có dữ liệu nghiên cứu, hãy cho tôi biết các nguồn và tóm tắt để tôi định dạng thành bản tin\n\nBạn có thể gửi nội dung bản tin hoặc mô tả về những gì bạn muốn tôi tìm kiếm và tổng hợp?",
+              "refusal": null,
+              "role": "assistant",
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": null
+            },
+            "usage": {
+              "completion_tokens": 96,
+              "prompt_tokens": 3858,
+              "total_tokens": 3954,
+              "completion_tokens_details": null,
+              "prompt_tokens_details": {
+                "audio_tokens": null,
+                "cache_write_tokens": null,
+                "cached_tokens": 3356,
+                "image_tokens": null,
+                "text_tokens": null
+              }
+            },
+            "unmet_protocol": "required_without_calls"
+          }
+        ],
+        "protocol_retry_used": 0
+      }
+    },
+    {
+      "id": "R13_parallel_web_and_tweets",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "parallel_tool_calls",
+        "difficulty": "hard",
+        "what_it_tests": "Một request cần hai nguồn → gọi cả web_search và search_tweets; eval không phụ thuộc thứ tự tool call."
+      },
+      "input": "Tìm trên web tin AI hôm nay và tìm thêm tweet về AI.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          },
+          {
+            "name": "social_search",
+            "args": {
+              "query": "AI"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day",
+              "max_results": 5
+            }
+          },
+          {
+            "name": "social_search",
+            "args": {
+              "query": "AI",
+              "search_type": "Latest",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "day",
+            "max_results": 5
+          },
+          "result": {
+            "tool": "web_search",
+            "error": "RuntimeError",
+            "message": "Missing TAVILY_API_KEY env var"
+          }
+        },
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "AI",
+            "search_type": "Latest",
+            "limit": 5
+          },
+          "result": {
+            "tool": "search_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ],
+      "provider_response_metadata": {
+        "tool_call_mode": "native",
+        "reasoning_effort": "none",
+        "adapter_source_hashes": {
+          "ollama_provider.py": "fab2a5d45bd2036e9629e10c0bb7d400a44f155580ae3ee9ce3749816e1bbc65",
+          "openai_provider.py": "a069961dfa3e102581435f2e5025af5e90990c00420065c10bd2b925675c92fe",
+          "tool_planning.py": "17e1492caa2390f9240530d562e51869f351fc826c050720b6db2eb8c9201a99"
+        },
+        "protocol_retry_limit": 0,
+        "protocol_retry_format": "structured_plan",
+        "protocol_retry_templates": {
+          "required": "Protocol correction: continue answering the ORIGINAL user request.\nThe caller requires at least one actual structured tool call. Prose, including a\nquestion, does not satisfy this contract. Use only the available tool declarations.\nIf essential information is missing, use the clarification tool, without guessing.\nFor an unapproved publishing request, request confirmation with response_type=yes_no\nas instructed. Do not treat this reminder as user approval, invent missing content\nor destinations, or repeat actions already completed in the conversation.",
+          "empty_auto": "The previous response was empty. Continue the ORIGINAL user request:\nreturn an appropriate structured tool call OR a concise direct answer when no tool\nis needed. Respect the original scope and approval rules. Never repeat a completed\naction or interpret this format reminder as approval."
+        },
+        "native_attempts": [
+          {
+            "request_hash": "99c36a6b71ff50b3fef017f1aacf589898520b08b81f1829b934bded1c4cdb84",
+            "text": "",
+            "format": "native",
+            "tool_calls": [
+              {
+                "name": "lookup",
+                "args": {
+                  "query": "AI",
+                  "topic": "news",
+                  "timeframe": "day",
+                  "max_results": 5
+                }
+              },
+              {
+                "name": "social_search",
+                "args": {
+                  "query": "AI",
+                  "search_type": "Latest",
+                  "limit": 5
+                }
+              }
+            ],
+            "raw_message": {
+              "content": "",
+              "refusal": null,
+              "role": "assistant",
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [
+                {
+                  "id": "call_fai6q9eg",
+                  "function": {
+                    "arguments": "{\"query\":\"AI\",\"topic\":\"news\",\"timeframe\":\"day\",\"max_results\":5}",
+                    "name": "lookup"
+                  },
+                  "type": "function",
+                  "index": 0
+                },
+                {
+                  "id": "call_lwepybxi",
+                  "function": {
+                    "arguments": "{\"query\":\"AI\",\"search_type\":\"Latest\",\"limit\":5}",
+                    "name": "social_search"
+                  },
+                  "type": "function",
+                  "index": 1
+                }
+              ]
+            },
+            "usage": {
+              "completion_tokens": 111,
+              "prompt_tokens": 3864,
+              "total_tokens": 3975,
+              "completion_tokens_details": null,
+              "prompt_tokens_details": {
+                "audio_tokens": null,
+                "cache_write_tokens": null,
+                "cached_tokens": 3356,
+                "image_tokens": null,
+                "text_tokens": null
+              }
+            },
+            "unmet_protocol": null
+          }
+        ],
+        "protocol_retry_used": 0
+      }
+    },
+    {
+      "id": "R14_out_of_scope_coding",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "out_of_scope_coding",
+        "difficulty": "easy",
+        "what_it_tests": "Câu coding ngoài phạm vi research/news → KHÔNG gọi tool."
+      },
+      "input": "Viết giúp mình một hàm Python tính Fibonacci bằng recursion.",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Dưới đây là hàm Python tính dãy Fibonacci bằng phương pháp đệ quy (recursion):\n\n```python\ndef fibonacci(n):\n    \"\"\"Tính số thứ n trong dãy Fibonacci bằng đệ quy.\"\"\"\n    if n <= 0:\n        return 0\n    elif n == 1:\n        return 1\n    else:\n        return fibonacci(n - 1) + fibonacci(n - 2)\n\n# Ví dụ sử dụng:\nprint(fibonacci(10))  # Kết quả: 55\n```\n\n**Giải thích:**\n- Dãy Fibonacci bắt đầu từ 0, 1 và mỗi số tiếp theo bằng tổng của hai số trước đó.\n- Hàm đệ quy sẽ gọi chính nó với các giá trị nhỏ hơn cho đến khi đạt đến trường hợp cơ sở (n = 0 hoặc n = 1).\n\n**Lưu ý:** Phương pháp này có độ phức tạp thời gian O(2^n), nên không hiệu quả với các giá trị n lớn. Để tối ưu, bạn có thể sử dụng phương pháp lặp hoặc bộ nhớ đệm (memoization).",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [],
+      "provider_response_metadata": {
+        "tool_call_mode": "native",
+        "reasoning_effort": "none",
+        "adapter_source_hashes": {
+          "ollama_provider.py": "fab2a5d45bd2036e9629e10c0bb7d400a44f155580ae3ee9ce3749816e1bbc65",
+          "openai_provider.py": "a069961dfa3e102581435f2e5025af5e90990c00420065c10bd2b925675c92fe",
+          "tool_planning.py": "17e1492caa2390f9240530d562e51869f351fc826c050720b6db2eb8c9201a99"
+        },
+        "protocol_retry_limit": 0,
+        "protocol_retry_format": "structured_plan",
+        "protocol_retry_templates": {
+          "required": "Protocol correction: continue answering the ORIGINAL user request.\nThe caller requires at least one actual structured tool call. Prose, including a\nquestion, does not satisfy this contract. Use only the available tool declarations.\nIf essential information is missing, use the clarification tool, without guessing.\nFor an unapproved publishing request, request confirmation with response_type=yes_no\nas instructed. Do not treat this reminder as user approval, invent missing content\nor destinations, or repeat actions already completed in the conversation.",
+          "empty_auto": "The previous response was empty. Continue the ORIGINAL user request:\nreturn an appropriate structured tool call OR a concise direct answer when no tool\nis needed. Respect the original scope and approval rules. Never repeat a completed\naction or interpret this format reminder as approval."
+        },
+        "native_attempts": [
+          {
+            "request_hash": "8df77d2d367f444f9bf6a5afab761f38a4ac507616c326fd0d5f5669331b914b",
+            "text": "Dưới đây là hàm Python tính dãy Fibonacci bằng phương pháp đệ quy (recursion):\n\n```python\ndef fibonacci(n):\n    \"\"\"Tính số thứ n trong dãy Fibonacci bằng đệ quy.\"\"\"\n    if n <= 0:\n        return 0\n    elif n == 1:\n        return 1\n    else:\n        return fibonacci(n - 1) + fibonacci(n - 2)\n\n# Ví dụ sử dụng:\nprint(fibonacci(10))  # Kết quả: 55\n```\n\n**Giải thích:**\n- Dãy Fibonacci bắt đầu từ 0, 1 và mỗi số tiếp theo bằng tổng của hai số trước đó.\n- Hàm đệ quy sẽ gọi chính nó với các giá trị nhỏ hơn cho đến khi đạt đến trường hợp cơ sở (n = 0 hoặc n = 1).\n\n**Lưu ý:** Phương pháp này có độ phức tạp thời gian O(2^n), nên không hiệu quả với các giá trị n lớn. Để tối ưu, bạn có thể sử dụng phương pháp lặp hoặc bộ nhớ đệm (memoization).",
+            "format": "native",
+            "tool_calls": [],
+            "raw_message": {
+              "content": "Dưới đây là hàm Python tính dãy Fibonacci bằng phương pháp đệ quy (recursion):\n\n```python\ndef fibonacci(n):\n    \"\"\"Tính số thứ n trong dãy Fibonacci bằng đệ quy.\"\"\"\n    if n <= 0:\n        return 0\n    elif n == 1:\n        return 1\n    else:\n        return fibonacci(n - 1) + fibonacci(n - 2)\n\n# Ví dụ sử dụng:\nprint(fibonacci(10))  # Kết quả: 55\n```\n\n**Giải thích:**\n- Dãy Fibonacci bắt đầu từ 0, 1 và mỗi số tiếp theo bằng tổng của hai số trước đó.\n- Hàm đệ quy sẽ gọi chính nó với các giá trị nhỏ hơn cho đến khi đạt đến trường hợp cơ sở (n = 0 hoặc n = 1).\n\n**Lưu ý:** Phương pháp này có độ phức tạp thời gian O(2^n), nên không hiệu quả với các giá trị n lớn. Để tối ưu, bạn có thể sử dụng phương pháp lặp hoặc bộ nhớ đệm (memoization).",
+              "refusal": null,
+              "role": "assistant",
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": null
+            },
+            "usage": {
+              "completion_tokens": 229,
+              "prompt_tokens": 3862,
+              "total_tokens": 4091,
+              "completion_tokens_details": null,
+              "prompt_tokens_details": {
+                "audio_tokens": null,
+                "cache_write_tokens": null,
+                "cached_tokens": 3356,
+                "image_tokens": null,
+                "text_tokens": null
+              }
+            },
+            "unmet_protocol": null
+          }
+        ],
+        "protocol_retry_used": 0
+      }
+    },
+    {
+      "id": "M01_clarify_then_fill",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_clarify_fill",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: carry limit=5 từ lượt 1 + map tên Elon Musk thành handle elonmusk từ lượt 2."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tóm tắt 5 tweet mới nhất giúp mình"
+        },
+        {
+          "role": "user",
+          "content": "Của Elon Musk nhé"
+        },
+        {
+          "role": "user",
+          "content": "Giữ đúng 5 tweet, đừng đổi số lượng"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 5
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "elonmusk",
+            "limit": 5
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ],
+      "provider_response_metadata": {
+        "tool_call_mode": "native",
+        "reasoning_effort": "none",
+        "adapter_source_hashes": {
+          "ollama_provider.py": "fab2a5d45bd2036e9629e10c0bb7d400a44f155580ae3ee9ce3749816e1bbc65",
+          "openai_provider.py": "a069961dfa3e102581435f2e5025af5e90990c00420065c10bd2b925675c92fe",
+          "tool_planning.py": "17e1492caa2390f9240530d562e51869f351fc826c050720b6db2eb8c9201a99"
+        },
+        "protocol_retry_limit": 0,
+        "protocol_retry_format": "structured_plan",
+        "protocol_retry_templates": {
+          "required": "Protocol correction: continue answering the ORIGINAL user request.\nThe caller requires at least one actual structured tool call. Prose, including a\nquestion, does not satisfy this contract. Use only the available tool declarations.\nIf essential information is missing, use the clarification tool, without guessing.\nFor an unapproved publishing request, request confirmation with response_type=yes_no\nas instructed. Do not treat this reminder as user approval, invent missing content\nor destinations, or repeat actions already completed in the conversation.",
+          "empty_auto": "The previous response was empty. Continue the ORIGINAL user request:\nreturn an appropriate structured tool call OR a concise direct answer when no tool\nis needed. Respect the original scope and approval rules. Never repeat a completed\naction or interpret this format reminder as approval."
+        },
+        "native_attempts": [
+          {
+            "request_hash": "db77e07ff19c9ab310f5a34b2c3e5ee22e9d57d7ceab092947c60684aba639d6",
+            "text": "",
+            "format": "native",
+            "tool_calls": [
+              {
+                "name": "timeline",
+                "args": {
+                  "screenname": "elonmusk",
+                  "limit": 5
+                }
+              }
+            ],
+            "raw_message": {
+              "content": "",
+              "refusal": null,
+              "role": "assistant",
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [
+                {
+                  "id": "call_c9ped8j0",
+                  "function": {
+                    "arguments": "{\"screenname\":\"elonmusk\",\"limit\":5}",
+                    "name": "timeline"
+                  },
+                  "type": "function",
+                  "index": 0
+                }
+              ]
+            },
+            "usage": {
+              "completion_tokens": 41,
+              "prompt_tokens": 3926,
+              "total_tokens": 3967,
+              "completion_tokens_details": null,
+              "prompt_tokens_details": {
+                "audio_tokens": null,
+                "cache_write_tokens": null,
+                "cached_tokens": 3356,
+                "image_tokens": null,
+                "text_tokens": null
+              }
+            },
+            "unmet_protocol": null
+          }
+        ],
+        "protocol_retry_used": 0
+      }
+    },
+    {
+      "id": "M02_carryover_timeframe",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_carryover",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: chỉ xử lý latest turn, carry timeframe=day và topic=news, query robotics."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tin AI hôm nay có gì?"
+        },
+        {
+          "role": "user",
+          "content": "Còn về robotics thì sao?"
+        },
+        {
+          "role": "user",
+          "content": "Chỉ tìm robotics thôi, vẫn là tin hôm nay"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "robotics",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "robotics",
+              "topic": "news",
+              "timeframe": "day",
+              "max_results": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "robotics",
+            "topic": "news",
+            "timeframe": "day",
+            "max_results": 5
+          },
+          "result": {
+            "tool": "web_search",
+            "error": "RuntimeError",
+            "message": "Missing TAVILY_API_KEY env var"
+          }
+        }
+      ],
+      "provider_response_metadata": {
+        "tool_call_mode": "native",
+        "reasoning_effort": "none",
+        "adapter_source_hashes": {
+          "ollama_provider.py": "fab2a5d45bd2036e9629e10c0bb7d400a44f155580ae3ee9ce3749816e1bbc65",
+          "openai_provider.py": "a069961dfa3e102581435f2e5025af5e90990c00420065c10bd2b925675c92fe",
+          "tool_planning.py": "17e1492caa2390f9240530d562e51869f351fc826c050720b6db2eb8c9201a99"
+        },
+        "protocol_retry_limit": 0,
+        "protocol_retry_format": "structured_plan",
+        "protocol_retry_templates": {
+          "required": "Protocol correction: continue answering the ORIGINAL user request.\nThe caller requires at least one actual structured tool call. Prose, including a\nquestion, does not satisfy this contract. Use only the available tool declarations.\nIf essential information is missing, use the clarification tool, without guessing.\nFor an unapproved publishing request, request confirmation with response_type=yes_no\nas instructed. Do not treat this reminder as user approval, invent missing content\nor destinations, or repeat actions already completed in the conversation.",
+          "empty_auto": "The previous response was empty. Continue the ORIGINAL user request:\nreturn an appropriate structured tool call OR a concise direct answer when no tool\nis needed. Respect the original scope and approval rules. Never repeat a completed\naction or interpret this format reminder as approval."
+        },
+        "native_attempts": [
+          {
+            "request_hash": "3a495dbd1247d87102958aa728508458f1c0786c87fa4a660c5ac9ab13868630",
+            "text": "",
+            "format": "native",
+            "tool_calls": [
+              {
+                "name": "lookup",
+                "args": {
+                  "query": "robotics",
+                  "topic": "news",
+                  "timeframe": "day",
+                  "max_results": 5
+                }
+              }
+            ],
+            "raw_message": {
+              "content": "",
+              "refusal": null,
+              "role": "assistant",
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [
+                {
+                  "id": "call_afjzg8uv",
+                  "function": {
+                    "arguments": "{\"query\":\"robotics\",\"topic\":\"news\",\"timeframe\":\"day\",\"max_results\":5}",
+                    "name": "lookup"
+                  },
+                  "type": "function",
+                  "index": 0
+                }
+              ]
+            },
+            "usage": {
+              "completion_tokens": 62,
+              "prompt_tokens": 3926,
+              "total_tokens": 3988,
+              "completion_tokens_details": null,
+              "prompt_tokens_details": {
+                "audio_tokens": null,
+                "cache_write_tokens": null,
+                "cached_tokens": 3414,
+                "image_tokens": null,
+                "text_tokens": null
+              }
+            },
+            "unmet_protocol": null
+          }
+        ],
+        "protocol_retry_used": 0
+      }
+    },
+    {
+      "id": "M03_correction_handle",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_correction",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: map tên thường, sửa Sam Altman→Andrej Karpathy, dùng handle karpathy và limit=3."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tweet mới nhất của Sam Altman"
+        },
+        {
+          "role": "user",
+          "content": "À nhầm, của Andrej Karpathy"
+        },
+        {
+          "role": "user",
+          "content": "Lấy 3 tweet mới nhất nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "karpathy",
+              "limit": 3
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "karpathy",
+              "limit": 3
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "karpathy",
+            "limit": 3
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ],
+      "provider_response_metadata": {
+        "tool_call_mode": "native",
+        "reasoning_effort": "none",
+        "adapter_source_hashes": {
+          "ollama_provider.py": "fab2a5d45bd2036e9629e10c0bb7d400a44f155580ae3ee9ce3749816e1bbc65",
+          "openai_provider.py": "a069961dfa3e102581435f2e5025af5e90990c00420065c10bd2b925675c92fe",
+          "tool_planning.py": "17e1492caa2390f9240530d562e51869f351fc826c050720b6db2eb8c9201a99"
+        },
+        "protocol_retry_limit": 0,
+        "protocol_retry_format": "structured_plan",
+        "protocol_retry_templates": {
+          "required": "Protocol correction: continue answering the ORIGINAL user request.\nThe caller requires at least one actual structured tool call. Prose, including a\nquestion, does not satisfy this contract. Use only the available tool declarations.\nIf essential information is missing, use the clarification tool, without guessing.\nFor an unapproved publishing request, request confirmation with response_type=yes_no\nas instructed. Do not treat this reminder as user approval, invent missing content\nor destinations, or repeat actions already completed in the conversation.",
+          "empty_auto": "The previous response was empty. Continue the ORIGINAL user request:\nreturn an appropriate structured tool call OR a concise direct answer when no tool\nis needed. Respect the original scope and approval rules. Never repeat a completed\naction or interpret this format reminder as approval."
+        },
+        "native_attempts": [
+          {
+            "request_hash": "bdf32eb3f0dbe7d5b6c2ccfcaea57ccab64e5cf8ae64d5a79b32e9a80fbf99a5",
+            "text": "",
+            "format": "native",
+            "tool_calls": [
+              {
+                "name": "timeline",
+                "args": {
+                  "screenname": "karpathy",
+                  "limit": 3
+                }
+              }
+            ],
+            "raw_message": {
+              "content": "",
+              "refusal": null,
+              "role": "assistant",
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [
+                {
+                  "id": "call_bfw0gu85",
+                  "function": {
+                    "arguments": "{\"screenname\":\"karpathy\",\"limit\":3}",
+                    "name": "timeline"
+                  },
+                  "type": "function",
+                  "index": 0
+                }
+              ]
+            },
+            "usage": {
+              "completion_tokens": 41,
+              "prompt_tokens": 3926,
+              "total_tokens": 3967,
+              "completion_tokens_details": null,
+              "prompt_tokens_details": {
+                "audio_tokens": null,
+                "cache_write_tokens": null,
+                "cached_tokens": 3414,
+                "image_tokens": null,
+                "text_tokens": null
+              }
+            },
+            "unmet_protocol": null
+          }
+        ],
+        "protocol_retry_used": 0
+      }
+    },
+    {
+      "id": "M04_clarify_then_url",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_clarify_url",
+        "difficulty": "medium",
+        "what_it_tests": "3 turns: sau khi được cung cấp URL, latest turn xác nhận chỉ đọc link đó → read_url đúng url."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tóm tắt bài này hộ mình"
+        },
+        {
+          "role": "user",
+          "content": "https://anthropic.com/news/claude"
+        },
+        {
+          "role": "user",
+          "content": "Chỉ đọc đúng link đó thôi"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://anthropic.com/news/claude"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://anthropic.com/news/claude"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://anthropic.com/news/claude"
+          },
+          "result": {
+            "tool": "read_url",
+            "error": "RuntimeError",
+            "message": "Missing FIRECRAWL_API_KEY env var"
+          }
+        }
+      ],
+      "provider_response_metadata": {
+        "tool_call_mode": "native",
+        "reasoning_effort": "none",
+        "adapter_source_hashes": {
+          "ollama_provider.py": "fab2a5d45bd2036e9629e10c0bb7d400a44f155580ae3ee9ce3749816e1bbc65",
+          "openai_provider.py": "a069961dfa3e102581435f2e5025af5e90990c00420065c10bd2b925675c92fe",
+          "tool_planning.py": "17e1492caa2390f9240530d562e51869f351fc826c050720b6db2eb8c9201a99"
+        },
+        "protocol_retry_limit": 0,
+        "protocol_retry_format": "structured_plan",
+        "protocol_retry_templates": {
+          "required": "Protocol correction: continue answering the ORIGINAL user request.\nThe caller requires at least one actual structured tool call. Prose, including a\nquestion, does not satisfy this contract. Use only the available tool declarations.\nIf essential information is missing, use the clarification tool, without guessing.\nFor an unapproved publishing request, request confirmation with response_type=yes_no\nas instructed. Do not treat this reminder as user approval, invent missing content\nor destinations, or repeat actions already completed in the conversation.",
+          "empty_auto": "The previous response was empty. Continue the ORIGINAL user request:\nreturn an appropriate structured tool call OR a concise direct answer when no tool\nis needed. Respect the original scope and approval rules. Never repeat a completed\naction or interpret this format reminder as approval."
+        },
+        "native_attempts": [
+          {
+            "request_hash": "b1074b2958ae8fcc434ad4a8dbb5edaf3144b05d64e8856ac13371de52335c34",
+            "text": "",
+            "format": "native",
+            "tool_calls": [
+              {
+                "name": "fetch",
+                "args": {
+                  "url": "https://anthropic.com/news/claude"
+                }
+              }
+            ],
+            "raw_message": {
+              "content": "",
+              "refusal": null,
+              "role": "assistant",
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [
+                {
+                  "id": "call_s57enlhb",
+                  "function": {
+                    "arguments": "{\"url\":\"https://anthropic.com/news/claude\"}",
+                    "name": "fetch"
+                  },
+                  "type": "function",
+                  "index": 0
+                }
+              ]
+            },
+            "usage": {
+              "completion_tokens": 33,
+              "prompt_tokens": 3924,
+              "total_tokens": 3957,
+              "completion_tokens_details": null,
+              "prompt_tokens_details": {
+                "audio_tokens": null,
+                "cache_write_tokens": null,
+                "cached_tokens": 3414,
+                "image_tokens": null,
+                "text_tokens": null
+              }
+            },
+            "unmet_protocol": null
+          }
+        ],
+        "protocol_retry_used": 0
+      }
+    },
+    {
+      "id": "M05_correction_limit",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_arg_correction",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: map tên Elon Musk, carry handle elonmusk, sửa limit 10→3."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Lấy 10 tweet mới nhất của Elon Musk"
+        },
+        {
+          "role": "user",
+          "content": "Cho mình 3 thôi"
+        },
+        {
+          "role": "user",
+          "content": "Vẫn của Elon Musk nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 3
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 3
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "elonmusk",
+            "limit": 3
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ],
+      "provider_response_metadata": {
+        "tool_call_mode": "native",
+        "reasoning_effort": "none",
+        "adapter_source_hashes": {
+          "ollama_provider.py": "fab2a5d45bd2036e9629e10c0bb7d400a44f155580ae3ee9ce3749816e1bbc65",
+          "openai_provider.py": "a069961dfa3e102581435f2e5025af5e90990c00420065c10bd2b925675c92fe",
+          "tool_planning.py": "17e1492caa2390f9240530d562e51869f351fc826c050720b6db2eb8c9201a99"
+        },
+        "protocol_retry_limit": 0,
+        "protocol_retry_format": "structured_plan",
+        "protocol_retry_templates": {
+          "required": "Protocol correction: continue answering the ORIGINAL user request.\nThe caller requires at least one actual structured tool call. Prose, including a\nquestion, does not satisfy this contract. Use only the available tool declarations.\nIf essential information is missing, use the clarification tool, without guessing.\nFor an unapproved publishing request, request confirmation with response_type=yes_no\nas instructed. Do not treat this reminder as user approval, invent missing content\nor destinations, or repeat actions already completed in the conversation.",
+          "empty_auto": "The previous response was empty. Continue the ORIGINAL user request:\nreturn an appropriate structured tool call OR a concise direct answer when no tool\nis needed. Respect the original scope and approval rules. Never repeat a completed\naction or interpret this format reminder as approval."
+        },
+        "native_attempts": [
+          {
+            "request_hash": "52927a85b72d9bc9f57cc3f3c1cb9b4261fbf3ea5c91867460f097baaf063c29",
+            "text": "",
+            "format": "native",
+            "tool_calls": [
+              {
+                "name": "timeline",
+                "args": {
+                  "screenname": "elonmusk",
+                  "limit": 3
+                }
+              }
+            ],
+            "raw_message": {
+              "content": "",
+              "refusal": null,
+              "role": "assistant",
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [
+                {
+                  "id": "call_i2zyarkb",
+                  "function": {
+                    "arguments": "{\"screenname\":\"elonmusk\",\"limit\":3}",
+                    "name": "timeline"
+                  },
+                  "type": "function",
+                  "index": 0
+                }
+              ]
+            },
+            "usage": {
+              "completion_tokens": 41,
+              "prompt_tokens": 3923,
+              "total_tokens": 3964,
+              "completion_tokens_details": null,
+              "prompt_tokens_details": {
+                "audio_tokens": null,
+                "cache_write_tokens": null,
+                "cached_tokens": 3414,
+                "image_tokens": null,
+                "text_tokens": null
+              }
+            },
+            "unmet_protocol": null
+          }
+        ],
+        "protocol_retry_used": 0
+      }
+    },
+    {
+      "id": "M06_switch_tool",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_switch_tool",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: explicitly bỏ Twitter, chuyển sang web_search news, giữ chủ đề OpenAI."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Mọi người nói gì về OpenAI trên Twitter?"
+        },
+        {
+          "role": "user",
+          "content": "Bỏ Twitter, chuyển sang tìm trên web tin tức đi"
+        },
+        {
+          "role": "user",
+          "content": "Giữ chủ đề OpenAI"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "OpenAI",
+              "topic": "news"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "OpenAI",
+              "topic": "news",
+              "timeframe": "week",
+              "max_results": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "OpenAI",
+            "topic": "news",
+            "timeframe": "week",
+            "max_results": 5
+          },
+          "result": {
+            "tool": "web_search",
+            "error": "RuntimeError",
+            "message": "Missing TAVILY_API_KEY env var"
+          }
+        }
+      ],
+      "provider_response_metadata": {
+        "tool_call_mode": "native",
+        "reasoning_effort": "none",
+        "adapter_source_hashes": {
+          "ollama_provider.py": "fab2a5d45bd2036e9629e10c0bb7d400a44f155580ae3ee9ce3749816e1bbc65",
+          "openai_provider.py": "a069961dfa3e102581435f2e5025af5e90990c00420065c10bd2b925675c92fe",
+          "tool_planning.py": "17e1492caa2390f9240530d562e51869f351fc826c050720b6db2eb8c9201a99"
+        },
+        "protocol_retry_limit": 0,
+        "protocol_retry_format": "structured_plan",
+        "protocol_retry_templates": {
+          "required": "Protocol correction: continue answering the ORIGINAL user request.\nThe caller requires at least one actual structured tool call. Prose, including a\nquestion, does not satisfy this contract. Use only the available tool declarations.\nIf essential information is missing, use the clarification tool, without guessing.\nFor an unapproved publishing request, request confirmation with response_type=yes_no\nas instructed. Do not treat this reminder as user approval, invent missing content\nor destinations, or repeat actions already completed in the conversation.",
+          "empty_auto": "The previous response was empty. Continue the ORIGINAL user request:\nreturn an appropriate structured tool call OR a concise direct answer when no tool\nis needed. Respect the original scope and approval rules. Never repeat a completed\naction or interpret this format reminder as approval."
+        },
+        "native_attempts": [
+          {
+            "request_hash": "644f3c1e6768006b5deb8ac205ceb479d5d0c528611897b57c8cc623424eeb08",
+            "text": "",
+            "format": "native",
+            "tool_calls": [
+              {
+                "name": "lookup",
+                "args": {
+                  "query": "OpenAI",
+                  "topic": "news",
+                  "timeframe": "week",
+                  "max_results": 5
+                }
+              }
+            ],
+            "raw_message": {
+              "content": "",
+              "refusal": null,
+              "role": "assistant",
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [
+                {
+                  "id": "call_a7d5ldjh",
+                  "function": {
+                    "arguments": "{\"query\":\"OpenAI\",\"topic\":\"news\",\"timeframe\":\"week\",\"max_results\":5}",
+                    "name": "lookup"
+                  },
+                  "type": "function",
+                  "index": 0
+                }
+              ]
+            },
+            "usage": {
+              "completion_tokens": 62,
+              "prompt_tokens": 3930,
+              "total_tokens": 3992,
+              "completion_tokens_details": null,
+              "prompt_tokens_details": {
+                "audio_tokens": null,
+                "cache_write_tokens": null,
+                "cached_tokens": 3414,
+                "image_tokens": null,
+                "text_tokens": null
+              }
+            },
+            "unmet_protocol": null
+          }
+        ],
+        "protocol_retry_used": 0
+      }
+    }
+  ],
+  "scorer_version": "schema-v2",
+  "actions_mode": "dry_run",
+  "provider_metadata": {
+    "tool_call_mode": "native",
+    "reasoning_effort": "none",
+    "adapter_source_hashes": {
+      "ollama_provider.py": "fab2a5d45bd2036e9629e10c0bb7d400a44f155580ae3ee9ce3749816e1bbc65",
+      "openai_provider.py": "a069961dfa3e102581435f2e5025af5e90990c00420065c10bd2b925675c92fe",
+      "tool_planning.py": "17e1492caa2390f9240530d562e51869f351fc826c050720b6db2eb8c9201a99"
+    },
+    "protocol_retry_limit": 0,
+    "protocol_retry_format": "structured_plan",
+    "protocol_retry_templates": {
+      "required": "Protocol correction: continue answering the ORIGINAL user request.\nThe caller requires at least one actual structured tool call. Prose, including a\nquestion, does not satisfy this contract. Use only the available tool declarations.\nIf essential information is missing, use the clarification tool, without guessing.\nFor an unapproved publishing request, request confirmation with response_type=yes_no\nas instructed. Do not treat this reminder as user approval, invent missing content\nor destinations, or repeat actions already completed in the conversation.",
+      "empty_auto": "The previous response was empty. Continue the ORIGINAL user request:\nreturn an appropriate structured tool call OR a concise direct answer when no tool\nis needed. Respect the original scope and approval rules. Never repeat a completed\naction or interpret this format reminder as approval."
+    }
+  },
+  "completed_at": "2026-11-10T21:55:46",
+  "dataset_hash": "9cd22a8225b18720f7b42c53c2c9b500b6fe2aaefe72472f26b552dc00d9c2e4",
+  "model_digest": "d8b0f5e9760cd1682034f292d7ef72ec46f432149be0df7574bf2d6e92e38c04",
+  "runtime": {
+    "ollama_version": "0.40.16",
+    "context_length": 8192,
+    "num_parallel": 1,
+    "flash_attention": true,
+    "kv_cache_type": "q8_0",
+    "low_memory_flags": {
+      "LLAMA_ARG_REPACK": "0",
+      "LLAMA_ARG_NO_HOST": "1"
+    },
+    "source": "Known launch configuration; final server observation is stored separately.",
+    "final_observation": "analysis/final_runtime.json",
+    "final_observation_hash": "ed5e261a9c5ec362d2b97733291918bd994f4f2393b1ecb83e0def6883036eea",
+    "metadata_added_at": "2026-11-10T15:10:08+00:00"
+  },
+  "code_hashes": {
+    "run_eval.py": "9f865f2e07ec464396f8f3c046d78ae82143a9a21bb3f91bee1e681dcfac51e1",
+    "agent.py": "99e12517eb647de225eda123c491b96dfba4025ece83c217695644051dbd58e8",
+    "tool_runtime.py": "81d9e3136cbdfcc1a91c53270234c8c248268162b02e26167359e22e067658e7"
+  },
+  "artifact_snapshots": {
+    "prompt": [
+      "artifacts/system_prompt_v3.md"
+    ],
+    "tools": [
+      "artifacts/tools_v3.yaml"
+    ]
+  },
+  "adapter_snapshot": "artifacts/candidates/ollama_provider_native.py",
+  "experiment_metadata": {
+    "changed_artifact": "native local model control with exact v3 artifacts",
+    "reason": "native local model control with exact v3 artifacts; fixed datasets and schema-v2 scorer retained; runtime and call budgets recorded.",
+    "hypothesis": "Compare model configurations with identical v3 prompt/tools, fixed base dataset, zero retries and no direct-answer checker."
+  }
+}

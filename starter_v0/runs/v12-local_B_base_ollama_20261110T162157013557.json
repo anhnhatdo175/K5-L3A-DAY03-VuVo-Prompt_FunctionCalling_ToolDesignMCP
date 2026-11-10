@@ -2825,5 +2825,27 @@
       "none": "0f2dcc3a0d93654073c174f3a262d1689b9cd573d24ecea0abd5a2897eaf0aa1"
     }
   },
-  "completed_at": "2026-11-10T16:26:11"
+  "completed_at": "2026-11-10T16:26:11",
+  "dataset_hash": "9cd22a8225b18720f7b42c53c2c9b500b6fe2aaefe72472f26b552dc00d9c2e4",
+  "code_hashes": {
+    "run_eval.py": "9f865f2e07ec464396f8f3c046d78ae82143a9a21bb3f91bee1e681dcfac51e1",
+    "agent.py": "99e12517eb647de225eda123c491b96dfba4025ece83c217695644051dbd58e8",
+    "tool_runtime.py": "81d9e3136cbdfcc1a91c53270234c8c248268162b02e26167359e22e067658e7"
+  },
+  "model_digest": "d8b0f5e9760cd1682034f292d7ef72ec46f432149be0df7574bf2d6e92e38c04",
+  "runtime": {
+    "ollama_version": "0.40.16",
+    "context_length": 8192,
+    "num_parallel": 1,
+    "flash_attention": true,
+    "kv_cache_type": "q8_0",
+    "metadata_added_at": "2026-11-10T14:30:15+00:00",
+    "source": "Original launch configuration and observed model metadata",
+    "low_memory_flags": {}
+  },
+  "experiment_metadata": {
+    "changed_artifact": "Local prompt + protocol-retry conversation context",
+    "reason": "Qwen3.5 4B native call followed by at most one all-tool schema retry for an unmet call protocol; retry omits unexecuted assistant prose; explicit JSON type preservation. Runtime differences are recorded.",
+    "hypothesis": "Fresh retry context will avoid turning an earlier model suggestion into user-provided facts; full tool schemas preserve valid model-selected arguments."
+  }
 }

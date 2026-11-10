@@ -2,6 +2,7 @@
 
 Final accuracy is exported only for internally consistent completed runs. Request
 counts are exact only when every saved case includes a native_attempts ledger;
+direct-answer checker attempts are included alongside the native ledger.
 these count attempted requests, including recorded transport failures. Unknown
 costs remain empty. Existing version-log bytes are preserved when appending.
 """
@@ -23,13 +24,13 @@ METRICS = ["case_accuracy", "tool_routing_accuracy", "argument_accuracy", "multi
 CSV_FIELDS = [
     "run_file", "run_id", "version", "status", "reported_status", "eligible_for_version_log", "validation_issue",
     "generated_at", "completed_at", "provider", "model", "tool_call_mode", "planning_protocol", "reasoning_effort",
-    "protocol_retry_limit", "protocol_retry_format", "scorer_version", "dataset_id", "dataset_role", "suite",
+    "protocol_retry_limit", "protocol_retry_format", "direct_answer_check_enabled", "scorer_version", "dataset_id", "dataset_role", "suite",
     "eval_cases", "dataset_hash", "artifact_version", "prompt_hash", "tools_hash", "planning_template_hash",
     "plan_schema_hashes", "adapter_source_hashes", "code_hashes", "runtime", "actions_mode",
     "completed_cases", "total_cases", "measured_cases", "provider_error_cases", "passed_cases", *METRICS,
     "tool_calls", "tool_error_calls", "action_dry_runs", "successful_tool_calls", "model_requests",
     "recorded_model_requests", "request_ledger_cases", "transport_error_attempts", "prompt_tokens",
-    "completion_tokens", "abort_reason", "changed_artifact", "reason", "hypothesis",
+    "completion_tokens", "response_check_requests", "response_check_errors", "scope_refusals", "abort_reason", "changed_artifact", "reason", "hypothesis",
 ]
 EXPERIMENTS = {
     "v4-fixes": ("prompt + tool schema + runtime/scorer fixes", "Validate the repaired runtime and complete argument contracts",
@@ -104,15 +105,27 @@ def observed_summary(results):
 
 
 def request_costs(results):
-    ledgers = [item.get("provider_response_metadata", {}).get("native_attempts")
-               if isinstance(item.get("provider_response_metadata"), dict) else None for item in results]
+    ledgers, check_attempts, refusals = [], [], 0
+    for item in results:
+        metadata = item.get("provider_response_metadata") or {}
+        metadata = metadata if isinstance(metadata, dict) else {}
+        native = metadata.get("native_attempts")
+        checks = metadata.get("response_check_attempts") or []
+        checks_valid = isinstance(checks, list) and all(isinstance(attempt, dict) for attempt in checks)
+        if checks_valid:
+            check_attempts.extend(checks)
+        refusals += metadata.get("direct_answer_replaced") is True
+        ledgers.append(native + checks if isinstance(native, list) and checks_valid else None)
     available = [ledger for ledger in ledgers if isinstance(ledger, list) and ledger
                  and all(isinstance(attempt, dict) for attempt in ledger)]
     attempts = [attempt for ledger in available for attempt in ledger]
     complete = bool(results) and len(available) == len(results)
     costs = {"model_requests": len(attempts) if complete else "", "recorded_model_requests": len(attempts),
              "request_ledger_cases": len(available),
-             "transport_error_attempts": sum(bool(attempt.get("transport_error")) for attempt in attempts)}
+             "transport_error_attempts": sum(bool(attempt.get("transport_error")) for attempt in attempts),
+             "response_check_requests": len(check_attempts),
+             "response_check_errors": sum(bool(attempt.get("error")) for attempt in check_attempts),
+             "scope_refusals": refusals}
     for field in ("prompt_tokens", "completion_tokens"):
         values = [attempt.get("usage", {}).get(field) if isinstance(attempt.get("usage"), dict) else None for attempt in attempts]
         known = complete and all(type(value) is int and value >= 0 for value in values)
@@ -137,7 +150,7 @@ def row_for(path, root=ROOT):
     row["reported_status"] = run.get("status", "unknown")
     row["status"] = row["reported_status"]
     row["eligible_for_version_log"] = False
-    for field in ("tool_call_mode", "planning_protocol", "reasoning_effort", "protocol_retry_limit", "protocol_retry_format",
+    for field in ("tool_call_mode", "planning_protocol", "reasoning_effort", "protocol_retry_limit", "protocol_retry_format", "direct_answer_check_enabled",
                   "planning_template_hash", "plan_schema_hashes", "adapter_source_hashes"):
         value = metadata_value(run, field)
         row[field] = compact(value) if isinstance(value, (dict, list)) else value

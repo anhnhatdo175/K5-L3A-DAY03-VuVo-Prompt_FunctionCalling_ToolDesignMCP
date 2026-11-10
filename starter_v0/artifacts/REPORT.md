@@ -1,182 +1,182 @@
-# Day 03 Lab v2 Report — Research Agent
+# Research Agent — Báo cáo nhóm VuVo
 
-## Team
+- 2A202603682 — Hà Huy Thái
+- 2A202603699 — Nguyễn Lê Hải Nam
+- 2A202603701 — Đỗ Nhật Anh
+- 2A202603663 — Lê Quang Trường
 
-- Team: VuVo
-- Members:
-  - 2A202603682 — Hà Huy Thái
-  - 2A202603699 — Nguyễn Lê Hải Nam
-  - 2A202603701 — Đỗ Nhật Anh
-  - 2A202603663 — Lê Quang Trường
-- Provider/model: Ollama / `qwen2.5:3b` (local)
-
----
+Cấu hình được chọn: **Python 3.12, Ollama `qwen3.5:4b-q4_K_M`, profile `v13-scope-check`**. Kết quả đã đo: **20/20 base, 10/10 group, 10/10 hồi quy** theo rubric chọn tool/arguments; **205 tests passed, 0 failed, 0 skipped** ở lần kiểm thử gần nhất.
 
 # PHẦN A — Giới thiệu agent
 
-## A1. Agent này làm được gì
+## A1. Chức năng và link dùng thử
 
-Research Agent hỗ trợ tìm bài đăng theo tài khoản hoặc chủ đề, tìm tin trên web, đọc URL/paper arXiv, tra cứu chính sách nội bộ, loại kết quả trùng và trình bày digest. UI Streamlit có chế độ demo offline để thử luồng chat; các provider thật và gửi Telegram cần cấu hình riêng, và gửi cần xác nhận.
+Agent hỗ trợ tìm bài đăng, tìm web, đọc URL/paper arXiv, tra chính sách nội bộ, bỏ kết quả trùng và tạo digest. Khi thiếu dữ liệu, agent hỏi lại; gửi Telegram cần người dùng xác nhận nội dung.
 
-**Link dùng thử (local):** Chạy `streamlit run app.py` trong `starter_v0`, sau đó mở `http://localhost:8501`. Chưa deploy public nên link chỉ dùng được trên máy đang chạy app.
+UI dùng Streamlit. Từ `starter_v0`, chạy:
 
-## A2. Tool agent có
+```powershell
+.\.venv312\Scripts\python.exe -m streamlit run app.py
+```
 
-| Tên tool | Làm được gì | Tool mới nhóm thêm? |
-|---|---|---|
-| `clarify` | Hỏi bổ sung thông tin còn thiếu hoặc xin xác nhận trước hành động gửi. | Không |
-| `timeline` | Lấy bài đăng gần đây từ một tài khoản X/Twitter đã xác định. | Không |
-| `social_search` | Tìm bài đăng mạng xã hội theo chủ đề hoặc từ khóa. | Không |
-| `lookup` | Tìm kiếm web; hỗ trợ tra cứu thường và tin tức theo thời gian. | Không |
-| `fetch` | Đọc nội dung từ URL người dùng cung cấp. | Không |
-| `format` | Trình bày kết quả đã thu thập thành digest, bullets hoặc thread. | Không |
-| `send` | Gửi nội dung lên Telegram sau khi người dùng xác nhận. | Không |
-| `policy` | Tìm trong bộ chính sách nội bộ đi kèm repo. | Không |
-| `papers` | Tìm metadata và abstract paper trên arXiv. | Không |
-| `paper_text` | Trích text từ paper arXiv đã xác định. | Không |
-| `deduplicate` | Loại kết quả trùng theo URL hoặc tiêu đề, giữ mục đầu tiên và thứ tự. | Có |
+Mở **http://localhost:8501**, chọn `ollama` để dùng model thật. UI hiện chỉ chạy local; chưa có link public. Chế độ `demo (offline)` là scripted, không được tính là bằng chứng model thật. Các API nghiên cứu cần key riêng theo [hướng dẫn setup](../../TOOL-SETUP.md).
 
-## A3. Câu hỏi mẫu để thử
+## A2. Các tool
 
-1. “Tin tức AI hôm nay có gì nổi bật trên web?”
-2. “Mọi người đang bàn gì về GPT-5 trên Twitter?”
-3. “Lấy 3 bài đăng mới nhất của @karpathy.”
-4. “Tìm vài paper arXiv về đánh giá LLM agent.”
-5. “Loại các kết quả trùng URL sau đây và giữ bản đầu tiên: [dán danh sách kết quả].”
-
----
-
-# PHẦN B — Chi tiết / Bằng chứng
-
-## B1. Version Evidence
-
-Các run v0–v3 dùng cùng provider/model (`ollama`, `qwen2.5:3b`) và cùng 20 base cases. Đây là số liệu lịch sử theo scorer subset cũ. v0→v1 vừa sửa prompt vừa tích hợp khai báo `deduplicate`, nên chưa cô lập ảnh hưởng riêng của prompt. v1→v2 chỉ đổi mô tả tool; v2→v3 chỉ đổi prompt. Bản sửa code/UI/scorer mới dùng nhãn `v4-fixes`, hiện chỉ kiểm tra offline; xem B8.
-
-| Version | Changed Artifact | Hypothesis | Metric Before | Metric After | Run File |
-|---|---|---|---|---|---|
-| v0 | Baseline | Baseline trước khi tối ưu. | — | case_accuracy=0.35; tool_routing_accuracy=0.50; argument_accuracy=0.35; multiturn_accuracy=0.50 | `runs/v0_B_base_ollama_20261110T095915950610.json` |
-| v1 | Prompt + khai báo deduplicate | Routing/boundary rõ hơn có thể giảm lỗi; có yếu tố nhiễu do tích hợp tool mới. | case_accuracy=0.35; tool_routing_accuracy=0.50; argument_accuracy=0.35; multiturn_accuracy=0.50 | case_accuracy=0.60; tool_routing_accuracy=0.65; argument_accuracy=0.60; multiturn_accuracy=0.8333 | `runs/v1_B_base_ollama_20261110T105305856367.json` |
-| v2 | `artifacts/tools.yaml` (mô tả tool) | Hướng dẫn rõ nguồn và quy ước tham số sẽ cải thiện routing trên base so với v1. | case_accuracy=0.60; tool_routing_accuracy=0.65; argument_accuracy=0.60; multiturn_accuracy=0.8333 | case_accuracy=0.60; tool_routing_accuracy=0.80; argument_accuracy=0.60; multiturn_accuracy=0.6667 | `runs/v2_B_base_ollama_20261110T112419425370.json` |
-| v3 | `artifacts/system_prompt.md` | Checklist trước khi gọi tool sẽ giảm thiếu args và mất ràng buộc hội thoại, không đổi tools/eval. | case_accuracy=0.60; tool_routing_accuracy=0.80; argument_accuracy=0.60; multiturn_accuracy=0.6667 | case_accuracy=0.75; tool_routing_accuracy=0.80; argument_accuracy=0.75; multiturn_accuracy=0.6667 | `runs/v3_B_base_ollama_20261110T113016705870.json` |
-
-**Kết quả chính:** v3 đạt 15/20 case. Accuracy tổng tăng 0.15 so với v2; routing không đổi, argument tăng 0.15. Multiturn vẫn ở 0.6667, thấp hơn v1.
-
-## B2. Failure Analysis
-
-Các lỗi dưới đây được trích từ `results[*].result.failures` trong run JSON. Lỗi v2 được giữ để đối chiếu với v3.
-
-| Version | Case ID | Failure Type | Actual Tool Calls | What Failed | Fix / Next Step |
-|---|---|---|---|---|---|
-| v2 | R05_limit_arg | wrong_arg_value | `timeline(screenname=elonmusk)` | Thiếu `limit=10`. | Nhấn mạnh trích số lượng; v3 đã sửa case này. |
-| v2 | R06_timeframe_arg | wrong_arg_value | `lookup(query="tin công nghệ", timeframe="week")` | Thiếu `topic=news`. | Nêu rõ news/general; v3 đã sửa case này. |
-| v2 | R10_missing_handle | missing_info | `timeline(screenname=TwitterHandle)` | Tự tạo placeholder handle thay vì hỏi. | Không suy diễn tài khoản; vẫn lỗi ở v3. |
-| v2 | R11_missing_url | missing_info | Không gọi tool. | Đã hỏi URL bằng text nhưng không gọi `clarify` theo rubric. | Bắt buộc gọi `clarify`; vẫn lỗi ở v3. |
-| v2 | R12_confirm_before_send | wrong_boundary | `clarify()` | Thiếu `response_type=yes_no`. | Ràng buộc enum xác nhận; v3 đã sửa case này. |
-| v2 | R14_out_of_scope_coding | out_of_scope | `format(items=[...], template="bullets")` | Gọi format và dựng nội dung cho yêu cầu coding ngoài phạm vi. | Phân loại out-of-scope trước gọi tool; vẫn lỗi ở v3. |
-| v2 | M03_correction_handle | wrong_arg_value | `timeline(screenname=karpathy)` | Bỏ sót `limit=3` từ ngữ cảnh. | Mang theo số lượng đã yêu cầu; vẫn lỗi ở v3. |
-| v2 | M06_switch_tool | wrong_tool | `social_search(query="OpenAI", search_type="Latest")` | Không chuyển từ social sang web news. | Ưu tiên intent mới nhất khi đổi nguồn; vẫn lỗi ở v3. |
-| v3 | R10_missing_handle | missing_info | `timeline(screenname=sama, limit=5)` | Vẫn tự chọn tài khoản thay vì hỏi người dùng. | Bỏ ví dụ handle gây suy diễn; yêu cầu `clarify` cụ thể. |
-| v3 | R11_missing_url | missing_info | Không gọi tool. | Đã hỏi URL bằng text nhưng không gọi `clarify` theo rubric. | Bắt buộc tạo `clarify` call kèm `question` và `response_type`. |
-| v3 | R14_out_of_scope_coding | out_of_scope | `clarify(question=..., response_type=yes_no)` | Hỏi xác nhận cho yêu cầu coding ngoài phạm vi. | Phân loại ngoài phạm vi trước mọi clarification. |
-| v3 | M03_correction_handle | wrong_arg_value | `timeline(screenname=karpathy)` | Bỏ sót số lượng 3 ngay ở lượt cuối. | Trích số lượng từ lượt mới nhất và giữ handle đã đính chính. |
-| v3 | M06_switch_tool | wrong_tool | `social_search(screenname=OpenAI, limit=5, search_type=Latest)` | Không chuyển sang `lookup`/news khi người dùng đổi nguồn. | Ưu tiên yêu cầu mới nhất, bỏ routing cũ khi nguồn đã đổi. |
-
-## B3. Team Eval Cases
-
-`data/eval_group.json` có 5 single-turn và 5 multi-turn cases. Đã chạy đủ 10 case với v3 / Ollama `qwen2.5:3b`; eval chấm routing và subset arguments. **7/10 đạt, case_accuracy=0.70, tool_routing_accuracy=0.90, argument_accuracy=0.70, multiturn_accuracy=0.80.** Run: `runs/v3_B_group_ollama_20261110T113756483008.json`. G10 dùng mock `send` để xác nhận routing, không gửi Telegram thật. Một số case PASS ở lớp routing/args nhưng execution tool vẫn lỗi; xem ghi chú sau bảng.
-
-| Case ID | What It Tests | Expected Tool/Behavior | Result |
-|---|---|---|---|
-| G01_papers_routing | Routing tìm paper arXiv. | `papers` | PASS routing; tool được gọi, execution không được đánh giá nội dung |
-| G02_policy_routing | Routing hỏi chính sách nội bộ về trích dẫn. | `policy(policy_area="source_citation")` | PASS routing/args; run lịch sử trả `results=[]`. |
-| G03_handle_strip_at | Bỏ `@` và trích số lượng bài. | `timeline(screenname="karpathy", limit=3)` | FAIL args: thiếu `limit=3`; runtime cũng báo thiếu `RAPIDAPI_KEY` |
-| G04_dedupe_by_url | Dùng tool mới với danh sách đã có. | `deduplicate` (mặc định `key_by="url"`) | PASS; loại 1 mục trùng trong tool result |
-| G05_thanks_no_tool | Không gọi tool cho lời cảm ơn. | Không gọi tool | FAIL: gọi thừa `format` |
-| G06_multi_papers_to_text | Giữ ID paper và số trang qua nhiều lượt. | `paper_text(arxiv_url="1706.03762", max_pages=2)` | PASS routing/args; execution lỗi thiếu `pypdf` |
-| G07_multi_latest_to_top | Sửa Latest thành Top và giữ chủ đề. | `social_search(search_type="Top")` | PASS subset eval; có args thừa `screenname` khiến tool execution TypeError |
-| G08_multi_dedupe_by_title | Giữ danh sách và lựa chọn key qua nhiều lượt. | `deduplicate(key_by="title")` | PASS; loại 1 mục trùng trong tool result |
-| G09_multi_policy_area_topk | Giữ policy area, cập nhật số lượng. | `policy(policy_area="data_privacy", top_k=2)` | FAIL args: truyền `max_k=2`, thiếu `top_k`; tool execution TypeError |
-| G10_multi_confirmed_send | Chỉ gửi sau xác nhận rõ ràng. | `send(confirmed=true)` | PASS routing/args; `send` được mock thành `dry_run`, không gửi thật |
-
-**Lưu ý:** Eval chỉ so subset các args kỳ vọng, nên G07 được tính PASS dù có args thừa sai schema và tool execution thất bại. Group accuracy không đồng nghĩa mọi tool action chạy thành công.
-
-## B4. Live Chat Evidence
-
-Đã chạy `chat.py` với Ollama `qwen2.5:3b`, version/hash v3. Transcript có 3 lượt tại `transcripts/v3_ollama_20261110T113940609289.transcript.json`. Đây là phiên thực tế; turn 2 có gọi tool nhưng chọn nhầm policy area, nên kết quả được ghi trung thực.
-
-| Turn | User Request | Tool Calls | Version Evidence | Outcome |
-|---|---|---|---|---|
-| 1 | “What can you do?” | Không gọi tool. | v3 / Ollama `qwen2.5:3b`; `v3+p56267ce33772+t6972c70faabd` | Trả lời về khả năng của agent. |
-| 2 | “Search our internal policy about source citations.” | `policy(query="source citations", policy_area="ai_research")` | Cùng transcript/version v3 | Tool local trả nội dung AI research; routing sai `policy_area` so với yêu cầu source citations. |
-| 3 | “Thanks, that is helpful.” | Không gọi tool. | Cùng transcript/version v3 | Trả lời xã giao; không gọi tool thừa. |
-
-## B5. Bonus Evidence
-
-| Bonus | Evidence File | What Worked | Risk / Guardrail |
-|---|---|---|---|
-| send (Telegram) | Group run `runs/v3_B_group_ollama_20261110T113756483008.json`, case G10 | Model chọn `send(confirmed=true)` sau xác nhận trong ngữ cảnh; hàm được mock và trả `dry_run`. | Không gửi Telegram thật; không xem dry-run là bằng chứng gửi thành công. |
-| arXiv/company policy | Group run G01/G02/G06/G09; chat transcript `transcripts/v3_ollama_20261110T113940609289.transcript.json` | Routing tới `papers`/`policy`/`paper_text` được đo; chat policy trả nội dung local nhưng chọn sai area. | G06 `paper_text` lỗi thiếu `pypdf`; G09 `policy` nhận arg sai; routing PASS không đảm bảo execution PASS. |
-| UI | app.py; transcript v4-fixes_demo_offline_20261110T150022064428.transcript.json | AppTest 3 lượt: giới thiệu, bỏ trùng URL, policy tiếng Việt; có version/hash và execution_mode=scripted. | Đã kiểm tra local/offline; chưa có UI live thành công hoặc URL public. |
-| Tool unit tests (`tests/`) | Sau sửa: `153 passed, 0 skipped`; deduplicate: 30 trường hợp. | Hoàn thành 14 TODO; regression tests cho send/scorer/chat/policy và AppTest UI. | Tests dùng mock/local, không chứng minh API/model live. |
-
-**Unit-test-only evidence:** 30 trường hợp test tham số hóa cho `deduplicate` kiểm tra xử lý trùng URL/tiêu đề, giữ thứ tự, chuẩn hóa khoảng trắng/hoa thường/dấu `/` cuối, key thiếu/rỗng và input sai. Eval model hiện chủ yếu chấm routing/arguments nên không xác minh logic loại trùng của implementation.
-
-## B6. Reflection
-
-- **Fix thuộc `system_prompt.md`:** ưu tiên intent mới nhất, giữ constraint chưa bị thay đổi qua hội thoại, hỏi `clarify` khi thiếu tài khoản/URL, xác nhận trước hành động gửi và tránh gọi tool ngoài phạm vi.
-- **Fix thuộc `tools.yaml`:** mô tả ranh giới giữa `timeline`/`social_search`/`lookup`/`fetch`; quy ước `topic`, `timeframe`, `limit`, `search_type`; điều kiện dùng `send` và `deduplicate`.
-- **Cần manual review:** độ chính xác của nội dung cuối, chất lượng/trích dẫn nguồn, mức độ nguồn thực sự hỗ trợ kết luận và mọi hành động gửi ra ngoài. Eval base chủ yếu chấm tên tool và subset arguments, không đánh giá đầy đủ chất lượng nội dung.
-- **Cải thiện tiếp:** chạy lại base/group và UI bằng model thật, fallback tắt; cấu hình API nghiên cứu và cung cấp link public. Ghi run mới sau thay đổi code/scorer; tập trung lỗi v3 R10, R11, R14, M03, M06. Group eval và transcript CLI lịch sử đã có; UI mới đã kiểm tra offline.
-
-## B7. Small Local Model Challenge (bonus)
-
-Cả bốn run dưới đây dùng model local `qwen2.5:3b` qua Ollama (≤8B), trên cùng 20 base cases. **Chưa hoàn thành bonus:** mới có một model, thiếu so sánh hai model, v4-local/v5-local và kiểm tra ngược cloud.
-
-| Version | Model (provider) | Prompt/Tools | case_accuracy | tool_routing | argument | multiturn | Run File |
-|---|---|---|---:|---:|---:|---:|---|
-| v0 | `qwen2.5:3b` (ollama) | Baseline prompt/tools | 0.35 | 0.50 | 0.35 | 0.50 | `runs/v0_B_base_ollama_20261110T095915950610.json` |
-| v1 | `qwen2.5:3b` (ollama) | Prompt v1 / tools đã thêm deduplicate | 0.60 | 0.65 | 0.60 | 0.8333 | `runs/v1_B_base_ollama_20261110T105305856367.json` |
-| v2 | `qwen2.5:3b` (ollama) | Prompt v1 / tool descriptions v2 | 0.60 | 0.80 | 0.60 | 0.6667 | `runs/v2_B_base_ollama_20261110T112419425370.json` |
-| v3 | `qwen2.5:3b` (ollama) | Prompt v3 / tool descriptions v2 | 0.75 | 0.80 | 0.75 | 0.6667 | `runs/v3_B_base_ollama_20261110T113016705870.json` |
-
-Lỗi được phân loại từ v3 run; một case có thể thuộc nhiều pattern.
-
-| Failure Pattern | Count | Example Case | Fix Tried | Helped? |
-|---|---:|---|---|---|
-| wrong / hallucinated tool | 1 | M06_switch_tool | Nêu rõ routing theo nguồn và intent mới nhất | Chưa; vẫn chọn `social_search` thay `lookup` |
-| invalid JSON args (`_invalid_json_arguments`) | 0 | Không có trong v3 run | Không có thay đổi riêng | Không quan sát thấy lỗi này |
-| no tool call / answered directly | 1 | R11_missing_url | Yêu cầu hỏi khi thiếu URL | Chưa; model không gọi `clarify` |
-| missed `clarify` | 2 | R10_missing_handle, R11_missing_url | Quy định hỏi lại khi thiếu thông tin bắt buộc | Chưa khắc phục |
-| repeated / unnecessary calls | 1 unnecessary, 0 repeated | R14_out_of_scope_coding | Thêm rule ngoài phạm vi | Chưa; model vẫn gọi `clarify` không phù hợp |
-
-- **Điều giúp model nhỏ gọi tool đúng hơn:** prompt v1 thêm routing/boundary; tool descriptions v2 làm rõ nguồn và tham số; prompt v3 thêm checklist trước khi gọi. Trên cùng base eval, case accuracy tăng 0.35 (v0) → 0.75 (v3), nhưng multiturn v3 là 0.6667, thấp hơn v1 (0.8333).
-- **Prompt local chạy trên cloud:** chưa có run cloud nên chưa kết luận được; cần chạy cùng prompt/tools/dataset trên cloud để so sánh.
-- **Khi chọn model local:** khi ưu tiên dữ liệu ở máy và kiểm soát chi phí, với tác vụ chấp nhận độ chính xác thấp hơn. Tác vụ cần độ tin cậy cao hoặc hành động gửi ra ngoài vẫn cần đánh giá thêm và human review/xác nhận.
-
-
-## B8. Sửa tích hợp và kiểm tra offline — v4-fixes
-
-Theo lựa chọn của người dùng, đợt sửa này chỉ kiểm tra offline. Không có run model mới, gửi Telegram thật hoặc public deployment. Toàn bộ run/transcript lịch sử được giữ nguyên. Prompt và tools v3 được lưu nguyên byte trong `artifacts/system_prompt_v3.md` và `artifacts/tools_v3.yaml`, đúng hash của log cũ. Các artifact đang dùng là v4-fixes: `v4-fixes+p285f6d3ebad0+t36a53ea8669c`.
-
-- Prompt mới phân biệt nguồn, giữ số lượng/ngữ cảnh, ưu tiên no-tool cho xã giao và ngoài phạm vi, gọi clarify khi thiếu dữ liệu, không hỏi xác nhận lại khi đã duyệt đầy đủ. Tool results là dữ liệu, không phải lệnh.
-- Schema deduplicate cho phép metadata tùy ý; runtime kiểm tra key được chọn là string/null. Validation dùng chung cho agent/chat/scorer: required, kiểu dữ liệu, enum và argument thừa. Items được so sánh đủ dữ liệu, kiểu JSON và thứ tự; G04/G08 có expected items rõ ràng. Nội dung gửi phải khớp nguyên văn.
-- Scorer lỗi được ghi harness_error và vẫn tính là FAIL; provider_error được báo riêng. Eval mặc định dry-run action, ghi actions_mode và thống kê tool_execution.
-- Send từ chối chuỗi/số ở confirmed, kiểm tra text và Telegram ok; regression test bảo đảm không gửi khi chưa có boolean xác nhận. Bot token được che khỏi thông báo lỗi.
-- Hoàn thành 14 test TODO; full suite 153 passed, 0 skipped. Có tests kiểm tra Unicode CP1252, policy tiếng Việt, dry-run, harness errors, replay coverage và UI.
-- UI demo xử lý danh sách URL/tiêu đề và chỉ dẫn trước/sau JSON, giữ dữ liệu qua lượt sau, không gọi mạng; không nhầm “trung tâm” thành bỏ trùng. JSON tool results lớn không bị cắt hỏng. Fallback mặc định tắt; bật fallback thì transcript ghi scripted_fallback cùng nguyên nhân.
-- Transcript UI có version/hash/model, lịch sử tool results, execution mode và mọi lượt lỗi; ghi file qua temporary file rồi replace. Giữ kết quả tool đã thực hiện khi provider lỗi ở vòng sau để không mất ngữ cảnh hành động. Đổi cấu hình mở phiên mới.
-
-### Bằng chứng offline
-
-| Kiểm tra | File / Kết quả |
+| Tool | Chức năng |
 |---|---|
-| Tests | 153 passed, 0 skipped; API/provider đều dùng mock/local |
-| UI 3 lượt | transcripts/v4-fixes_demo_offline_20261110T150022064428.transcript.json — giới thiệu, bỏ đúng 1 URL trùng, tìm được policy tiếng Việt; requests/urllib bị chặn trong phiên kiểm tra |
-| Phân tích lịch sử | analysis/base_runs.csv — 90 dòng từ 5 run, có toàn bộ failure v0 |
-| Chấm lại group | analysis/v4_group_offline_replay.json và .csv — offline_replay, 6/10; routing 0.90, arguments 0.60, multiturn 0.60 |
+| `clarify` | Hỏi thông tin thiếu hoặc xin xác nhận |
+| `timeline` | Lấy bài đăng từ một tài khoản đã xác định |
+| `social_search` | Tìm bài đăng theo chủ đề/từ khóa |
+| `lookup` | Tìm web, hỗ trợ tin tức và khoảng thời gian |
+| `fetch` | Đọc nội dung URL |
+| `format` | Trình bày các kết quả đã có thành digest |
+| `send` | Gửi Telegram sau xác nhận |
+| `policy` | Tra chính sách nội bộ trong repo |
+| `papers` | Tìm metadata/abstract paper arXiv |
+| `paper_text` | Đọc text từ PDF arXiv |
+| `deduplicate` — tool mới | Bỏ trùng URL/tiêu đề, giữ mục đầu tiên và thứ tự |
 
-Replay dùng calls đã lưu và expected/schema hiện tại; từ chối nguồn thiếu/trùng/thừa case, lưu hashes của nguồn/dataset/tools. G07 bị tính FAIL vì thiếu query/truyền screenname; điểm 6/10 không phải kết quả chạy lại model. Kết quả tool trong replay vẫn là lịch sử: 4 tool errors, 1 dry_run; 5 calls không lỗi không đồng nghĩa cả 5 đều tìm được nội dung hữu ích (G02 rỗng).
+## A3. Câu hỏi demo
 
-Transcript UI v3-ui_ollama_20261110T122832536319.transcript.json có 3/3 lượt fallback vì APIConnectionError, không dùng làm bằng chứng UI gọi Ollama thành công. Transcript CLI v3_ollama_20261110T113940609289.transcript.json vẫn là bằng chứng live cũ, có giới hạn policy_area đã ghi ở B4.
+Gửi lần lượt trong cùng phiên Ollama. Ba câu này dùng tool local, không cần API key nghiên cứu:
 
-Điểm model của v4-fixes chưa được đo. Base dataset được giữ nguyên; scorer, code và group expected đã thay đổi nên phải ghi rõ cấu hình khi có run mới. Các giới hạn về API, link public và bonus được giữ đúng theo bằng chứng hiện có.
+1. `Loại trùng URL, giữ bản đầu tiên và mọi trường: [{"title":"Orchid","url":"https://example.org/orchid","rank":8},{"title":"Maple","url":"https://example.org/orchid/","rank":5},{"title":"Orchid","url":"https://example.net/second","tags":["botany"]}]`
+2. `Dùng lại danh sách gốc tôi gửi ở lượt đầu, lần này bỏ trùng theo tiêu đề; giữ bản đầu tiên và mọi trường.`
+3. `Tra policy nội bộ thuộc nhóm tool_usage: cần làm gì trước khi một công cụ gửi nội dung ra bên ngoài? Lấy 2 đoạn liên quan.`
+
+Để thử nghiên cứu online: “Tin tức AI hôm nay trên web có gì nổi bật?” cần Tavily key; “Mọi người bàn gì về năng lượng tái tạo trên X?” cần RapidAPI key; tìm/đọc paper cần kết nối arXiv. Thiếu cấu hình, tool trả error dict.
+
+# PHẦN B — Chi tiết và bằng chứng
+
+## B1. Các phiên bản và kết quả
+
+### Baseline và ba vòng bắt buộc
+
+Các run sau dùng Ollama `qwen2.5:3b` và cùng 20 base cases. Điểm được giữ theo scorer lịch sử; không gộp với scorer mới để kết luận tác động riêng của prompt.
+
+| Version | Thay đổi và giả thuyết | Case đúng (trước → sau) | Routing | Arguments | Multi-turn | Run |
+|---|---|---|---:|---:|---:|---|
+| v0 | Baseline trước tối ưu | — → 7/20 | 0.50 | 0.35 | 0.50 | [v0](../runs/v0_B_base_ollama_20261110T095915950610.json) |
+| v1 | Làm rõ routing/boundary; đồng thời tích hợp khai báo `deduplicate` | 7/20 → 12/20 | 0.65 | 0.60 | 0.8333 | [v1](../runs/v1_B_base_ollama_20261110T105305856367.json) |
+| v2 | Chỉ sửa mô tả trong `tools.yaml`: phân biệt nguồn, quy ước args và xác nhận gửi | 12/20 → 12/20 | 0.80 | 0.60 | 0.6667 | [v2](../runs/v2_B_base_ollama_20261110T112419425370.json) |
+| v3 | Chỉ sửa prompt: checklist giữ args và ngữ cảnh trước khi gọi tool | 12/20 → 15/20 | 0.80 | 0.75 | 0.6667 | [v3](../runs/v3_B_base_ollama_20261110T113016705870.json) |
+
+V1 đổi cả prompt và khai báo tool nên chưa cô lập một yếu tố. V2 tăng routing nhưng chưa tăng accuracy tổng; v3 tăng arguments và accuracy, còn lỗi nhiều lượt. Từ v4 có thay đổi code/scorer, model và giao thức nên không quy toàn bộ mức tăng sau đó cho prompt.
+
+### Profile hiện tại: v13-scope-check
+
+Ba run dưới đây đều `completed`, đo đủ case, không có provider error hoặc lỗi scope checker. Case/routing/argument/multiturn accuracy đều **1.00** trên từng bộ.
+
+| Bộ eval | Case đúng | Model requests | Tool calls / lỗi execution / dry-run | Run |
+|---|---|---:|---|---|
+| Base | 20/20 | 26 | 18 / 15 / 0 | [base](../runs/v13-scope-check_B_base_ollama_20261110T215745048265.json) |
+| Group | 10/10 | 11 | 9 / 2 / 1 | [group](../runs/v13-scope-check_B_group_ollama_20261110T220209935907.json) |
+| Hồi quy riêng | 10/10 | 13 | 9 / 4 / 0 | [hồi quy](../runs/v13-scope-check_B_cross_ollama_20261110T220336582487.json) |
+
+Tổng **40/40**, dùng **50 model requests**: 45 native/planning requests và 5 scope checks. Có **36 tool calls: 21 lỗi execution, 1 dry-run, 14 call không lỗi**. Các lỗi nghiên cứu do thiếu API key. Vì vậy 40/40 chứng minh routing/arguments theo rubric, chưa chứng minh mọi tác vụ nghiên cứu thực thi thành công hoặc mọi câu trả lời đúng nội dung.
+
+Pipeline thử native trước; nếu thiếu call bắt buộc hoặc phản hồi auto rỗng, cho phép tối đa một retry với schema của đầy đủ 11 tool. Model chọn tên tool/args; adapter không sửa theo đáp án eval. Câu trả lời trực tiếp được một model request riêng phân loại phạm vi. Nhãn `outside` thay phần hiển thị bằng lời từ chối; draft gốc, quyết định và chi phí vẫn được lưu. Đây là kết quả của pipeline có retry/checker, không phải native một lần gọi.
+
+Prompt/tools hiện tại có hash `cf5769335127...` / `b55cee54af1f...`. [Version log](version_log.csv), [bảng thí nghiệm](../analysis/local_tuning_results.csv) và [runtime cuối](../analysis/final_runtime.json) lưu đường dẫn, hashes, cấu hình và các lần thử; run gián đoạn vẫn được giữ, không tính thành kết quả hoàn chỉnh. Cách chạy lại ở [README](../../README.md) và [TOOL-SETUP](../../TOOL-SETUP.md).
+
+## B2. Phân tích lỗi
+
+Baseline v0 sai **13/20 case**. Bảng này nhóm theo lỗi quan sát; nhãn case gốc và toàn bộ `failures` vẫn giữ trong [run v0](../runs/v0_B_base_ollama_20261110T095915950610.json) và [CSV phân tích](../analysis/base_runs.csv).
+
+| Lỗi quan sát | Case v0 | Ví dụ và cách sửa |
+|---|---|---|
+| Sai giá trị args | R01, R06, M03 | `samaltman` thay `sama`; news dùng `general`; mất handle/số lượng. Làm rõ args và giữ ràng buộc chưa bị thay đổi. |
+| Chọn sai/thiếu tool theo nguồn | R03, R04, R13, M02, M06 | Dùng social thay web, `paper_text` cho URL thường, thiếu một nguồn ở yêu cầu song song. Làm rõ routing và ưu tiên nguồn ở lượt mới nhất. |
+| Không hỏi dữ liệu thiếu | R10, R11 | Tự chọn tài khoản hoặc tự tìm khi chưa có URL. Yêu cầu dùng `clarify` thay vì đoán. |
+| Gửi khi chưa được xác nhận | R12 | Model tự tạo text và `confirmed=true`. Yêu cầu xin xác nhận nội dung; eval mặc định dry-run, code kiểm tra boolean. |
+| Gọi tool ngoài phạm vi | R08, R14 | Dùng `clarify` cho toán/coding ngoài nhiệm vụ research. Làm rõ phạm vi trước khi chọn tool. |
+
+V3 vẫn sai R10, R11, R14, M03 và M06: đoán handle, hỏi bằng prose thay tool, hỏi xác nhận ngoài scope, mất `limit=3` và không chuyển nguồn. Các run mới đã đạt rubric cho các case này.
+
+**Lỗi nội dung mà điểm routing không phát hiện:** [hồi quy v12](../runs/v12-local_B_cross_ollama_20261110T212556705830.json) vẫn PASS X05 vì không gọi tool, dù trả mã Java ngoài phạm vi. V13 giữ nguyên prompt/tools v12 và thêm scope checker: R08, R14, X05 hiển thị từ chối; R09 giới thiệu khả năng và G05 cảm ơn giữ nguyên. Draft X05 của model native vẫn chứa mã và được lưu trong metadata. Checker giải quyết phần hiển thị ở các case đã quan sát; không chứng minh native model đã tự hết lỗi hoặc checker luôn đúng.
+
+## B3. Eval nhóm và tool mới
+
+[eval_group.json](../data/eval_group.json) gồm **5 single-turn và 5 multi-turn**; profile hiện tại đạt **10/10**.
+
+| Case | Hành vi được kiểm tra |
+|---|---|
+| G01 | Route tìm paper sang `papers` |
+| G02 | `policy_area=source_citation` |
+| G03 | Bỏ `@` khỏi handle, giữ `limit=3` |
+| G04 | Tool mới: đủ `items`, bỏ trùng URL |
+| G05 | Lời cảm ơn không gọi tool |
+| G06 | Từ tìm paper sang đọc đúng arXiv ID, `max_pages=2` |
+| G07 | Đổi `Latest` sang `Top`, giữ query chủ đề |
+| G08 | Dùng danh sách từ lượt trước, đổi sang bỏ trùng tiêu đề |
+| G09 | Giữ `policy_area=data_privacy`, `top_k=2` |
+| G10 | Giữ nguyên text đã duyệt và boolean `confirmed=true`; execution dry-run |
+
+Tool `deduplicate(items, key_by="url")` đã có [code](../tools/deduplicate/tool.py), [TOOL.md](../tools/deduplicate/TOOL.md), [registry](../tools/__init__.py) và [declaration](tools.yaml). `items` bắt buộc là list các object; `key_by` tùy chọn `url|title`. Output gồm `tool`, `items`, `removed_count`; dữ liệu sai trả error dict. Tool chạy local, giữ bản đầu và thứ tự, không thay input; không gộp nội dung hay phát hiện trùng ngữ nghĩa.
+
+Run group v3 lịch sử đạt 7/10 theo scorer subset cũ. [Replay offline](../analysis/v4_group_offline_replay.json) cùng calls đạt 6/10 khi kiểm tra schema chặt hơn; đó không phải lần gọi model mới. Kết quả 10/10 hiện tại là một run model thật riêng, không thay nhãn log cũ.
+
+## B4. Chat live và UI
+
+[Transcript UI hiện tại](../transcripts/v13-scope-check_ollama_20261110T220653977216.transcript.json) được tạo qua Streamlit/AppTest với Ollama thật, đúng UTF-8, scope checker bật, không demo fallback. Cả 3 lượt đều trả lời live:
+
+| Lượt | Yêu cầu | Kết quả kiểm tra |
+|---|---|---|
+| 1 | Bỏ trùng URL trong 3 items | Bỏ 1 mục, giữ bản đầu, thứ tự và metadata |
+| 2 | Bỏ trùng tiêu đề từ danh sách gốc ở lượt 1 | Dùng đủ danh sách gốc, bỏ 1 mục; không dùng nhầm danh sách đã rút gọn |
+| 3 | Tra `tool_usage`, lấy 2 đoạn về gửi nội dung ra ngoài | Giữ đúng filter/số lượng, trả facts liên quan đến xác nhận |
+
+[Kiểm tra phiên UI](../analysis/v13-scope-check_ui_live_check.json) đạt **5/5**: ba câu trả lời live, bỏ trùng URL, bỏ trùng tiêu đề, giữ filter policy và facts xác nhận. UI local đã được kiểm tra HTTP 200/health `ok`; chưa deploy public. Đây là kiểm tra một phiên cụ thể, không bảo đảm mọi hội thoại.
+
+[Transcript CLI v3](../transcripts/v3_ollama_20261110T113940609289.transcript.json) cũng có 3 lượt model thật, nhưng lượt policy chọn nhầm area; giữ nguyên làm bằng chứng lịch sử. Các transcript demo/fallback hoặc nhập liệu lỗi không được tính là phiên live thành công của profile cuối.
+
+## B5. Unit tests và sửa lỗi code
+
+Lần chạy full suite gần nhất: **205 passed, 0 failed, 0 skipped**. Tests dùng mock/local; kết nối mạng thật bị chặn. Đã hoàn thành **14 TODO**, có **30 trường hợp cho `deduplicate`** trong [test_tools_todo.py](../tests/test_tools_todo.py), vượt mức tối thiểu 3 test/tool mới.
+
+| Phần | Hành vi đã kiểm tra/sửa |
+|---|---|
+| Tool mới | Bỏ trùng URL/title; giữ bản đầu, thứ tự, metadata và input; key thiếu/rỗng; input sai trả error dict; gọi qua registry/agent |
+| Contract/runtime/scorer | Schema khớp code; required/type/enum/args thừa; so sánh đủ list items; nội dung gửi khớp nguyên văn; lỗi harness tính FAIL |
+| `send` | Không nhận chuỗi/số thay boolean xác nhận; text hợp lệ; xử lý API lỗi; che token trong lỗi; dry-run không gửi thật |
+| `policy` và UI | Truy vấn tiếng Việt, filter/top_k; giữ lịch sử JSON; phân biệt model live với demo/fallback; lưu transcript/version/hash |
+| Provider | JSON sai, retry có giới hạn, không sửa tool/args; checker giữ draft gốc, tính chi phí và báo lỗi rõ |
+
+[Tests checker](../tests/test_direct_answer_check.py) có 18 trường hợp mock. Các tests này kiểm tra code, không thay thế bằng chứng model thật. G04/G08 và hai lượt UI đầu còn kiểm tra tool mới thực sự bỏ đúng 1 mục trùng.
+
+Chạy lại từ `starter_v0`:
+
+```powershell
+.\.venv312\Scripts\python.exe -m pytest -q
+.\.venv312\Scripts\python.exe -m pytest -v tests/test_tools_todo.py -k deduplicate
+```
+
+## B6. Reflection và giới hạn
+
+- Prompt cần ưu tiên yêu cầu mới nhất, giữ ràng buộc còn hiệu lực, hỏi khi thiếu dữ liệu và xác nhận trước hành động gửi. Tool declaration cần phân biệt nguồn và mô tả args cụ thể.
+- Không phải vòng nào cũng tăng điểm. Các candidate chưa tốt và run lỗi vẫn nằm trong log; chọn profile dựa trên kết quả đã đo.
+- **Chưa đầy đủ execution online:** Tavily, Firecrawl và RapidAPI chưa có key trên máy kiểm tra. Không coi 21 lỗi execution là thành công nghiên cứu; cần cấu hình và thử lại các tool tương ứng khi sử dụng.
+- **Chưa gửi Telegram thật**, chưa có UI public. `confirmed=true` ở G10 được chấm với dry-run, không phải bằng chứng đã đăng nội dung.
+- Rubric không chấm hết chất lượng câu trả lời, câu hỏi làm rõ và độ đúng của nguồn/trích dẫn. Scope checker có thêm chi phí và vẫn có thể phân loại sai; cần đọc nội dung thực tế.
+
+## B7. Small Local Model Challenge — bonus
+
+Hai đối chứng dưới đây dùng nguyên cặp [prompt v3](system_prompt_v3.md) / [tools v3](tools_v3.yaml), cùng 20 base cases, scorer `schema-v2`, native thuần, không retry/checker, **20 model requests mỗi run**.
+
+| Model | Case đúng | Routing / Args / Multi | Run |
+|---|---|---|---|
+| `qwen2.5:3b` | 15/20 | 0.80 / 0.75 / 0.8333 | [3B](../runs/v13-v3-qwen3b_B_base_ollama_20261110T215101202969.json) |
+| `qwen3.5:4b-q4_K_M` | 17/20 | 0.85 / 0.85 / 1.00 | [4B](../runs/v13-v3-qwen35-4b_B_base_ollama_20261110T215208171859.json) |
+
+Các vòng tối ưu tiêu biểu trên Qwen3.5 4B:
+
+| Version | Giả thuyết/thay đổi | Case đúng | Run |
+|---|---|---|---|
+| v10-native-retry | Nhắc lại giao thức native khi thiếu call | 17/20, chưa tăng so với v9 | [v10](../runs/v10-native-retry_B_base_ollama_20261110T161125849239.json) |
+| v11-schema-retry | Ràng buộc retry bằng schema để giảm thiếu call | 19/20 | [v11](../runs/v11-schema-retry_B_base_ollama_20261110T161728429621.json) |
+| v12-local | Giữ ngữ cảnh gốc cho retry và nói rõ kiểu JSON trong prompt | 20/20 | [v12](../runs/v12-local_B_base_ollama_20261110T162157013557.json) |
+
+Schema retry có ích trong các run này nhưng tăng ngân sách suy luận; v12 đổi cả prompt và ngữ cảnh adapter nên chưa tách được đóng góp từng phần. V13-scope-check giữ điểm routing và thêm kiểm tra câu trả lời ngoài phạm vi như B1/B2. Những thay đổi model, trọng số, quantization và runtime cũng phải được phân biệt khi so sánh.
+
+**Bonus chưa hoàn tất:** đã có hai model và nhiều vòng tối ưu có log, nhưng chưa kiểm tra ngược profile local cuối trên cloud và chưa có bảng cloud/local. Nhóm thêm 1 tool mới nên chưa đạt bonus “UI + hơn 3 tool mới”.

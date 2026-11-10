@@ -56,6 +56,23 @@ def test_unknown_historical_request_cost_is_not_inferred(tmp_path):
     assert row["eligible_for_version_log"] is True
 
 
+def test_direct_answer_checker_is_included_in_inference_budget(tmp_path):
+    path = tmp_path / "runs/v13-scope-check_B_fixture.json"
+    run = saved_run(path, version="v13-scope-check")
+    run["provider_metadata"]["direct_answer_check_enabled"] = True
+    metadata = run["results"][0]["provider_response_metadata"]
+    metadata["response_check_attempts"] = [{"scope": "outside", "usage": {
+        "prompt_tokens": 7, "completion_tokens": 1}}]
+    metadata["direct_answer_replaced"] = True
+    path.write_text(json.dumps(run), encoding="utf-8")
+    row = row_for(path, tmp_path)
+    assert row["model_requests"] == 3
+    assert row["prompt_tokens"] == 29 and row["completion_tokens"] == 6
+    assert row["response_check_requests"] == row["scope_refusals"] == 1
+    assert row["response_check_errors"] == 0
+    assert row["direct_answer_check_enabled"] is True
+
+
 def test_running_aborted_and_invalid_runs_have_no_final_accuracy_or_version_rows(tmp_path):
     for status in ("running", "aborted"):
         saved_run(tmp_path / f"runs/v6-{status}_B_fixture.json", version=f"v6-{status}", status=status)

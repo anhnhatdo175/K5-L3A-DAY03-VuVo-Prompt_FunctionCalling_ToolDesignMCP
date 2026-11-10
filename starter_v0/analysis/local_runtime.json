@@ -1,0 +1,134 @@
+{
+  "observed_at": "2026-11-10T14:25:42+00:00",
+  "scope": "Current local server; not retroactively attributed to earlier runs",
+  "server_options": {
+    "OLLAMA_CONTEXT_LENGTH": 8192,
+    "OLLAMA_NUM_PARALLEL": 1,
+    "OLLAMA_MAX_LOADED_MODELS": 1,
+    "OLLAMA_FLASH_ATTENTION": true,
+    "OLLAMA_KV_CACHE_TYPE": "q8_0",
+    "LLAMA_ARG_REPACK": "0",
+    "LLAMA_ARG_NO_HOST": "1"
+  },
+  "reason": "Reduced host/repack memory allocations after Windows commit exhaustion; later runs must be distinguished from original GPU/default-repack base run.",
+  "version": {
+    "version": "0.40.16"
+  },
+  "tags": {
+    "models": [
+      {
+        "name": "qwen3.5:4b-q4_K_M",
+        "model": "qwen3.5:4b-q4_K_M",
+        "modified_at": "2026-11-10T16:04:05.0479439+07:00",
+        "size": 3324173934,
+        "digest": "d8b0f5e9760cd1682034f292d7ef72ec46f432149be0df7574bf2d6e92e38c04",
+        "details": {
+          "parent_model": "model.gguf",
+          "format": "gguf",
+          "family": "qwen35",
+          "families": [
+            "qwen35"
+          ],
+          "parameter_size": "4.2B",
+          "quantization_level": "Q4_K_M",
+          "context_length": 262144,
+          "embedding_length": 2560,
+          "runner": "llamacpp"
+        },
+        "capabilities": [
+          "completion",
+          "vision",
+          "tools",
+          "thinking"
+        ]
+      },
+      {
+        "name": "qwen3:4b-instruct",
+        "model": "qwen3:4b-instruct",
+        "modified_at": "2026-11-10T15:36:02.4526441+07:00",
+        "size": 2497293803,
+        "digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+        "details": {
+          "parent_model": "",
+          "format": "gguf",
+          "family": "qwen3",
+          "families": [
+            "qwen3"
+          ],
+          "parameter_size": "4.0B",
+          "quantization_level": "Q4_K_M",
+          "context_length": 262144,
+          "embedding_length": 2560,
+          "runner": "ggml"
+        },
+        "capabilities": [
+          "tools",
+          "thinking",
+          "completion"
+        ]
+      },
+      {
+        "name": "qwen2.5:3b",
+        "model": "qwen2.5:3b",
+        "modified_at": "2026-11-10T15:18:28.9821519+07:00",
+        "size": 1929912432,
+        "digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+        "details": {
+          "parent_model": "",
+          "format": "gguf",
+          "family": "qwen2",
+          "families": [
+            "qwen2"
+          ],
+          "parameter_size": "3.1B",
+          "quantization_level": "Q4_K_M",
+          "context_length": 32768,
+          "embedding_length": 2048,
+          "runner": "ggml"
+        },
+        "capabilities": [
+          "completion",
+          "tools"
+        ]
+      }
+    ]
+  },
+  "ps": {
+    "models": [
+      {
+        "name": "qwen3.5:4b-q4_K_M",
+        "model": "qwen3.5:4b-q4_K_M",
+        "size": 3779780930,
+        "digest": "d8b0f5e9760cd1682034f292d7ef72ec46f432149be0df7574bf2d6e92e38c04",
+        "details": {
+          "parent_model": "",
+          "format": "gguf",
+          "family": "qwen35",
+          "families": [
+            "qwen35"
+          ],
+          "parameter_size": "4.2B",
+          "quantization_level": "Q4_K_M"
+        },
+        "expires_at": "2026-11-10T21:30:42.3141417+07:00",
+        "size_vram": 1906709624,
+        "context_length": 8192,
+        "runner": "llamacpp"
+      }
+    ]
+  },
+  "gpu_memory": "NVIDIA GeForce RTX 3050 Laptop GPU, 4096 MiB, 2587 MiB, 1376 MiB",
+  "code_hashes": {
+    "run_eval.py": "9f865f2e07ec464396f8f3c046d78ae82143a9a21bb3f91bee1e681dcfac51e1",
+    "agent.py": "99e12517eb647de225eda123c491b96dfba4025ece83c217695644051dbd58e8",
+    "tool_runtime.py": "81d9e3136cbdfcc1a91c53270234c8c248268162b02e26167359e22e067658e7",
+    "providers\\anthropic_provider.py": "d48b35154fe2fce2542715b98103fc75eac382d038c20604781547079bc81137",
+    "providers\\base.py": "2bc0352bf567e528b83dffcfe37962a2e4e6eae2072ef3e3548481d0c70b92ed",
+    "providers\\gemini_provider.py": "a5617146aae7e39ed6d6c547462cfe61f1ddc29e6e6cd81c6a43313b69e98366",
+    "providers\\ollama_provider.py": "fab2a5d45bd2036e9629e10c0bb7d400a44f155580ae3ee9ce3749816e1bbc65",
+    "providers\\openai_provider.py": "a069961dfa3e102581435f2e5025af5e90990c00420065c10bd2b925675c92fe",
+    "providers\\openrouter_provider.py": "db6c4885a8ef2aa0263253e994cf2853b68714bd468aea87e7365a3b09c2ceb9",
+    "providers\\tool_planning.py": "17e1492caa2390f9240530d562e51869f351fc826c050720b6db2eb8c9201a99",
+    "providers\\__init__.py": "d156cb71026459013ce4e9dcc9be5f2e2d00d698a015c1a8cc7a94aca3b9350f"
+  }
+}

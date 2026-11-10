@@ -44,6 +44,9 @@ def clean_env(monkeypatch: pytest.MonkeyPatch) -> None:
     """Start every test with no API keys, so tests never depend on the developer's .env."""
     for name in API_ENV_VARS:
         monkeypatch.delenv(name, raising=False)
+    # Existing provider controls exercise one protocol at a time. Tests for the
+    # optional direct-answer check opt in explicitly and mock its model request.
+    monkeypatch.setenv("OLLAMA_DIRECT_ANSWER_CHECK", "0")
 
 
 class RealNetworkCall(BaseException):

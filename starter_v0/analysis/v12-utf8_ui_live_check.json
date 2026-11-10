@@ -1,0 +1,16 @@
+{
+  "evidence_kind": "live_ui_apptest",
+  "observed_at": "2026-11-10T14:44:18.675961+00:00",
+  "provider": "ollama",
+  "model": "qwen3.5:4b-q4_K_M",
+  "fallback_enabled": false,
+  "transcript_file": "transcripts/v12-utf8_ollama_20261110T214328607533.transcript.json",
+  "artifact_version": "v12-utf8+pcf5769335127+tb55cee54af1f",
+  "checks": {
+    "three_live_answers": true,
+    "deduplicate_url": true,
+    "deduplicate_title": true,
+    "explicit_policy_filter": true,
+    "relevant_confirmation_facts": true
+  }
+}

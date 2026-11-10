@@ -54,7 +54,7 @@ with st.sidebar:
         st.caption("Model Ollama đã cài: " + ", ".join(installed))
     fallback = st.checkbox("Dùng demo scripted nếu provider lỗi", value=False,
                           help="Bật tùy chọn này tạo bằng chứng demo; không tính là model live thành công.")
-    version_label = st.text_input("Version label", value=os.getenv("ARTIFACT_VERSION", "v12-local"))
+    version_label = st.text_input("Version label", value=os.getenv("ARTIFACT_VERSION", "v13-scope-check"))
     with st.expander("Cấu hình nâng cao"):
         prompt_path = Path(st.text_input("System prompt", value=str(ARTIFACTS / "system_prompt.md")))
         tools_path = Path(st.text_input("Tool declarations", value=str(ARTIFACTS / "tools.yaml")))

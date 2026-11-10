@@ -60,6 +60,17 @@ Set `OLLAMA_PROTOCOL_RETRIES=0` for native-only model comparisons; set
 `OLLAMA_CALL_MODE=structured_plan` only when explicitly comparing that protocol.
 These configurations have different call budgets, so label them separately.
 
+Direct free-text replies in auto mode also use `OLLAMA_DIRECT_ANSWER_CHECK=1`.
+A separate schema-constrained model request classifies the original task as
+research, social, capability or outside. Allowed answers remain unchanged; an
+outside-scope verdict replaces the visible draft with a brief research-scope
+refusal. It does not alter model-selected tool names or arguments. Original drafts,
+verdicts and usage remain in `response_check_attempts`/transcript metadata, and
+checker failures are visible measured pipeline errors. This adds inference cost;
+set `OLLAMA_DIRECT_ANSWER_CHECK=0` together with `OLLAMA_PROTOCOL_RETRIES=0` for
+an unassisted native-only baseline. Score-only no-tool checks do not evaluate
+whether an answer correctly declined a request; this checker addresses that gap.
+
 Measured local runtime: Ollama 0.40.16, context 8192, one parallel request,
 flash attention enabled and q8_0 KV cache. To reproduce these server settings in
 PowerShell (stop an existing server before starting another):
@@ -73,13 +84,31 @@ $env:OLLAMA_KV_CACHE_TYPE='q8_0'
 ollama serve
 ```
 
+On a Windows machine near its RAM/commit limit, close unused applications before
+loading a model. The current recovery server additionally sets the following
+optional llama.cpp flags before `ollama serve` to reduce extra host/repack
+allocations. They can reduce speed, and results obtained under that runtime are
+labelled separately from the original run. Do not change system paging settings
+or silently switch to a demo when model loading fails.
+
+```powershell
+$env:LLAMA_ARG_REPACK='0'
+$env:LLAMA_ARG_NO_HOST='1'
+```
+
+The corresponding options are described in the official
+[llama.cpp server documentation](https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md).
+Observed local version, model digests and runtime settings are recorded in
+`starter_v0/analysis/local_runtime.json`; this snapshot describes the current
+server, not every historical experiment.
+
 In another terminal, from `starter_v0`, using Python 3.12:
 
 ```powershell
 .\.venv312\Scripts\python.exe scripts/preflight_provider.py --provider ollama
-.\.venv312\Scripts\python.exe run_eval.py --provider ollama --version v12-local --suite base --eval-cases data/eval_base.json
-.\.venv312\Scripts\python.exe run_eval.py --provider ollama --version v12-local --suite group --eval-cases data/eval_group.json
-.\.venv312\Scripts\python.exe run_eval.py --provider ollama --version v12-local --suite cross --eval-cases data/eval_regression.json
+.\.venv312\Scripts\python.exe run_eval.py --provider ollama --version v13-scope-check --suite base --eval-cases data/eval_base.json
+.\.venv312\Scripts\python.exe run_eval.py --provider ollama --version v13-scope-check --suite group --eval-cases data/eval_group.json
+.\.venv312\Scripts\python.exe run_eval.py --provider ollama --version v13-scope-check --suite cross --eval-cases data/eval_regression.json
 .\.venv312\Scripts\python.exe -m streamlit run app.py
 ```
 
