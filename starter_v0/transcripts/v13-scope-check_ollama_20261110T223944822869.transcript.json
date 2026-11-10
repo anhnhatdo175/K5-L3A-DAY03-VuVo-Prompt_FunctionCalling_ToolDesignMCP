@@ -1,0 +1,488 @@
+{
+  "transcript_id": "v13-scope-check_ollama_20261110T223944822869",
+  "version": "v13-scope-check",
+  "artifact_version": "v13-scope-check+pcf5769335127+tb55cee54af1f",
+  "prompt_hash": "cf57693351273f17e4e974db5bc1b103949a1c87475605b8d5442330ffeeff5c",
+  "tools_hash": "b55cee54af1fcb4ddd980f5f5ca9dd441f2a4c9c49722ac8c6e7842b7281ee08",
+  "source": "streamlit",
+  "provider": "ollama",
+  "model": "qwen3.5:4b-q4_K_M",
+  "system_prompt": "C:\\Users\\ACER NITRO\\OneDrive - Hanoi University of Science and Technology\\Desktop\\K5-L3A-DAY03-VuVo-ResearchAgentToolEval\\starter_v0\\artifacts\\system_prompt.md",
+  "tools": "C:\\Users\\ACER NITRO\\OneDrive - Hanoi University of Science and Technology\\Desktop\\K5-L3A-DAY03-VuVo-ResearchAgentToolEval\\starter_v0\\artifacts\\tools.yaml",
+  "history_window": 5,
+  "max_tool_rounds": 4,
+  "created_at": "2026-11-10T22:39:44",
+  "turns": [
+    {
+      "turn_index": 1,
+      "started_at": "2026-11-10T22:39:27",
+      "ended_at": "2026-11-10T22:39:44",
+      "user": "tôi cần giúp đỡ",
+      "status": "answered",
+      "assistant_text": "Tôi sẵn sàng hỗ trợ bạn! Bạn cần tôi làm gì? Hãy cho tôi biết cụ thể yêu cầu của bạn để tôi có thể giúp đỡ tốt nhất.",
+      "rounds": [
+        {
+          "round": 1,
+          "assistant_text": "Tôi sẵn sàng hỗ trợ bạn! Bạn cần tôi làm gì? Hãy cho tôi biết cụ thể yêu cầu của bạn để tôi có thể giúp đỡ tốt nhất.",
+          "tool_calls": [],
+          "tool_results": [],
+          "execution_mode": "live",
+          "provider_response_metadata": {
+            "tool_call_mode": "native",
+            "reasoning_effort": "none",
+            "adapter_source_hashes": {
+              "ollama_provider.py": "5e5b8b9446bd6d32deadcbe37c51bc1847ee14fab24854375ff6170f6cba168f",
+              "openai_provider.py": "a069961dfa3e102581435f2e5025af5e90990c00420065c10bd2b925675c92fe",
+              "tool_planning.py": "17e1492caa2390f9240530d562e51869f351fc826c050720b6db2eb8c9201a99"
+            },
+            "protocol_retry_limit": 1,
+            "protocol_retry_format": "structured_plan",
+            "protocol_retry_templates": {
+              "required": "Protocol correction: continue answering the ORIGINAL user request.\nThe caller requires at least one actual structured tool call. Prose, including a\nquestion, does not satisfy this contract. Use only the available tool declarations.\nIf essential information is missing, use the clarification tool, without guessing.\nFor an unapproved publishing request, request confirmation with response_type=yes_no\nas instructed. Do not treat this reminder as user approval, invent missing content\nor destinations, or repeat actions already completed in the conversation.",
+              "empty_auto": "The previous response was empty. Continue the ORIGINAL user request:\nreturn an appropriate structured tool call OR a concise direct answer when no tool\nis needed. Respect the original scope and approval rules. Never repeat a completed\naction or interpret this format reminder as approval."
+            },
+            "planning_protocol": "tool-plan-v2",
+            "planning_template": "Return a JSON tool plan, with request, tool_calls and text.\nFirst summarize the resolved user request in one short sentence in request:\ncurrent source, topic/author/URL, requested count/timeframe/category, and missing\nessential information. This is a request summary, not an explanation of reasoning.\nThen choose calls that preserve those values. Explicit optional constraints still\nbelong in args; a topic word does not replace a timeframe or policy_area field.\nEach call has name and args. Choose names and argument values yourself from the\nuser's request, conversation and available declarations below. Copy data faithfully.\nWhen asking the user a question, use clarify rather than putting the question only\nin text. If neither a specific account nor a search topic was supplied for posts,\nask which account/topic; words like 'recent' or 'latest' are not a topic.\nProcess corrections in chronological order: the newest value replaces the old\nvalue, so a corrected author is not an ambiguous choice between two authors.\nUse defaults without clarification for optional settings that were not specified.\nFor direct answers needing no tool, use an empty tool_calls list and answer in text.\nUse declared defaults only when the user has not specified a value. Never invent\nmissing facts, items, accounts, URLs or approval. No tool executes until this whole\nplan has been validated. Available tool declarations:\n",
+            "planning_template_hash": "3ae03f91d144bf640e393a66cb2847657a14e033ae5c973f94a67548c780bcbf",
+            "plan_schema_hashes": {
+              "auto": "9d1504074bd254938e6754cd0cd573735a02e3e1bd9f4d9c92c379753e7eb34c",
+              "required": "24d67972f1b69db597eea2a0de7724050bbfed08da54d0ec3d74b2f9c923dce4",
+              "none": "0f2dcc3a0d93654073c174f3a262d1689b9cd573d24ecea0abd5a2897eaf0aa1"
+            },
+            "native_attempts": [
+              {
+                "request_hash": "2315a7fba23b93fb4d5999fe5b6fd5da719bec50b0e72478f9b6e415b798bda2",
+                "text": "Tôi sẵn sàng hỗ trợ bạn! Bạn cần tôi làm gì? Hãy cho tôi biết cụ thể yêu cầu của bạn để tôi có thể giúp đỡ tốt nhất.",
+                "format": "native",
+                "tool_calls": [],
+                "raw_message": {
+                  "content": "Tôi sẵn sàng hỗ trợ bạn! Bạn cần tôi làm gì? Hãy cho tôi biết cụ thể yêu cầu của bạn để tôi có thể giúp đỡ tốt nhất.",
+                  "refusal": null,
+                  "role": "assistant",
+                  "annotations": null,
+                  "audio": null,
+                  "function_call": null,
+                  "tool_calls": null
+                },
+                "usage": {
+                  "completion_tokens": 33,
+                  "prompt_tokens": 3923,
+                  "total_tokens": 3956,
+                  "completion_tokens_details": null,
+                  "prompt_tokens_details": {
+                    "audio_tokens": null,
+                    "cache_write_tokens": null,
+                    "cached_tokens": 0,
+                    "image_tokens": null,
+                    "text_tokens": null
+                  }
+                },
+                "unmet_protocol": null
+              }
+            ],
+            "protocol_retry_used": 0
+          }
+        }
+      ],
+      "tool_events": [],
+      "execution_mode": "live"
+    },
+    {
+      "turn_index": 2,
+      "started_at": "2026-11-10T22:40:21",
+      "ended_at": "2026-11-10T22:41:42",
+      "user": "tôi cần nguồn của 1 số bài báo liên quan đến AI",
+      "status": "answered",
+      "assistant_text": "Dưới đây là danh sách 5 bài báo liên quan đến AI từ arXiv:\n\n1. **Faith in AI can narrow the futures individuals consider** (2026)\n   - Tác giả: Aoi Naito, Hirokazu Shirado\n   - Tóm tắt: Nghiên cứu cho thấy các dự đoán của AI có thể định hình cách con người suy nghĩ và ra quyết định về hành động tương lai. Hơn 40% người tham gia coi AI là một thực thể có khả năng dự đoán hành vi cá nhân của họ, dẫn đến việc từ bỏ phần thưởng đảm bảo.\n   - URL: http://arxiv.org/abs/2603.28944v2\n\n2. **AI Exposure and the Changing Responsibilities in Job Postings** (2026)\n   - Tác giả: Dora Zhao, Lin Ai, Pranav Khadpe, Siddharth Suri, Scott Counts\n   - Tóm tắt: Nghiên cứu phân tích cách áp dụng AI trong môi trường làm việc thay đổi yêu cầu công việc. Các hoạt động có mức độ tiếp xúc AI cao hơn có xu hướng giảm phổ biến trong các mô tả công việc được quảng cáo.\n   - URL: http://arxiv.org/abs/2611.09870v1\n\n3. **Foundations of GenIR** (2025)\n   - Tác giả: Qingyao Ai, Jingtao Zhan, Yiqun Liu\n   - Tóm tắt: Chương thảo luận về tác động nền tảng của các mô hình AI sinh tạo hiện đại đối với hệ thống truy cập thông tin. Giới thiệu hai khái niệm: sinh thông tin và tổng hợp thông tin.\n   - URL: http://arxiv.org/abs/2501.02842v1\n\n4. **Competing Visions of Ethical AI: A Case Study of OpenAI** (2026)\n   - Tác giả: Melissa Wilfley, Mengting Ai, Madelyn Rose Sanfilippo\n   - Tóm tắt: Nghiên cứu trường hợp về cách OpenAI sử dụng các khái niệm như \"đạo đức\", \"an toàn\" và \"đối chỉnh\" trong truyền thông công chúng. Kết quả cho thấy chủ đề an toàn và rủi ro thống trị, không áp dụng các khung đạo đức học thuật.\n   - URL: http://arxiv.org/abs/2601.16513v1\n\n5. **The New Shape of Search: How Conversational AI Recomposes Information Seeking** (2026)\n   - Tác giả: Michael Iannelli, Alan Ai\n   - Tóm tắt: Nghiên cứu cách AI đối thoại thay đổi hành trình tìm kiếm thông tin. Kết quả cho thấy hoạt động được phân phối khác biệt giữa đối thoại, tìm kiếm và duyệt web.\n   - URL: http://arxiv.org/abs/2607.04282v3\n\nBạn có muốn tôi đọc nội dung chi tiết của bất kỳ bài báo nào không?",
+      "rounds": [
+        {
+          "round": 1,
+          "assistant_text": "",
+          "tool_calls": [
+            {
+              "name": "papers",
+              "args": {
+                "query": "AI",
+                "max_results": 5,
+                "sort_by": "relevance"
+              }
+            }
+          ],
+          "tool_results": [
+            {
+              "tool": "papers",
+              "args": {
+                "query": "AI",
+                "max_results": 5,
+                "sort_by": "relevance"
+              },
+              "result": {
+                "tool": "arxiv_search",
+                "query": "AI",
+                "api_query": "all:AI",
+                "total_results": 70544,
+                "items": [
+                  {
+                    "arxiv_id": "2603.28944v2",
+                    "title": "Faith in AI can narrow the futures individuals consider",
+                    "summary": "Artificial intelligence (AI) predictions are increasingly used to inform human decisions. Here, using a behavioral implementation of the classic Newcomb's paradox in 1,305 participants, we show that AI predictions can also shape the reasoning people use to make a decision. In this paradigm, perceived predictive authority can alter how people reason about their future actions, leading them to forgo a guaranteed reward. Over 40% of participants treated AI as such a predictive authority about their own behavior, significantly increasing the odds of forgoing the guaranteed reward by a factor of 3.39 (95% CI: 2.45-4.70) and reducing earnings by 10.7-42.9%. The effect appeared across AI presentations and decision contexts and remained detectable even when predictions repeatedly failed. When people perceive AI as capable of predicting their personal behavior, the mere presence of AI predictions may shape their decision-making, narrowing the futures they consider.",
+                    "authors": [
+                      "Aoi Naito",
+                      "Hirokazu Shirado"
+                    ],
+                    "published": "2026-03-30T19:36:10Z",
+                    "updated": "2026-07-03T09:41:30Z",
+                    "url": "http://arxiv.org/abs/2603.28944v2",
+                    "pdf_url": "https://arxiv.org/pdf/2603.28944v2",
+                    "source": "arxiv.org",
+                    "primary_category": "cs.HC",
+                    "categories": [
+                      "cs.HC"
+                    ]
+                  },
+                  {
+                    "arxiv_id": "2611.09870v1",
+                    "title": "AI Exposure and the Changing Responsibilities in Job Postings",
+                    "summary": "The growing adoption of artificial intelligence (AI) in the workplace has raised questions about how employer demand for different work activities is changing. We examine how the prevalence and content of work activities in online job postings change in association with activity-level measures of AI exposure, derived from Copilot and Claude usage. To enable systematic comparisons, we develop a pipeline that extracts the responsibilities from job advertisements and maps them onto O*NET's standardized taxonomy of Intermediate Work Activities (IWAs). We then apply this approach to 50,000 job advertisements from 33 firms between 2023 and 2025. From this analysis, we first find that explicit mentions of AI increased by 66%, although much of this growth occurs outside descriptions of the actual work activities associated with a job. Looking specifically at the advertised job responsibilities, activities with greater AI exposure tend to decline in advertised prevalence, but only mildly as a share of the total number of responsibilities. At the same time, more AI-exposed work activities increasingly are associated with explicitly AI-related responsibilities, suggesting that employers are looking to hire people who can perform these responsibilities with AI.",
+                    "authors": [
+                      "Dora Zhao",
+                      "Lin Ai",
+                      "Pranav Khadpe",
+                      "Siddharth Suri",
+                      "Scott Counts"
+                    ],
+                    "published": "2026-11-06T18:48:36Z",
+                    "updated": "2026-11-06T18:48:36Z",
+                    "url": "http://arxiv.org/abs/2611.09870v1",
+                    "pdf_url": "https://arxiv.org/pdf/2611.09870v1",
+                    "source": "arxiv.org",
+                    "primary_category": "cs.CY",
+                    "categories": [
+                      "cs.CY"
+                    ]
+                  },
+                  {
+                    "arxiv_id": "2501.02842v1",
+                    "title": "Foundations of GenIR",
+                    "summary": "The chapter discusses the foundational impact of modern generative AI models on information access (IA) systems. In contrast to traditional AI, the large-scale training and superior data modeling of generative AI models enable them to produce high-quality, human-like responses, which brings brand new opportunities for the development of IA paradigms. In this chapter, we identify and introduce two of them in details, i.e., information generation and information synthesis. Information generation allows AI to create tailored content addressing user needs directly, enhancing user experience with immediate, relevant outputs. Information synthesis leverages the ability of generative AI to integrate and reorganize existing information, providing grounded responses and mitigating issues like model hallucination, which is particularly valuable in scenarios requiring precision and external knowledge. This chapter delves into the foundational aspects of generative models, including architecture, scaling, and training, and discusses their applications in multi-modal scenarios. Additionally, it examines the retrieval-augmented generation paradigm and other methods for corpus modeling and understanding, demonstrating how generative AI can enhance information access systems. It also summarizes potential challenges and fruitful directions for future studies.",
+                    "authors": [
+                      "Qingyao Ai",
+                      "Jingtao Zhan",
+                      "Yiqun Liu"
+                    ],
+                    "published": "2025-01-06T08:38:29Z",
+                    "updated": "2025-01-06T08:38:29Z",
+                    "url": "http://arxiv.org/abs/2501.02842v1",
+                    "pdf_url": "https://arxiv.org/pdf/2501.02842v1",
+                    "source": "arxiv.org",
+                    "primary_category": "cs.IR",
+                    "categories": [
+                      "cs.IR",
+                      "cs.LG"
+                    ]
+                  },
+                  {
+                    "arxiv_id": "2601.16513v1",
+                    "title": "Competing Visions of Ethical AI: A Case Study of OpenAI",
+                    "summary": "Introduction. AI Ethics is framed distinctly across actors and stakeholder groups. We report results from a case study of OpenAI analysing ethical AI discourse. Method. Research addressed: How has OpenAI's public discourse leveraged 'ethics', 'safety', 'alignment' and adjacent related concepts over time, and what does discourse signal about framing in practice? A structured corpus, differentiating between communication for a general audience and communication with an academic audience, was assembled from public documentation. Analysis. Qualitative content analysis of ethical themes combined inductively derived and deductively applied codes. Quantitative analysis leveraged computational content analysis methods via NLP to model topics and quantify changes in rhetoric over time. Visualizations report aggregate results. For reproducible results, we have released our code at https://github.com/famous-blue-raincoat/AI_Ethics_Discourse. Results. Results indicate that safety and risk discourse dominate OpenAI's public communication and documentation, without applying academic and advocacy ethics frameworks or vocabularies. Conclusions. Implications for governance are presented, along with discussion of ethics-washing practices in industry.",
+                    "authors": [
+                      "Melissa Wilfley",
+                      "Mengting Ai",
+                      "Madelyn Rose Sanfilippo"
+                    ],
+                    "published": "2026-01-23T07:26:45Z",
+                    "updated": "2026-01-23T07:26:45Z",
+                    "url": "http://arxiv.org/abs/2601.16513v1",
+                    "pdf_url": "https://arxiv.org/pdf/2601.16513v1",
+                    "source": "arxiv.org",
+                    "primary_category": "cs.CY",
+                    "categories": [
+                      "cs.CY"
+                    ]
+                  },
+                  {
+                    "arxiv_id": "2607.04282v3",
+                    "title": "The New Shape of Search: How Conversational AI Recomposes Information Seeking",
+                    "summary": "The familiar search journey begins with a query and moves outward into documents, and conversational AI is commonly imagined at its mouth: ask first, then click out. Linking captured prompts and responses to the same panelists' observed searches and pageviews, and reconstructing inactivity-defined cross-surface temporal sessions (standalone assistant surfaces; search-embedded AI such as AI Overviews and AI Mode is out of scope, since it co-occurs with the results page), we find the observed journeys more often run the other way. Content usually follows search but more often precedes assistant use. Within the same panelist, the paired difference-of-directions between the two anchors is +20.6 [19.9, 21.3] percentage points; it persists within every coarse destination-domain stratum we can observe (semantic task and task-stage matching remain unresolved), and every headline result replicates in a second, adjacent month. Search tends to anchor the front of the observed journey; assistants sit deeper inside it. Assistant sessions are also far more often self-contained. User-weighted, 34.1% [33.5, 34.7] of assistant-containing sessions show no observed external web step (AI-first 10.5% [10.2, 10.9], AI-last 18.3% [17.8, 18.7], bridge/interleaved 37.1% [36.5, 37.7]), against 19.5% [19.2, 19.8] contained for search-centered sessions of the same users, a within-user contrast of +13.0 [12.5, 13.6] percentage points. We call this difference recomposition: activity is distributed differently across dialogue, search, and browsing, without implying that assistant use caused the difference. Assistant-contained also does not mean resolved: timestamps alone cannot establish one task, satisfaction, or completion. The result is a cross-surface topology of the emerging search journey and a discipline for distinguishing observed containment from inferred resolution.",
+                    "authors": [
+                      "Michael Iannelli",
+                      "Alan Ai"
+                    ],
+                    "published": "2026-07-05T12:48:17Z",
+                    "updated": "2026-08-25T17:59:40Z",
+                    "url": "http://arxiv.org/abs/2607.04282v3",
+                    "pdf_url": "https://arxiv.org/pdf/2607.04282v3",
+                    "source": "arxiv.org",
+                    "primary_category": "cs.HC",
+                    "categories": [
+                      "cs.HC",
+                      "cs.CY",
+                      "cs.IR"
+                    ]
+                  }
+                ],
+                "rate_limit_note": "arXiv may return 429 if called too frequently; this tool waits at least 3 seconds between requests in-process."
+              }
+            }
+          ],
+          "execution_mode": "live",
+          "provider_response_metadata": {
+            "tool_call_mode": "native",
+            "reasoning_effort": "none",
+            "adapter_source_hashes": {
+              "ollama_provider.py": "5e5b8b9446bd6d32deadcbe37c51bc1847ee14fab24854375ff6170f6cba168f",
+              "openai_provider.py": "a069961dfa3e102581435f2e5025af5e90990c00420065c10bd2b925675c92fe",
+              "tool_planning.py": "17e1492caa2390f9240530d562e51869f351fc826c050720b6db2eb8c9201a99"
+            },
+            "protocol_retry_limit": 1,
+            "protocol_retry_format": "structured_plan",
+            "protocol_retry_templates": {
+              "required": "Protocol correction: continue answering the ORIGINAL user request.\nThe caller requires at least one actual structured tool call. Prose, including a\nquestion, does not satisfy this contract. Use only the available tool declarations.\nIf essential information is missing, use the clarification tool, without guessing.\nFor an unapproved publishing request, request confirmation with response_type=yes_no\nas instructed. Do not treat this reminder as user approval, invent missing content\nor destinations, or repeat actions already completed in the conversation.",
+              "empty_auto": "The previous response was empty. Continue the ORIGINAL user request:\nreturn an appropriate structured tool call OR a concise direct answer when no tool\nis needed. Respect the original scope and approval rules. Never repeat a completed\naction or interpret this format reminder as approval."
+            },
+            "planning_protocol": "tool-plan-v2",
+            "planning_template": "Return a JSON tool plan, with request, tool_calls and text.\nFirst summarize the resolved user request in one short sentence in request:\ncurrent source, topic/author/URL, requested count/timeframe/category, and missing\nessential information. This is a request summary, not an explanation of reasoning.\nThen choose calls that preserve those values. Explicit optional constraints still\nbelong in args; a topic word does not replace a timeframe or policy_area field.\nEach call has name and args. Choose names and argument values yourself from the\nuser's request, conversation and available declarations below. Copy data faithfully.\nWhen asking the user a question, use clarify rather than putting the question only\nin text. If neither a specific account nor a search topic was supplied for posts,\nask which account/topic; words like 'recent' or 'latest' are not a topic.\nProcess corrections in chronological order: the newest value replaces the old\nvalue, so a corrected author is not an ambiguous choice between two authors.\nUse defaults without clarification for optional settings that were not specified.\nFor direct answers needing no tool, use an empty tool_calls list and answer in text.\nUse declared defaults only when the user has not specified a value. Never invent\nmissing facts, items, accounts, URLs or approval. No tool executes until this whole\nplan has been validated. Available tool declarations:\n",
+            "planning_template_hash": "3ae03f91d144bf640e393a66cb2847657a14e033ae5c973f94a67548c780bcbf",
+            "plan_schema_hashes": {
+              "auto": "9d1504074bd254938e6754cd0cd573735a02e3e1bd9f4d9c92c379753e7eb34c",
+              "required": "24d67972f1b69db597eea2a0de7724050bbfed08da54d0ec3d74b2f9c923dce4",
+              "none": "0f2dcc3a0d93654073c174f3a262d1689b9cd573d24ecea0abd5a2897eaf0aa1"
+            },
+            "native_attempts": [
+              {
+                "request_hash": "58fbf25446f5c2702b0f6d1d0f6b21b9de09e7e0d581f866274731819dbb5bd4",
+                "text": "",
+                "format": "native",
+                "tool_calls": [
+                  {
+                    "name": "papers",
+                    "args": {
+                      "query": "AI",
+                      "max_results": 5,
+                      "sort_by": "relevance"
+                    }
+                  }
+                ],
+                "raw_message": {
+                  "content": "",
+                  "refusal": null,
+                  "role": "assistant",
+                  "annotations": null,
+                  "audio": null,
+                  "function_call": null,
+                  "tool_calls": [
+                    {
+                      "id": "call_jp0e5m05",
+                      "function": {
+                        "arguments": "{\"query\":\"AI\",\"max_results\":5,\"sort_by\":\"relevance\"}",
+                        "name": "papers"
+                      },
+                      "type": "function",
+                      "index": 0
+                    }
+                  ]
+                },
+                "usage": {
+                  "completion_tokens": 51,
+                  "prompt_tokens": 3979,
+                  "total_tokens": 4030,
+                  "completion_tokens_details": null,
+                  "prompt_tokens_details": {
+                    "audio_tokens": null,
+                    "cache_write_tokens": null,
+                    "cached_tokens": 3919,
+                    "image_tokens": null,
+                    "text_tokens": null
+                  }
+                },
+                "unmet_protocol": null
+              }
+            ],
+            "protocol_retry_used": 0
+          }
+        },
+        {
+          "round": 2,
+          "assistant_text": "Dưới đây là danh sách 5 bài báo liên quan đến AI từ arXiv:\n\n1. **Faith in AI can narrow the futures individuals consider** (2026)\n   - Tác giả: Aoi Naito, Hirokazu Shirado\n   - Tóm tắt: Nghiên cứu cho thấy các dự đoán của AI có thể định hình cách con người suy nghĩ và ra quyết định về hành động tương lai. Hơn 40% người tham gia coi AI là một thực thể có khả năng dự đoán hành vi cá nhân của họ, dẫn đến việc từ bỏ phần thưởng đảm bảo.\n   - URL: http://arxiv.org/abs/2603.28944v2\n\n2. **AI Exposure and the Changing Responsibilities in Job Postings** (2026)\n   - Tác giả: Dora Zhao, Lin Ai, Pranav Khadpe, Siddharth Suri, Scott Counts\n   - Tóm tắt: Nghiên cứu phân tích cách áp dụng AI trong môi trường làm việc thay đổi yêu cầu công việc. Các hoạt động có mức độ tiếp xúc AI cao hơn có xu hướng giảm phổ biến trong các mô tả công việc được quảng cáo.\n   - URL: http://arxiv.org/abs/2611.09870v1\n\n3. **Foundations of GenIR** (2025)\n   - Tác giả: Qingyao Ai, Jingtao Zhan, Yiqun Liu\n   - Tóm tắt: Chương thảo luận về tác động nền tảng của các mô hình AI sinh tạo hiện đại đối với hệ thống truy cập thông tin. Giới thiệu hai khái niệm: sinh thông tin và tổng hợp thông tin.\n   - URL: http://arxiv.org/abs/2501.02842v1\n\n4. **Competing Visions of Ethical AI: A Case Study of OpenAI** (2026)\n   - Tác giả: Melissa Wilfley, Mengting Ai, Madelyn Rose Sanfilippo\n   - Tóm tắt: Nghiên cứu trường hợp về cách OpenAI sử dụng các khái niệm như \"đạo đức\", \"an toàn\" và \"đối chỉnh\" trong truyền thông công chúng. Kết quả cho thấy chủ đề an toàn và rủi ro thống trị, không áp dụng các khung đạo đức học thuật.\n   - URL: http://arxiv.org/abs/2601.16513v1\n\n5. **The New Shape of Search: How Conversational AI Recomposes Information Seeking** (2026)\n   - Tác giả: Michael Iannelli, Alan Ai\n   - Tóm tắt: Nghiên cứu cách AI đối thoại thay đổi hành trình tìm kiếm thông tin. Kết quả cho thấy hoạt động được phân phối khác biệt giữa đối thoại, tìm kiếm và duyệt web.\n   - URL: http://arxiv.org/abs/2607.04282v3\n\nBạn có muốn tôi đọc nội dung chi tiết của bất kỳ bài báo nào không?",
+          "tool_calls": [],
+          "tool_results": [],
+          "execution_mode": "live",
+          "provider_response_metadata": {
+            "tool_call_mode": "native",
+            "reasoning_effort": "none",
+            "adapter_source_hashes": {
+              "ollama_provider.py": "5e5b8b9446bd6d32deadcbe37c51bc1847ee14fab24854375ff6170f6cba168f",
+              "openai_provider.py": "a069961dfa3e102581435f2e5025af5e90990c00420065c10bd2b925675c92fe",
+              "tool_planning.py": "17e1492caa2390f9240530d562e51869f351fc826c050720b6db2eb8c9201a99"
+            },
+            "protocol_retry_limit": 1,
+            "protocol_retry_format": "structured_plan",
+            "protocol_retry_templates": {
+              "required": "Protocol correction: continue answering the ORIGINAL user request.\nThe caller requires at least one actual structured tool call. Prose, including a\nquestion, does not satisfy this contract. Use only the available tool declarations.\nIf essential information is missing, use the clarification tool, without guessing.\nFor an unapproved publishing request, request confirmation with response_type=yes_no\nas instructed. Do not treat this reminder as user approval, invent missing content\nor destinations, or repeat actions already completed in the conversation.",
+              "empty_auto": "The previous response was empty. Continue the ORIGINAL user request:\nreturn an appropriate structured tool call OR a concise direct answer when no tool\nis needed. Respect the original scope and approval rules. Never repeat a completed\naction or interpret this format reminder as approval."
+            },
+            "planning_protocol": "tool-plan-v2",
+            "planning_template": "Return a JSON tool plan, with request, tool_calls and text.\nFirst summarize the resolved user request in one short sentence in request:\ncurrent source, topic/author/URL, requested count/timeframe/category, and missing\nessential information. This is a request summary, not an explanation of reasoning.\nThen choose calls that preserve those values. Explicit optional constraints still\nbelong in args; a topic word does not replace a timeframe or policy_area field.\nEach call has name and args. Choose names and argument values yourself from the\nuser's request, conversation and available declarations below. Copy data faithfully.\nWhen asking the user a question, use clarify rather than putting the question only\nin text. If neither a specific account nor a search topic was supplied for posts,\nask which account/topic; words like 'recent' or 'latest' are not a topic.\nProcess corrections in chronological order: the newest value replaces the old\nvalue, so a corrected author is not an ambiguous choice between two authors.\nUse defaults without clarification for optional settings that were not specified.\nFor direct answers needing no tool, use an empty tool_calls list and answer in text.\nUse declared defaults only when the user has not specified a value. Never invent\nmissing facts, items, accounts, URLs or approval. No tool executes until this whole\nplan has been validated. Available tool declarations:\n",
+            "planning_template_hash": "3ae03f91d144bf640e393a66cb2847657a14e033ae5c973f94a67548c780bcbf",
+            "plan_schema_hashes": {
+              "auto": "9d1504074bd254938e6754cd0cd573735a02e3e1bd9f4d9c92c379753e7eb34c",
+              "required": "24d67972f1b69db597eea2a0de7724050bbfed08da54d0ec3d74b2f9c923dce4",
+              "none": "0f2dcc3a0d93654073c174f3a262d1689b9cd573d24ecea0abd5a2897eaf0aa1"
+            },
+            "native_attempts": [
+              {
+                "request_hash": "9c049f11bb9b5a9356805bb8b772c70ed41ac9c7e2bb47e9d212abeadc9a068c",
+                "text": "Dưới đây là danh sách 5 bài báo liên quan đến AI từ arXiv:\n\n1. **Faith in AI can narrow the futures individuals consider** (2026)\n   - Tác giả: Aoi Naito, Hirokazu Shirado\n   - Tóm tắt: Nghiên cứu cho thấy các dự đoán của AI có thể định hình cách con người suy nghĩ và ra quyết định về hành động tương lai. Hơn 40% người tham gia coi AI là một thực thể có khả năng dự đoán hành vi cá nhân của họ, dẫn đến việc từ bỏ phần thưởng đảm bảo.\n   - URL: http://arxiv.org/abs/2603.28944v2\n\n2. **AI Exposure and the Changing Responsibilities in Job Postings** (2026)\n   - Tác giả: Dora Zhao, Lin Ai, Pranav Khadpe, Siddharth Suri, Scott Counts\n   - Tóm tắt: Nghiên cứu phân tích cách áp dụng AI trong môi trường làm việc thay đổi yêu cầu công việc. Các hoạt động có mức độ tiếp xúc AI cao hơn có xu hướng giảm phổ biến trong các mô tả công việc được quảng cáo.\n   - URL: http://arxiv.org/abs/2611.09870v1\n\n3. **Foundations of GenIR** (2025)\n   - Tác giả: Qingyao Ai, Jingtao Zhan, Yiqun Liu\n   - Tóm tắt: Chương thảo luận về tác động nền tảng của các mô hình AI sinh tạo hiện đại đối với hệ thống truy cập thông tin. Giới thiệu hai khái niệm: sinh thông tin và tổng hợp thông tin.\n   - URL: http://arxiv.org/abs/2501.02842v1\n\n4. **Competing Visions of Ethical AI: A Case Study of OpenAI** (2026)\n   - Tác giả: Melissa Wilfley, Mengting Ai, Madelyn Rose Sanfilippo\n   - Tóm tắt: Nghiên cứu trường hợp về cách OpenAI sử dụng các khái niệm như \"đạo đức\", \"an toàn\" và \"đối chỉnh\" trong truyền thông công chúng. Kết quả cho thấy chủ đề an toàn và rủi ro thống trị, không áp dụng các khung đạo đức học thuật.\n   - URL: http://arxiv.org/abs/2601.16513v1\n\n5. **The New Shape of Search: How Conversational AI Recomposes Information Seeking** (2026)\n   - Tác giả: Michael Iannelli, Alan Ai\n   - Tóm tắt: Nghiên cứu cách AI đối thoại thay đổi hành trình tìm kiếm thông tin. Kết quả cho thấy hoạt động được phân phối khác biệt giữa đối thoại, tìm kiếm và duyệt web.\n   - URL: http://arxiv.org/abs/2607.04282v3\n\nBạn có muốn tôi đọc nội dung chi tiết của bất kỳ bài báo nào không?",
+                "format": "native",
+                "tool_calls": [],
+                "raw_message": {
+                  "content": "Dưới đây là danh sách 5 bài báo liên quan đến AI từ arXiv:\n\n1. **Faith in AI can narrow the futures individuals consider** (2026)\n   - Tác giả: Aoi Naito, Hirokazu Shirado\n   - Tóm tắt: Nghiên cứu cho thấy các dự đoán của AI có thể định hình cách con người suy nghĩ và ra quyết định về hành động tương lai. Hơn 40% người tham gia coi AI là một thực thể có khả năng dự đoán hành vi cá nhân của họ, dẫn đến việc từ bỏ phần thưởng đảm bảo.\n   - URL: http://arxiv.org/abs/2603.28944v2\n\n2. **AI Exposure and the Changing Responsibilities in Job Postings** (2026)\n   - Tác giả: Dora Zhao, Lin Ai, Pranav Khadpe, Siddharth Suri, Scott Counts\n   - Tóm tắt: Nghiên cứu phân tích cách áp dụng AI trong môi trường làm việc thay đổi yêu cầu công việc. Các hoạt động có mức độ tiếp xúc AI cao hơn có xu hướng giảm phổ biến trong các mô tả công việc được quảng cáo.\n   - URL: http://arxiv.org/abs/2611.09870v1\n\n3. **Foundations of GenIR** (2025)\n   - Tác giả: Qingyao Ai, Jingtao Zhan, Yiqun Liu\n   - Tóm tắt: Chương thảo luận về tác động nền tảng của các mô hình AI sinh tạo hiện đại đối với hệ thống truy cập thông tin. Giới thiệu hai khái niệm: sinh thông tin và tổng hợp thông tin.\n   - URL: http://arxiv.org/abs/2501.02842v1\n\n4. **Competing Visions of Ethical AI: A Case Study of OpenAI** (2026)\n   - Tác giả: Melissa Wilfley, Mengting Ai, Madelyn Rose Sanfilippo\n   - Tóm tắt: Nghiên cứu trường hợp về cách OpenAI sử dụng các khái niệm như \"đạo đức\", \"an toàn\" và \"đối chỉnh\" trong truyền thông công chúng. Kết quả cho thấy chủ đề an toàn và rủi ro thống trị, không áp dụng các khung đạo đức học thuật.\n   - URL: http://arxiv.org/abs/2601.16513v1\n\n5. **The New Shape of Search: How Conversational AI Recomposes Information Seeking** (2026)\n   - Tác giả: Michael Iannelli, Alan Ai\n   - Tóm tắt: Nghiên cứu cách AI đối thoại thay đổi hành trình tìm kiếm thông tin. Kết quả cho thấy hoạt động được phân phối khác biệt giữa đối thoại, tìm kiếm và duyệt web.\n   - URL: http://arxiv.org/abs/2607.04282v3\n\nBạn có muốn tôi đọc nội dung chi tiết của bất kỳ bài báo nào không?",
+                  "refusal": null,
+                  "role": "assistant",
+                  "annotations": null,
+                  "audio": null,
+                  "function_call": null,
+                  "tool_calls": null
+                },
+                "usage": {
+                  "completion_tokens": 647,
+                  "prompt_tokens": 6739,
+                  "total_tokens": 7386,
+                  "completion_tokens_details": null,
+                  "prompt_tokens_details": {
+                    "audio_tokens": null,
+                    "cache_write_tokens": null,
+                    "cached_tokens": 3975,
+                    "image_tokens": null,
+                    "text_tokens": null
+                  }
+                },
+                "unmet_protocol": null
+              }
+            ],
+            "protocol_retry_used": 0
+          }
+        }
+      ],
+      "tool_events": [
+        {
+          "tool": "papers",
+          "args": {
+            "query": "AI",
+            "max_results": 5,
+            "sort_by": "relevance"
+          },
+          "result": {
+            "tool": "arxiv_search",
+            "query": "AI",
+            "api_query": "all:AI",
+            "total_results": 70544,
+            "items": [
+              {
+                "arxiv_id": "2603.28944v2",
+                "title": "Faith in AI can narrow the futures individuals consider",
+                "summary": "Artificial intelligence (AI) predictions are increasingly used to inform human decisions. Here, using a behavioral implementation of the classic Newcomb's paradox in 1,305 participants, we show that AI predictions can also shape the reasoning people use to make a decision. In this paradigm, perceived predictive authority can alter how people reason about their future actions, leading them to forgo a guaranteed reward. Over 40% of participants treated AI as such a predictive authority about their own behavior, significantly increasing the odds of forgoing the guaranteed reward by a factor of 3.39 (95% CI: 2.45-4.70) and reducing earnings by 10.7-42.9%. The effect appeared across AI presentations and decision contexts and remained detectable even when predictions repeatedly failed. When people perceive AI as capable of predicting their personal behavior, the mere presence of AI predictions may shape their decision-making, narrowing the futures they consider.",
+                "authors": [
+                  "Aoi Naito",
+                  "Hirokazu Shirado"
+                ],
+                "published": "2026-03-30T19:36:10Z",
+                "updated": "2026-07-03T09:41:30Z",
+                "url": "http://arxiv.org/abs/2603.28944v2",
+                "pdf_url": "https://arxiv.org/pdf/2603.28944v2",
+                "source": "arxiv.org",
+                "primary_category": "cs.HC",
+                "categories": [
+                  "cs.HC"
+                ]
+              },
+              {
+                "arxiv_id": "2611.09870v1",
+                "title": "AI Exposure and the Changing Responsibilities in Job Postings",
+                "summary": "The growing adoption of artificial intelligence (AI) in the workplace has raised questions about how employer demand for different work activities is changing. We examine how the prevalence and content of work activities in online job postings change in association with activity-level measures of AI exposure, derived from Copilot and Claude usage. To enable systematic comparisons, we develop a pipeline that extracts the responsibilities from job advertisements and maps them onto O*NET's standardized taxonomy of Intermediate Work Activities (IWAs). We then apply this approach to 50,000 job advertisements from 33 firms between 2023 and 2025. From this analysis, we first find that explicit mentions of AI increased by 66%, although much of this growth occurs outside descriptions of the actual work activities associated with a job. Looking specifically at the advertised job responsibilities, activities with greater AI exposure tend to decline in advertised prevalence, but only mildly as a share of the total number of responsibilities. At the same time, more AI-exposed work activities increasingly are associated with explicitly AI-related responsibilities, suggesting that employers are looking to hire people who can perform these responsibilities with AI.",
+                "authors": [
+                  "Dora Zhao",
+                  "Lin Ai",
+                  "Pranav Khadpe",
+                  "Siddharth Suri",
+                  "Scott Counts"
+                ],
+                "published": "2026-11-06T18:48:36Z",
+                "updated": "2026-11-06T18:48:36Z",
+                "url": "http://arxiv.org/abs/2611.09870v1",
+                "pdf_url": "https://arxiv.org/pdf/2611.09870v1",
+                "source": "arxiv.org",
+                "primary_category": "cs.CY",
+                "categories": [
+                  "cs.CY"
+                ]
+              },
+              {
+                "arxiv_id": "2501.02842v1",
+                "title": "Foundations of GenIR",
+                "summary": "The chapter discusses the foundational impact of modern generative AI models on information access (IA) systems. In contrast to traditional AI, the large-scale training and superior data modeling of generative AI models enable them to produce high-quality, human-like responses, which brings brand new opportunities for the development of IA paradigms. In this chapter, we identify and introduce two of them in details, i.e., information generation and information synthesis. Information generation allows AI to create tailored content addressing user needs directly, enhancing user experience with immediate, relevant outputs. Information synthesis leverages the ability of generative AI to integrate and reorganize existing information, providing grounded responses and mitigating issues like model hallucination, which is particularly valuable in scenarios requiring precision and external knowledge. This chapter delves into the foundational aspects of generative models, including architecture, scaling, and training, and discusses their applications in multi-modal scenarios. Additionally, it examines the retrieval-augmented generation paradigm and other methods for corpus modeling and understanding, demonstrating how generative AI can enhance information access systems. It also summarizes potential challenges and fruitful directions for future studies.",
+                "authors": [
+                  "Qingyao Ai",
+                  "Jingtao Zhan",
+                  "Yiqun Liu"
+                ],
+                "published": "2025-01-06T08:38:29Z",
+                "updated": "2025-01-06T08:38:29Z",
+                "url": "http://arxiv.org/abs/2501.02842v1",
+                "pdf_url": "https://arxiv.org/pdf/2501.02842v1",
+                "source": "arxiv.org",
+                "primary_category": "cs.IR",
+                "categories": [
+                  "cs.IR",
+                  "cs.LG"
+                ]
+              },
+              {
+                "arxiv_id": "2601.16513v1",
+                "title": "Competing Visions of Ethical AI: A Case Study of OpenAI",
+                "summary": "Introduction. AI Ethics is framed distinctly across actors and stakeholder groups. We report results from a case study of OpenAI analysing ethical AI discourse. Method. Research addressed: How has OpenAI's public discourse leveraged 'ethics', 'safety', 'alignment' and adjacent related concepts over time, and what does discourse signal about framing in practice? A structured corpus, differentiating between communication for a general audience and communication with an academic audience, was assembled from public documentation. Analysis. Qualitative content analysis of ethical themes combined inductively derived and deductively applied codes. Quantitative analysis leveraged computational content analysis methods via NLP to model topics and quantify changes in rhetoric over time. Visualizations report aggregate results. For reproducible results, we have released our code at https://github.com/famous-blue-raincoat/AI_Ethics_Discourse. Results. Results indicate that safety and risk discourse dominate OpenAI's public communication and documentation, without applying academic and advocacy ethics frameworks or vocabularies. Conclusions. Implications for governance are presented, along with discussion of ethics-washing practices in industry.",
+                "authors": [
+                  "Melissa Wilfley",
+                  "Mengting Ai",
+                  "Madelyn Rose Sanfilippo"
+                ],
+                "published": "2026-01-23T07:26:45Z",
+                "updated": "2026-01-23T07:26:45Z",
+                "url": "http://arxiv.org/abs/2601.16513v1",
+                "pdf_url": "https://arxiv.org/pdf/2601.16513v1",
+                "source": "arxiv.org",
+                "primary_category": "cs.CY",
+                "categories": [
+                  "cs.CY"
+                ]
+              },
+              {
+                "arxiv_id": "2607.04282v3",
+                "title": "The New Shape of Search: How Conversational AI Recomposes Information Seeking",
+                "summary": "The familiar search journey begins with a query and moves outward into documents, and conversational AI is commonly imagined at its mouth: ask first, then click out. Linking captured prompts and responses to the same panelists' observed searches and pageviews, and reconstructing inactivity-defined cross-surface temporal sessions (standalone assistant surfaces; search-embedded AI such as AI Overviews and AI Mode is out of scope, since it co-occurs with the results page), we find the observed journeys more often run the other way. Content usually follows search but more often precedes assistant use. Within the same panelist, the paired difference-of-directions between the two anchors is +20.6 [19.9, 21.3] percentage points; it persists within every coarse destination-domain stratum we can observe (semantic task and task-stage matching remain unresolved), and every headline result replicates in a second, adjacent month. Search tends to anchor the front of the observed journey; assistants sit deeper inside it. Assistant sessions are also far more often self-contained. User-weighted, 34.1% [33.5, 34.7] of assistant-containing sessions show no observed external web step (AI-first 10.5% [10.2, 10.9], AI-last 18.3% [17.8, 18.7], bridge/interleaved 37.1% [36.5, 37.7]), against 19.5% [19.2, 19.8] contained for search-centered sessions of the same users, a within-user contrast of +13.0 [12.5, 13.6] percentage points. We call this difference recomposition: activity is distributed differently across dialogue, search, and browsing, without implying that assistant use caused the difference. Assistant-contained also does not mean resolved: timestamps alone cannot establish one task, satisfaction, or completion. The result is a cross-surface topology of the emerging search journey and a discipline for distinguishing observed containment from inferred resolution.",
+                "authors": [
+                  "Michael Iannelli",
+                  "Alan Ai"
+                ],
+                "published": "2026-07-05T12:48:17Z",
+                "updated": "2026-08-25T17:59:40Z",
+                "url": "http://arxiv.org/abs/2607.04282v3",
+                "pdf_url": "https://arxiv.org/pdf/2607.04282v3",
+                "source": "arxiv.org",
+                "primary_category": "cs.HC",
+                "categories": [
+                  "cs.HC",
+                  "cs.CY",
+                  "cs.IR"
+                ]
+              }
+            ],
+            "rate_limit_note": "arXiv may return 429 if called too frequently; this tool waits at least 3 seconds between requests in-process."
+          }
+        }
+      ],
+      "execution_mode": "live"
+    }
+  ],
+  "updated_at": "2026-11-10T22:41:42"
+}
