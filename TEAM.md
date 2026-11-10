@@ -1,23 +1,12 @@
-# Team contract: new research tool
+# Team VuVo
 
-The new tool is **`deduplicate`**, a deterministic local tool that removes duplicate research results before formatting. This is the agreed contract for implementation, `tools.yaml`, unit tests, and team eval cases.
+## Thành viên và phân công
 
-## Tool API
+| Vai trò                   | Họ tên            | MSSV        | Việc phụ trách                                                                                                                                      | Phạm vi file chính                                                                      |
+| ------------------------- | ----------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Máy chạy AI local         | Đỗ Nhật Anh       | 2A202603701 | Cài Ollama/model, chạy preflight; chạy baseline v0 rồi các vòng v1–v3; ghi metric/version log. Khi phần này ổn, chạy so sánh model local cho bonus. | `artifacts/system_prompt.md`, `artifacts/version_log.csv`, các file `runs/`             |
+| Tool mới                  | Hà Huy Thái       | 2A202603682 | Làm một tool mới, viết `TOOL.md` và ít nhất 3 unit test. Thống nhất tên/arguments với nhóm trước khi đăng ký tool.                                  | `tools/<tên-tool>/`, `tests/test_tools_todo.py`, phần đăng ký trong `tools/__init__.py` |
+| Eval nhóm                 | Lê Quang Trường   | 2A202603663 | Soạn 10 case: 5 single-turn, 5 multi-turn; kiểm tra đúng schema và khớp tên tool đã thống nhất.                                                     | `data/eval_group.json`                                                                  |
+| UI và giới thiệu          | Nguyễn Lê Hải Nam | 2A202603699 | Làm UI chạy được bằng Streamlit hoặc Vercel; điền Phần A của report và chuẩn bị câu hỏi demo.                                                       | UI mới (ví dụ `app.py`), Phần A trong `artifacts/REPORT.md`                             |
 
-- **Name:** `deduplicate`
-- **Location:** `starter_v0/tools/deduplicate/tool.py` and `TOOL.md`
-- **Arguments:**
-  - `items` (required): list of result objects; each may contain `title`, `url`, `source`, `summary`, and other existing result fields.
-  - `key_by` (optional): `"url"` or `"title"`; defaults to `"url"`.
-- **Behavior:** preserve input order and keep the first item for each non-empty key. Compare keys after trimming surrounding whitespace and case-folding; for `url`, also ignore trailing `/` characters. Keep items whose selected key is missing or empty instead of dropping them.
-- **Return:** `{"tool": "deduplicate", "items": [...], "removed_count": <int>}`.
-- **Invalid input:** return an error dict; do not raise. A non-list `items` or unsupported `key_by` is invalid.
-- **No network, environment variables, or side effects.**
-
-## Integration and evaluation
-
-- Register the implementation as `"deduplicate"` in `starter_v0/tools/__init__.py`.
-- Declare the same name, arguments, enum, and default in `starter_v0/artifacts/tools.yaml`.
-- Add at least 3 focused unit tests in `starter_v0/tests/test_tools_todo.py`: duplicate removal preserves the first item and order; missing keys are retained; invalid arguments return an error dict.
-- Add at least one group eval case where the user asks to remove duplicate research results and the expected tool is `deduplicate`.
-- Keep these files as the source of truth; coordinate before editing another owner's file.
+---
