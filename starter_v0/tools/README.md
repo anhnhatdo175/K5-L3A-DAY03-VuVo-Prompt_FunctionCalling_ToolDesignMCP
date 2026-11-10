@@ -11,6 +11,11 @@ tools/<tool_name>/
 `tools/__init__.py` is the registry. `agent.py`, `chat.py`, and `run_eval.py`
 import `TOOL_FUNCTIONS` from that registry.
 
+`tool_runtime.py` validates required arguments, types, enums and unsupported
+argument names before agent/chat dispatch. Keep defaults and required fields in
+the declaration consistent with the implementation. Offline scripted sessions
+can execute only local tools; eval actions default to dry-run.
+
 ## Frontmatter Fields
 
 Every `TOOL.md` uses the same fields:

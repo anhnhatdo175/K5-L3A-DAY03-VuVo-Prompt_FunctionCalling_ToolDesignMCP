@@ -102,4 +102,4 @@ def test_agent_executes_tool_and_survives_unknown_or_bad_calls() -> None:
 
     assert run.tool_results[0]["result"]["awaiting_user"] is True
     assert run.tool_results[1]["error"] == "unknown_tool"
-    assert run.tool_results[2]["result"]["error"] == "TypeError"
+    assert run.tool_results[2]["result"]["error"] == "InvalidToolArguments"

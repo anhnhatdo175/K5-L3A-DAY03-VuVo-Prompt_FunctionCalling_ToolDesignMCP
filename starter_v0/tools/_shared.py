@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import os
 import unicodedata
 from pathlib import Path
 from typing import Any
@@ -12,7 +13,18 @@ TIMEOUT = 30
 
 
 def err(tool: str, exc: Exception) -> dict[str, Any]:
-    return {"tool": tool, "error": type(exc).__name__, "message": str(exc)}
+    return {"tool": tool, "error": type(exc).__name__, "message": redact_secrets(str(exc))}
+
+
+def redact_secrets(message: str) -> str:
+    for name, value in os.environ.items():
+        if value and name.endswith(("API_KEY", "BOT_TOKEN")):
+            message = message.replace(value, "[REDACTED]")
+    return message
+
+
+def safe_error(exc: Exception) -> str:
+    return f"{type(exc).__name__}: {redact_secrets(str(exc))}"
 
 
 def domain(url: str) -> str:

@@ -23,4 +23,4 @@ tags: [tool use, web search, firecrawl, twitter, arxiv, rate limit]
 ## Write actions
 
 - Any tool that sends, posts, books, deletes, or changes external state requires explicit confirmation.
-- If confirmation is missing, call `ask_user(response_type="yes_no")`.
+- If confirmation is missing, call `clarify(response_type="yes_no")`.

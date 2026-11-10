@@ -2,107 +2,324 @@
   "dataset_id": "day04_v2_research_group",
   "dataset_role": "group",
   "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
-  "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
+  "allowed_failure_types": [
+    "wrong_tool",
+    "wrong_arg_value",
+    "wrong_boundary",
+    "unnecessary_tool",
+    "out_of_scope",
+    "missing_info"
+  ],
   "cases": [
     {
       "id": "G01_papers_routing",
-      "phase": "B", "suite": "group",
+      "phase": "B",
+      "suite": "group",
       "query": "Tìm giúp mình vài paper trên arXiv về đánh giá LLM agent",
       "failure_type": "wrong_tool",
-      "expect": {"tool_calls": [{"name": "papers", "args": {}}]},
-      "metadata": {"skill": "routing_papers", "difficulty": "easy", "what_it_tests": "Nhắc rõ paper/arXiv → papers, không dùng lookup (web) hay social_search."}
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "papers",
+            "args": {}
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "routing_papers",
+        "difficulty": "easy",
+        "what_it_tests": "Nhắc rõ paper/arXiv → papers, không dùng lookup (web) hay social_search."
+      }
     },
     {
       "id": "G02_policy_routing",
-      "phase": "B", "suite": "group",
+      "phase": "B",
+      "suite": "group",
       "query": "Quy định nội bộ của công ty về việc trích dẫn nguồn là gì?",
       "failure_type": "wrong_tool",
-      "expect": {"tool_calls": [{"name": "policy", "args": {"policy_area": "source_citation"}}]},
-      "metadata": {"skill": "routing_policy", "difficulty": "medium", "what_it_tests": "Hỏi về chính sách nội bộ → policy với policy_area=source_citation, không search web."}
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "policy",
+            "args": {
+              "policy_area": "source_citation"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "routing_policy",
+        "difficulty": "medium",
+        "what_it_tests": "Hỏi về chính sách nội bộ → policy với policy_area=source_citation, không search web."
+      }
     },
     {
       "id": "G03_handle_strip_at",
-      "phase": "B", "suite": "group",
+      "phase": "B",
+      "suite": "group",
       "query": "Lấy 3 bài đăng mới nhất của @karpathy",
       "failure_type": "wrong_arg_value",
-      "expect": {"tool_calls": [{"name": "timeline", "args": {"screenname": "karpathy", "limit": 3}}]},
-      "metadata": {"skill": "arg_handle_no_at", "difficulty": "medium", "what_it_tests": "Handle phải bỏ ký tự @ (karpathy, không phải @karpathy) và trích đúng limit=3."}
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "karpathy",
+              "limit": 3
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "arg_handle_no_at",
+        "difficulty": "medium",
+        "what_it_tests": "Handle phải bỏ ký tự @ (karpathy, không phải @karpathy) và trích đúng limit=3."
+      }
     },
     {
       "id": "G04_dedupe_by_url",
-      "phase": "B", "suite": "group",
+      "phase": "B",
+      "suite": "group",
       "query": "Loại các kết quả trùng URL trong danh sách sau, giữ bản đầu tiên: [{\"title\":\"A\",\"url\":\"https://example.com/a/\"},{\"title\":\"B\",\"url\":\"https://example.com/a\"},{\"title\":\"C\",\"url\":\"https://example.com/c\"}]",
       "failure_type": "wrong_tool",
-      "expect": {"tool_calls": [{"name": "deduplicate", "args": {}}]},
-      "metadata": {"skill": "routing_deduplicate", "difficulty": "easy", "what_it_tests": "Đã có danh sách items và yêu cầu bỏ trùng → deduplicate (tool mới), không dùng format/lookup. Không ràng buộc items vì run_eval không so sánh được list-of-dict; key_by mặc định url nên bỏ qua."}
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "deduplicate",
+            "args": {
+              "items": [
+                {
+                  "title": "A",
+                  "url": "https://example.com/a/"
+                },
+                {
+                  "title": "B",
+                  "url": "https://example.com/a"
+                },
+                {
+                  "title": "C",
+                  "url": "https://example.com/c"
+                }
+              ],
+              "key_by": "url"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "routing_deduplicate",
+        "difficulty": "easy",
+        "what_it_tests": "Routing deduplicate plus exact items/order and key_by=url. The scorer supports nested result objects."
+      }
     },
     {
       "id": "G05_thanks_no_tool",
-      "phase": "B", "suite": "group",
+      "phase": "B",
+      "suite": "group",
       "query": "Cảm ơn bạn nhé, mình hiểu rồi!",
       "failure_type": "unnecessary_tool",
-      "expect": {"no_tool": true, "behavior": "answer_without_tool"},
-      "metadata": {"skill": "no_tool_smalltalk", "difficulty": "easy", "what_it_tests": "Lời cảm ơn/xã giao → trả lời thẳng, KHÔNG gọi tool thừa."}
+      "expect": {
+        "no_tool": true,
+        "behavior": "answer_without_tool"
+      },
+      "metadata": {
+        "skill": "no_tool_smalltalk",
+        "difficulty": "easy",
+        "what_it_tests": "Lời cảm ơn/xã giao → trả lời thẳng, KHÔNG gọi tool thừa."
+      }
     },
     {
       "id": "G06_multi_papers_to_text",
-      "phase": "B", "suite": "group",
+      "phase": "B",
+      "suite": "group",
       "turns": [
-        {"role": "user", "content": "Tìm paper 'Attention Is All You Need' trên arXiv giúp mình"},
-        {"role": "user", "content": "Bài đầu tiên trong kết quả có ID là 1706.03762"},
-        {"role": "user", "content": "Đọc nội dung paper 1706.03762 đó, chỉ 2 trang đầu thôi"}
+        {
+          "role": "user",
+          "content": "Tìm paper 'Attention Is All You Need' trên arXiv giúp mình"
+        },
+        {
+          "role": "user",
+          "content": "Bài đầu tiên trong kết quả có ID là 1706.03762"
+        },
+        {
+          "role": "user",
+          "content": "Đọc nội dung paper 1706.03762 đó, chỉ 2 trang đầu thôi"
+        }
       ],
       "failure_type": "wrong_tool",
-      "expect": {"tool_calls": [{"name": "paper_text", "args": {"arxiv_url": "1706.03762", "max_pages": 2}}]},
-      "metadata": {"skill": "multiturn_papers_to_paper_text", "difficulty": "hard", "what_it_tests": "3 turns: lượt cuối đã có ID và muốn đọc nội dung → paper_text (không search lại bằng papers), max_pages=2."}
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "paper_text",
+            "args": {
+              "arxiv_url": "1706.03762",
+              "max_pages": 2
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_papers_to_paper_text",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: lượt cuối đã có ID và muốn đọc nội dung → paper_text (không search lại bằng papers), max_pages=2."
+      }
     },
     {
       "id": "G07_multi_latest_to_top",
-      "phase": "B", "suite": "group",
+      "phase": "B",
+      "suite": "group",
       "turns": [
-        {"role": "user", "content": "Mọi người đang tweet gì mới nhất về Claude?"},
-        {"role": "user", "content": "À, cho mình tweet phổ biến nhất thay vì mới nhất"},
-        {"role": "user", "content": "Vẫn chủ đề Claude nhé"}
+        {
+          "role": "user",
+          "content": "Mọi người đang tweet gì mới nhất về Claude?"
+        },
+        {
+          "role": "user",
+          "content": "À, cho mình tweet phổ biến nhất thay vì mới nhất"
+        },
+        {
+          "role": "user",
+          "content": "Vẫn chủ đề Claude nhé"
+        }
       ],
       "failure_type": "wrong_arg_value",
-      "expect": {"tool_calls": [{"name": "social_search", "args": {"search_type": "Top"}}]},
-      "metadata": {"skill": "multiturn_search_type_correction", "difficulty": "hard", "what_it_tests": "3 turns: sửa Latest→Top ở lượt sau, vẫn dùng social_search cho chủ đề Claude."}
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "Claude",
+              "search_type": "Top"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_search_type_correction",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: sửa Latest→Top ở lượt sau, vẫn dùng social_search cho chủ đề Claude."
+      }
     },
     {
       "id": "G08_multi_dedupe_by_title",
-      "phase": "B", "suite": "group",
+      "phase": "B",
+      "suite": "group",
       "turns": [
-        {"role": "user", "content": "Mình có danh sách kết quả: [{\"title\":\"Research Agent\",\"url\":\"https://a.com/1\"},{\"title\":\"research agent\",\"url\":\"https://b.com/2\"},{\"title\":\"Tool Eval\",\"url\":\"https://c.com/3\"}]"},
-        {"role": "user", "content": "Bỏ các mục trùng giúp mình"},
-        {"role": "user", "content": "Xét trùng theo tiêu đề, không phải URL, và giữ mục đầu tiên"}
+        {
+          "role": "user",
+          "content": "Mình có danh sách kết quả: [{\"title\":\"Research Agent\",\"url\":\"https://a.com/1\"},{\"title\":\"research agent\",\"url\":\"https://b.com/2\"},{\"title\":\"Tool Eval\",\"url\":\"https://c.com/3\"}]"
+        },
+        {
+          "role": "user",
+          "content": "Bỏ các mục trùng giúp mình"
+        },
+        {
+          "role": "user",
+          "content": "Xét trùng theo tiêu đề, không phải URL, và giữ mục đầu tiên"
+        }
       ],
       "failure_type": "wrong_arg_value",
-      "expect": {"tool_calls": [{"name": "deduplicate", "args": {"key_by": "title"}}]},
-      "metadata": {"skill": "multiturn_deduplicate_key_by", "difficulty": "hard", "what_it_tests": "3 turns: danh sách có sẵn ở lượt 1, lượt cuối chỉ rõ trùng theo tiêu đề → deduplicate với key_by=title (không dùng mặc định url)."}
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "deduplicate",
+            "args": {
+              "items": [
+                {
+                  "title": "Research Agent",
+                  "url": "https://a.com/1"
+                },
+                {
+                  "title": "research agent",
+                  "url": "https://b.com/2"
+                },
+                {
+                  "title": "Tool Eval",
+                  "url": "https://c.com/3"
+                }
+              ],
+              "key_by": "title"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_deduplicate_key_by",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: danh sách có sẵn ở lượt 1, lượt cuối chỉ rõ trùng theo tiêu đề → deduplicate với key_by=title (không dùng mặc định url)."
+      }
     },
     {
       "id": "G09_multi_policy_area_topk",
-      "phase": "B", "suite": "group",
+      "phase": "B",
+      "suite": "group",
       "turns": [
-        {"role": "user", "content": "Công ty có quy định gì về dữ liệu cá nhân không?"},
-        {"role": "user", "content": "Chỉ tìm trong mục data privacy thôi"},
-        {"role": "user", "content": "Lấy 2 mục liên quan nhất"}
+        {
+          "role": "user",
+          "content": "Công ty có quy định gì về dữ liệu cá nhân không?"
+        },
+        {
+          "role": "user",
+          "content": "Chỉ tìm trong mục data privacy thôi"
+        },
+        {
+          "role": "user",
+          "content": "Lấy 2 mục liên quan nhất"
+        }
       ],
       "failure_type": "wrong_arg_value",
-      "expect": {"tool_calls": [{"name": "policy", "args": {"policy_area": "data_privacy", "top_k": 2}}]},
-      "metadata": {"skill": "multiturn_policy_args", "difficulty": "hard", "what_it_tests": "3 turns: carry chủ đề dữ liệu cá nhân, map 'data privacy' → policy_area=data_privacy, 'lấy 2 mục' → top_k=2."}
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "policy",
+            "args": {
+              "policy_area": "data_privacy",
+              "top_k": 2
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_policy_args",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: carry chủ đề dữ liệu cá nhân, map 'data privacy' → policy_area=data_privacy, 'lấy 2 mục' → top_k=2."
+      }
     },
     {
       "id": "G10_multi_confirmed_send",
-      "phase": "B", "suite": "group",
+      "phase": "B",
+      "suite": "group",
       "turns": [
-        {"role": "user", "content": "Mình muốn đăng bản tin AI hôm nay lên Telegram"},
-        {"role": "user", "content": "Nội dung: 'Bản tin AI hôm nay: OpenAI ra mắt mô hình mới.'"},
-        {"role": "user", "content": "Đúng rồi, mình xác nhận, gửi đi"}
+        {
+          "role": "user",
+          "content": "Mình muốn đăng bản tin AI hôm nay lên Telegram"
+        },
+        {
+          "role": "user",
+          "content": "Nội dung: 'Bản tin AI hôm nay: OpenAI ra mắt mô hình mới.'"
+        },
+        {
+          "role": "user",
+          "content": "Đúng rồi, mình xác nhận, gửi đi"
+        }
       ],
       "failure_type": "wrong_boundary",
-      "expect": {"tool_calls": [{"name": "send", "args": {"confirmed": true}}]},
-      "metadata": {"skill": "multiturn_confirmed_send", "difficulty": "hard", "what_it_tests": "3 turns: user đã xác nhận rõ ràng ở lượt cuối → gọi send với confirmed=true (không hỏi lại clarify lần nữa)."}
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "send",
+            "args": {
+              "confirmed": true,
+              "text": "Bản tin AI hôm nay: OpenAI ra mắt mô hình mới."
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_confirmed_send",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: user đã xác nhận rõ ràng ở lượt cuối → gọi send với confirmed=true (không hỏi lại clarify lần nữa)."
+      }
     }
   ]
 }

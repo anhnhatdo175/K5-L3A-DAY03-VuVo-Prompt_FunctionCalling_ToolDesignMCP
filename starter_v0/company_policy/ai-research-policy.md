@@ -10,10 +10,10 @@ tags: [ai research, workflow, briefing, verification, paper]
 ## Research workflow
 
 - Start with the narrowest reliable source for the user intent.
-- Use `web_search` for current news and broad web discovery.
-- Use `search_tweets` for social signals and discussion trends.
-- Use `arxiv_search` for academic papers and recent preprints.
-- Use `get_arxiv_paper_text` when the user provides a specific arXiv ID or URL and asks to inspect content.
+- Use `lookup` for current news and broad web discovery.
+- Use `social_search` for social signals and discussion trends.
+- Use `papers` for academic papers and recent preprints.
+- Use `paper_text` when the user provides a specific arXiv ID or URL and asks to inspect content.
 
 ## Verification requirements
 

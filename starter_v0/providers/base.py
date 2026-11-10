@@ -15,6 +15,7 @@ class ModelResponse:
     text: str | None = None
     tool_calls: list[ToolCall] = field(default_factory=list)
     raw: Any | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class Provider(Protocol):

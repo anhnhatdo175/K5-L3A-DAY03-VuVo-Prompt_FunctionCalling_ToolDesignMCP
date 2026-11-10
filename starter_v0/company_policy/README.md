@@ -2,7 +2,7 @@
 
 This folder contains a small fake internal policy handbook for the lab.
 
-The model does not read these files directly. It calls `search_company_policy(query, policy_area, top_k)`, then Python code searches these markdown files and returns selected sections with source metadata.
+The model does not read these files directly. It calls `policy(query, policy_area, top_k)`, then Python code searches these markdown files and returns selected sections with source metadata.
 
 Policy areas:
 

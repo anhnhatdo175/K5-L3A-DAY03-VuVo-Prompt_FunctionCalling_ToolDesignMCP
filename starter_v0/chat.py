@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -10,7 +11,9 @@ from typing import Any
 from env_loader import load_lab_env
 from providers import make_provider
 from providers.base import ToolCall
-from tools import TOOL_FUNCTIONS, load_tool_declarations, to_openai_tools
+from tools import load_tool_declarations, to_openai_tools
+from tool_runtime import execute_tool_call
+from tools._shared import safe_error
 from versioning import artifact_version_dict, build_artifact_version
 
 
@@ -28,11 +31,8 @@ def safe_slug(value: str) -> str:
     return slug.strip("_") or "run"
 
 
-def json_text(value: Any, *, max_chars: int | None = None) -> str:
-    text = json.dumps(value, ensure_ascii=False, indent=2, default=str)
-    if max_chars is not None and len(text) > max_chars:
-        return text[:max_chars] + "\n...<truncated>"
-    return text
+def json_text(value: Any) -> str:
+    return json.dumps(value, ensure_ascii=False, indent=2, default=str)
 
 
 def trim_history(history: list[dict[str, str]], window: int) -> list[dict[str, str]]:
@@ -41,19 +41,10 @@ def trim_history(history: list[dict[str, str]], window: int) -> list[dict[str, s
     return history[-window * 2:]
 
 
-def execute_tool_call(call: ToolCall) -> dict[str, Any]:
-    func = TOOL_FUNCTIONS.get(call.name)
-    if not func:
-        return {
-            "tool": call.name,
-            "args": call.args,
-            "result": {"error": "unknown_tool", "message": f"No local implementation for {call.name}"},
-        }
-    try:
-        result = func(**call.args)
-    except Exception as exc:
-        result = {"error": type(exc).__name__, "message": str(exc)}
-    return {"tool": call.name, "args": call.args, "result": result}
+def configure_stdio() -> None:
+    for stream in (sys.stdin, sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="replace")
 
 
 def tool_results_message(events: list[dict[str, Any]]) -> dict[str, str]:
@@ -61,7 +52,7 @@ def tool_results_message(events: list[dict[str, Any]]) -> dict[str, str]:
         "role": "user",
         "content": (
             "TOOL_RESULTS_JSON:\n"
-            f"{json_text(events, max_chars=24000)}\n\n"
+            f"{json_text(events)}\n\n"
             "Use only these tool results. If the user asked for a digest and the items are ready, "
             "call the formatting tool. Otherwise answer the user directly with cited sources when available."
         ),
@@ -90,14 +81,25 @@ def run_model_tool_loop(
     all_tool_events: list[dict[str, Any]] = []
 
     for round_index in range(1, max_tool_rounds + 1):
-        response = provider.complete(working_messages, tools, model=model, temperature=0.0)
+        try:
+            response = provider.complete(working_messages, tools, model=model, temperature=0.0)
+        except Exception as exc:
+            error = safe_error(exc)
+            return {"status": "provider_error", "error": error,
+                    "assistant_text": f"Không gọi được provider: {error}",
+                    "rounds": rounds, "tool_events": all_tool_events}
         calls = response.tool_calls
+        execution_mode = getattr(provider, "last_execution_mode", "live")
         round_record: dict[str, Any] = {
             "round": round_index,
             "assistant_text": response.text,
             "tool_calls": [{"name": call.name, "args": call.args} for call in calls],
             "tool_results": [],
+            "execution_mode": execution_mode,
+            "provider_response_metadata": response.metadata,
         }
+        if execution_mode == "scripted_fallback":
+            round_record["fallback_to_demo"] = provider.fallback_reason
 
         if not calls:
             rounds.append(round_record)
@@ -112,8 +114,8 @@ def run_model_tool_loop(
         non_clarification_events: list[dict[str, Any]] = []
 
         for call in calls:
-            print(f"🔧 {call.name}({json.dumps(call.args, ensure_ascii=False, sort_keys=True)})")
-            event = execute_tool_call(call)
+            print(f"Tool: {call.name}({json.dumps(call.args, ensure_ascii=True, sort_keys=True)})")
+            event = execute_tool_call(call, tools or None, offline=execution_mode.startswith("scripted"))
             round_record["tool_results"].append(event)
             all_tool_events.append(event)
 
@@ -146,10 +148,13 @@ def run_model_tool_loop(
 def write_transcript(path: Path, transcript: dict[str, Any]) -> None:
     transcript["updated_at"] = now_iso()
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(transcript, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
+    temp_path = path.with_suffix(path.suffix + ".tmp")
+    temp_path.write_text(json.dumps(transcript, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
+    temp_path.replace(path)
 
 
 def main() -> None:
+    configure_stdio()
     parser = argparse.ArgumentParser(description="Interactive Research Agent chat with transcript logging.")
     parser.add_argument("--provider", choices=["openrouter", "openai", "anthropic", "gemini", "ollama"], required=True)
     parser.add_argument("--model", default=None)
@@ -234,12 +239,16 @@ def main() -> None:
             turn_record.update(result)
             assistant_text = result["assistant_text"]
             print(f"\nAgent> {assistant_text}")
-            history.append({"role": "user", "content": user_text})
-            history.append({"role": "assistant", "content": assistant_text})
+            if result["status"] != "provider_error" or result["tool_events"]:
+                history.append({"role": "user", "content": user_text})
+                context = assistant_text
+                if result["tool_events"]:
+                    context += "\n\nPrior tool results:\n" + json_text(result["tool_events"])
+                history.append({"role": "assistant", "content": context})
         except Exception as exc:
             turn_record.update({
                 "status": "provider_error",
-                "error": f"{type(exc).__name__}: {str(exc)}",
+                "error": safe_error(exc),
             })
             print(f"\nERROR> {turn_record['error']}")
 

@@ -12,6 +12,9 @@ from env_loader import load_lab_env
 from providers import make_provider
 from tools import TOOL_FUNCTIONS, load_tool_declarations, to_openai_tools
 from versioning import artifact_version_dict, build_artifact_version
+from tool_runtime import argument_errors
+from chat import configure_stdio
+from tools._shared import safe_error
 
 
 ROOT = Path(__file__).parent
@@ -34,6 +37,14 @@ def load_cases(path: Path, phase: str) -> list[dict[str, Any]]:
     cases = data["cases"]
     cases = [case for case in cases if case["phase"] == phase]
     validate_case_failure_types(cases, path)
+    ids = [case.get("id") for case in cases]
+    if not all(ids) or len(ids) != len(set(ids)):
+        raise ValueError(f"Missing or duplicate case id in {path}")
+    for case in cases:
+        if not (case.get("query") or case.get("input") or case.get("turns")):
+            raise ValueError(f"{case['id']}: missing query/turns")
+        if bool(case.get("expect", {}).get("tool_calls")) == bool(case.get("expect", {}).get("no_tool")):
+            raise ValueError(f"{case['id']}: expect must contain tool_calls or no_tool")
     return cases
 
 
@@ -101,18 +112,34 @@ def normalize_value(value: Any) -> Any:
     if isinstance(value, str):
         return value.strip().lower()
     if isinstance(value, list):
-        return sorted(normalize_value(item) for item in value)
+        return [normalize_value(item) for item in value]
+    if isinstance(value, dict):
+        return {key: normalize_value(item) for key, item in value.items()}
     return value
 
 
+def exact_value(expected: Any, actual: Any) -> bool:
+    if type(expected) is not type(actual):
+        return False
+    if isinstance(expected, dict):
+        return expected.keys() == actual.keys() and all(exact_value(value, actual[key]) for key, value in expected.items())
+    if isinstance(expected, list):
+        return len(expected) == len(actual) and all(exact_value(a, b) for a, b in zip(expected, actual))
+    return expected == actual
+
+
 def compare_subset(expected: dict[str, Any], actual: dict[str, Any]) -> tuple[bool, list[str], int, int]:
+    if not isinstance(actual, dict):
+        return False, ["arguments must be an object"], 0, max(1, len(expected))
     failures: list[str] = []
     total = 0
     correct = 0
     for key, expected_value in expected.items():
         total += 1
         actual_value = actual.get(key)
-        if key == "missing_fields":
+        if key in {"items", "text", "url"}:
+            ok = exact_value(expected_value, actual_value)
+        elif key == "missing_fields":
             expected_set = set(expected_value)
             actual_set = set(actual_value or [])
             ok = expected_set.issubset(actual_set)
@@ -139,7 +166,7 @@ def best_arg_match(expected_args: dict[str, Any], actual_calls: list[tuple[int, 
     return best
 
 
-def evaluate_phase_b(case: dict[str, Any], tool_calls: list[dict[str, Any]], text: str | None) -> dict[str, Any]:
+def evaluate_phase_b(case: dict[str, Any], tool_calls: list[dict[str, Any]], text: str | None, declarations=None) -> dict[str, Any]:
     expect = case["expect"]
     case_failure_type = case["failure_type"]
     if expect.get("no_tool"):
@@ -197,6 +224,13 @@ def evaluate_phase_b(case: dict[str, Any], tool_calls: list[dict[str, Any]], tex
         observed_mismatch = observed_mismatch or "extra_tool_call"
         failures.append(f"extra tool call {actual_call['name']}")
 
+    for call in tool_calls:
+        errors = argument_errors(call["name"], call.get("args"), declarations)
+        if errors:
+            args_correct = False
+            observed_mismatch = observed_mismatch or "invalid_tool_arguments"
+            failures.extend(f"{call['name']}: {error}" for error in errors)
+
     passed = routing_correct and args_correct and not failures
     return {
         "passed": passed,
@@ -246,6 +280,12 @@ def summarize(results: list[dict[str, Any]]) -> dict[str, Any]:
             observed_mismatch_counts[observed_mismatch] = observed_mismatch_counts.get(observed_mismatch, 0) + 1
     summary["failure_counts"] = failure_counts
     summary["observed_mismatch_counts"] = observed_mismatch_counts
+    events = [event for item in results for event in item.get("tool_results", [])]
+    tool_errors = sum(bool(event.get("result", event).get("error")) for event in events)
+    simulated = sum(event.get("result", {}).get("status") == "dry_run" for event in events)
+    summary["tool_execution"] = {"total_calls": len(events), "error_calls": tool_errors,
+                                 "dry_run_calls": simulated,
+                                 "successful_calls": len(events) - tool_errors - simulated}
     return summary
 
 
@@ -266,6 +306,7 @@ def print_table(results: list[dict[str, Any]], summary: dict[str, Any]) -> None:
 
 
 def main() -> None:
+    configure_stdio()
     parser = argparse.ArgumentParser(description="Run Research Agent live evals.")
     parser.add_argument("--phase", choices=["B"], default="B")
     parser.add_argument("--suite", choices=["base", "group", "cross", "extension"], default="base", help="Run label saved to JSON; does not filter --eval-cases.")
@@ -276,6 +317,7 @@ def main() -> None:
     parser.add_argument("--tools", type=Path, default=ARTIFACTS_DIR / "tools.yaml")
     parser.add_argument("--eval-cases", type=Path, default=DATA_DIR / "eval_base.json")
     parser.add_argument("--runs-dir", type=Path, default=ROOT / "runs")
+    parser.add_argument("--allow-actions", action="store_true", help="Allow confirmed external actions; default is dry-run for eval.")
     args = parser.parse_args()
 
     system_prompt = args.system_prompt.read_text(encoding="utf-8")
@@ -320,18 +362,23 @@ def main() -> None:
         "completed_cases": 0,
         "summary": summarize(results),
         "results": results,
+        "scorer_version": "schema-v2",
+        "actions_mode": "live" if args.allow_actions else "dry_run",
+        "provider_metadata": provider.metadata(openai_tools) if hasattr(provider, "metadata") else {},
     }
     write_run_log(out_path, payload)
 
     for case in cases:
+        response_metadata = {}
         print(f"Running {case['id']}...", flush=True)
-        agent = ResearchAgent(provider, system_prompt=system_prompt, tools=openai_tools, model=args.model)
+        agent = ResearchAgent(provider, system_prompt=system_prompt, tools=openai_tools, model=args.model,
+                              dry_run_actions=not args.allow_actions)
         try:
             tool_choice = None if case["expect"].get("no_tool") else "required"
             run = agent.run(case_messages(case), tool_choice=tool_choice)
             calls = [{"name": call.name, "args": call.args} for call in run.tool_calls]
-            result = evaluate_phase_b(case, calls, run.text)
             tool_results = run.tool_results
+            response_metadata = run.metadata
         except Exception as exc:
             calls = []
             tool_results = []
@@ -340,12 +387,20 @@ def main() -> None:
                 "failure_type": "provider_error",
                 "case_failure_type": case.get("failure_type"),
                 "observed_mismatch": "provider_error",
-                "failures": [f"{type(exc).__name__}: {str(exc)}"],
+                "failures": [safe_error(exc)],
                 "actual_tool_calls": [],
                 "actual_text": None,
                 "routing_correct": False,
                 "args_correct": False,
             }
+        else:
+            try:
+                result = evaluate_phase_b(case, calls, run.text, tool_declarations)
+            except Exception as exc:
+                result = {"passed": False, "failure_type": "harness_error",
+                          "case_failure_type": case.get("failure_type"), "observed_mismatch": "harness_error",
+                          "failures": [safe_error(exc)], "actual_tool_calls": calls,
+                          "actual_text": run.text, "routing_correct": False, "args_correct": False}
         results.append({
             "id": case["id"],
             "phase": case["phase"],
@@ -357,6 +412,7 @@ def main() -> None:
             "expect": case["expect"],
             "result": result,
             "tool_results": tool_results,
+            "provider_response_metadata": response_metadata,
         })
         payload["completed_cases"] = len(results)
         payload["summary"] = summarize(results)

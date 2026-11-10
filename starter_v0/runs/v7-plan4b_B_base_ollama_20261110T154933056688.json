@@ -1,0 +1,1509 @@
+{
+  "run_id": "v7-plan4b_B_base_ollama_20261110T154933056688",
+  "version": "v7-plan4b",
+  "artifact_version": "v7-plan4b+p12c3f4b39f64+t36a53ea8669c",
+  "prompt_hash": "12c3f4b39f645fa9b8e4481bdea5166f923c85cbfad6ae6bcc383495cef4e8b1",
+  "tools_hash": "36a53ea8669cb07a24f3f2733e2ee5682e6d614182e0f1e8c573d4e4f3cf5310",
+  "phase": "B",
+  "suite": "base",
+  "provider": "ollama",
+  "model": "qwen3:4b-instruct",
+  "system_prompt": "artifacts\\candidates\\v6_compact.md",
+  "tools": "C:\\Users\\ACER NITRO\\OneDrive - Hanoi University of Science and Technology\\Desktop\\K5-L3A-DAY03-VuVo-ResearchAgentToolEval\\starter_v0\\artifacts\\tools.yaml",
+  "eval_cases": "data\\eval_base.json",
+  "dataset_id": "day04_v2_research_base",
+  "dataset_role": "base",
+  "description": "Core eval cho research agent: routing đúng tool + đúng args, hỏi lại khi thiếu (ask_user), xác nhận trước khi gửi, và xử lý câu ngoài phạm vi / không cần tool. Chấm trên tool_calls + args (subset). KHÔNG sửa file này — chỉ thêm case vào eval_group.json.",
+  "generated_at": "2026-11-10T15:49:33",
+  "status": "completed",
+  "completed_cases": 20,
+  "summary": {
+    "total_cases": 20,
+    "measured_cases": 20,
+    "provider_error_cases": 0,
+    "passed_cases": 13,
+    "case_accuracy": 0.65,
+    "tool_routing_accuracy": 0.9,
+    "argument_accuracy": 0.65,
+    "multiturn_accuracy": 0.8333,
+    "failure_counts": {
+      "wrong_tool": 2,
+      "wrong_arg_value": 3,
+      "missing_info": 1,
+      "wrong_boundary": 1
+    },
+    "observed_mismatch_counts": {
+      "wrong_arg_value": 5,
+      "missing_tool_call": 2
+    },
+    "tool_execution": {
+      "total_calls": 18,
+      "error_calls": 15,
+      "dry_run_calls": 0,
+      "successful_calls": 3
+    }
+  },
+  "results": [
+    {
+      "id": "R01_user_tweets_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_user_tweets_name_to_handle",
+        "difficulty": "medium",
+        "what_it_tests": "Tin CỦA một người nổi tiếng → map tên Sam Altman thành handle sama rồi gọi get_user_tweets."
+      },
+      "input": "Tweet mới nhất của Sam Altman là gì?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": "Hỏi một câu để bổ sung thông tin còn thiếu hoặc xin xác nhận gửi, rồi chờ người dùng trả lời. Dùng khi thiếu tài khoản cho timeline, URL cho fetch, danh sách cho deduplicate, hoặc chưa xác nhận gửi Telegram. Không đoán dữ liệu thay người dùng. Không dùng cho lời cảm ơn, câu hỏi khả năng hoặc yêu cầu ngoài phạm vi research; các trường hợp đó trả lời trực tiếp.",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "sama",
+            "limit": 5
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ],
+      "provider_response_metadata": {
+        "tool_call_mode": "structured_plan",
+        "planning_protocol": "tool-plan-v1",
+        "planning_template_hash": "4926e2b1cb9f9b864fa7cb8e9365c56fee81b58154222da4e87126221ad78706",
+        "plan_schema_hashes": {
+          "auto": "e3db1a2aca924f23d295b5d6984ff736b136e90e1e9a1dd0cacfbcf9fba6792f",
+          "required": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+          "none": "e01c96eddc27aa777be8dad69f20eec50c23f447663f2dfc53cfe76ed22ffb3f"
+        },
+        "request_prompt_hash": "207a26b3bb707d079e53c6ac1d2b184b87a4befb2110478acbc58536c8ecdc32",
+        "response_schema_hash": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+        "requested_tool_choice": "required",
+        "raw_plan": "{\"text\":\"Hỏi một câu để bổ sung thông tin còn thiếu hoặc xin xác nhận gửi, rồi chờ người dùng trả lời. Dùng khi thiếu tài khoản cho timeline, URL cho fetch, danh sách cho deduplicate, hoặc chưa xác nhận gửi Telegram. Không đoán dữ liệu thay người dùng. Không dùng cho lời cảm ơn, câu hỏi khả năng hoặc yêu cầu ngoài phạm vi research; các trường hợp đó trả lời trực tiếp.\",\"tool_calls\":[{\"args\":{\"screenname\":\"sama\",\"limit\":5},\"name\":\"timeline\"}]}"
+      }
+    },
+    {
+      "id": "R02_search_tweets_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_search_tweets",
+        "difficulty": "easy",
+        "what_it_tests": "Tweet theo CHỦ ĐỀ → search_tweets, không phải get_user_tweets."
+      },
+      "input": "Mọi người đang bàn gì về GPT-5 trên Twitter?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "GPT-5",
+              "search_type": "Latest"
+            }
+          }
+        ],
+        "actual_text": "Đang tìm bài đăng trên Twitter về chủ đề GPT-5. Dùng social_search để tìm các bài đăng về chủ đề này.",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "GPT-5",
+            "search_type": "Latest"
+          },
+          "result": {
+            "tool": "search_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ],
+      "provider_response_metadata": {
+        "tool_call_mode": "structured_plan",
+        "planning_protocol": "tool-plan-v1",
+        "planning_template_hash": "4926e2b1cb9f9b864fa7cb8e9365c56fee81b58154222da4e87126221ad78706",
+        "plan_schema_hashes": {
+          "auto": "e3db1a2aca924f23d295b5d6984ff736b136e90e1e9a1dd0cacfbcf9fba6792f",
+          "required": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+          "none": "e01c96eddc27aa777be8dad69f20eec50c23f447663f2dfc53cfe76ed22ffb3f"
+        },
+        "request_prompt_hash": "34e2e52ac8b129c300ee540b5298e3a235e0857f64baf470e622e898206fecc7",
+        "response_schema_hash": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+        "requested_tool_choice": "required",
+        "raw_plan": "{\"text\":\"Đang tìm bài đăng trên Twitter về chủ đề GPT-5. Dùng social_search để tìm các bài đăng về chủ đề này.\",\"tool_calls\":[{\"args\":{\"query\":\"GPT-5\",\"search_type\":\"Latest\"},\"name\":\"social_search\"}]}"
+      }
+    },
+    {
+      "id": "R03_web_news_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_web_news",
+        "difficulty": "medium",
+        "what_it_tests": "Tin thời sự trên web → web_search topic=news, timeframe=day (hôm nay)."
+      },
+      "input": "Tin tức AI hôm nay có gì nổi bật?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": true,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news"
+            }
+          }
+        ],
+        "actual_text": "Tin tức AI hôm nay có gì nổi bật? Đây là một yêu cầu về tin tức thời sự liên quan đến AI. Tôi sẽ thực hiện tìm kiếm thông tin trên web theo chủ đề 'AI' với thời gian là 'day' (hôm nay) và loại tin là 'news'.",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "timeframe: expected 'day', got None"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "AI",
+            "topic": "news"
+          },
+          "result": {
+            "tool": "web_search",
+            "error": "RuntimeError",
+            "message": "Missing TAVILY_API_KEY env var"
+          }
+        }
+      ],
+      "provider_response_metadata": {
+        "tool_call_mode": "structured_plan",
+        "planning_protocol": "tool-plan-v1",
+        "planning_template_hash": "4926e2b1cb9f9b864fa7cb8e9365c56fee81b58154222da4e87126221ad78706",
+        "plan_schema_hashes": {
+          "auto": "e3db1a2aca924f23d295b5d6984ff736b136e90e1e9a1dd0cacfbcf9fba6792f",
+          "required": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+          "none": "e01c96eddc27aa777be8dad69f20eec50c23f447663f2dfc53cfe76ed22ffb3f"
+        },
+        "request_prompt_hash": "527d3865e6036298fab37d60729f63664f4f14442220f6d7189018b85a57ac6e",
+        "response_schema_hash": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+        "requested_tool_choice": "required",
+        "raw_plan": "{\n  \"text\": \"Tin tức AI hôm nay có gì nổi bật? Đây là một yêu cầu về tin tức thời sự liên quan đến AI. Tôi sẽ thực hiện tìm kiếm thông tin trên web theo chủ đề 'AI' với thời gian là 'day' (hôm nay) và loại tin là 'news'.\",\n  \"tool_calls\": [\n    {\n      \"args\": {\n        \"query\": \"AI\",\n        \"topic\": \"news\"\n      },\n      \"name\": \"lookup\"\n    }\n  ]\n}"
+      }
+    },
+    {
+      "id": "R04_read_url_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_read_url",
+        "difficulty": "easy",
+        "what_it_tests": "Đã có link cụ thể → read_url, không phải web_search."
+      },
+      "input": "Tóm tắt bài này giúp mình: https://openai.com/blog/gpt-5",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://openai.com/blog/gpt-5"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://openai.com/blog/gpt-5"
+            }
+          }
+        ],
+        "actual_text": "Không có thông tin về bài viết tại URL https://openai.com/blog/gpt-5 trong cơ sở dữ liệu hiện tại. Tôi không thể truy cập hoặc đọc nội dung từ URL đó trực tiếp. Nếu bạn có nội dung cụ thể hoặc muốn tôi tìm kiếm thông tin liên quan, vui lòng cung cấp thêm chi tiết.",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://openai.com/blog/gpt-5"
+          },
+          "result": {
+            "tool": "read_url",
+            "error": "RuntimeError",
+            "message": "Missing FIRECRAWL_API_KEY env var"
+          }
+        }
+      ],
+      "provider_response_metadata": {
+        "tool_call_mode": "structured_plan",
+        "planning_protocol": "tool-plan-v1",
+        "planning_template_hash": "4926e2b1cb9f9b864fa7cb8e9365c56fee81b58154222da4e87126221ad78706",
+        "plan_schema_hashes": {
+          "auto": "e3db1a2aca924f23d295b5d6984ff736b136e90e1e9a1dd0cacfbcf9fba6792f",
+          "required": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+          "none": "e01c96eddc27aa777be8dad69f20eec50c23f447663f2dfc53cfe76ed22ffb3f"
+        },
+        "request_prompt_hash": "aa1153c32c06ee4df691f27748e17020397517dc34e04c5e388366bea7bf15b3",
+        "response_schema_hash": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+        "requested_tool_choice": "required",
+        "raw_plan": "{\"text\":\"Không có thông tin về bài viết tại URL https://openai.com/blog/gpt-5 trong cơ sở dữ liệu hiện tại. Tôi không thể truy cập hoặc đọc nội dung từ URL đó trực tiếp. Nếu bạn có nội dung cụ thể hoặc muốn tôi tìm kiếm thông tin liên quan, vui lòng cung cấp thêm chi tiết.\",\"tool_calls\": [{\"args\": {\"url\": \"https://openai.com/blog/gpt-5\"}, \"name\": \"fetch\"}]}"
+      }
+    },
+    {
+      "id": "R05_limit_arg",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_limit",
+        "difficulty": "easy",
+        "what_it_tests": "Trích đúng limit=10 từ '10 tweet'."
+      },
+      "input": "Lấy 10 tweet mới nhất của Elon Musk",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 10
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 10
+            }
+          }
+        ],
+        "actual_text": "Để lấy 10 tweet mới nhất của Elon Musk, tôi sẽ thực hiện một cuộc tra cứu trên X/Twitter về tài khoản của ông ấy. Tuy nhiên, trước khi thực hiện, tôi cần xác nhận rằng bạn muốn lấy bài đăng của Elon Musk (tài khoản đã xác định) chứ không phải một chủ đề nào đó. Tôi sẽ sử dụng chức năng timeline để lấy bài đăng gần đây của tài khoản này. Dưới đây là câu hỏi để xác nhận thông tin cần thiết:\n\nCâu hỏi: Bạn có muốn lấy 10 bài đăng mới nhất của Elon Musk (tài khoản @elonmusk) không? Nếu có, tôi sẽ thực hiện tra cứu theo tài khoản đó. Nếu không, vui lòng chỉ rõ chủ đề hoặc tài khoản khác bạn muốn tìm.\n\nLoại phản hồi: text (vì cần xác nhận tài khoản và mục đích tra cứu)",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "elonmusk",
+            "limit": 10
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ],
+      "provider_response_metadata": {
+        "tool_call_mode": "structured_plan",
+        "planning_protocol": "tool-plan-v1",
+        "planning_template_hash": "4926e2b1cb9f9b864fa7cb8e9365c56fee81b58154222da4e87126221ad78706",
+        "plan_schema_hashes": {
+          "auto": "e3db1a2aca924f23d295b5d6984ff736b136e90e1e9a1dd0cacfbcf9fba6792f",
+          "required": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+          "none": "e01c96eddc27aa777be8dad69f20eec50c23f447663f2dfc53cfe76ed22ffb3f"
+        },
+        "request_prompt_hash": "04471620d7f02ee11e8618c7ed0ae6fe37da7ec503b0ee21655c4e5cb4854657",
+        "response_schema_hash": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+        "requested_tool_choice": "required",
+        "raw_plan": "{\"text\":\"Để lấy 10 tweet mới nhất của Elon Musk, tôi sẽ thực hiện một cuộc tra cứu trên X/Twitter về tài khoản của ông ấy. Tuy nhiên, trước khi thực hiện, tôi cần xác nhận rằng bạn muốn lấy bài đăng của Elon Musk (tài khoản đã xác định) chứ không phải một chủ đề nào đó. Tôi sẽ sử dụng chức năng timeline để lấy bài đăng gần đây của tài khoản này. Dưới đây là câu hỏi để xác nhận thông tin cần thiết:\\n\\nCâu hỏi: Bạn có muốn lấy 10 bài đăng mới nhất của Elon Musk (tài khoản @elonmusk) không? Nếu có, tôi sẽ thực hiện tra cứu theo tài khoản đó. Nếu không, vui lòng chỉ rõ chủ đề hoặc tài khoản khác bạn muốn tìm.\\n\\nLoại phản hồi: text (vì cần xác nhận tài khoản và mục đích tra cứu)\",\"tool_calls\": [{\"args\": {\"screenname\": \"elonmusk\", \"limit\": 10}, \"name\": \"timeline\"}]}"
+      }
+    },
+    {
+      "id": "R06_timeframe_arg",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_timeframe",
+        "difficulty": "medium",
+        "what_it_tests": "'tuần này' → timeframe=week."
+      },
+      "input": "Tin công nghệ trong tuần này",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "timeframe": "week"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": true,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "công nghệ",
+              "topic": "news"
+            }
+          }
+        ],
+        "actual_text": "Tin công nghệ trong tuần này sẽ được tìm kiếm thông qua một cuộc tra cứu trên web về chủ đề công nghệ, với thời gian là tuần này (week) và loại tin là tin tức (news). Tôi sẽ thực hiện tìm kiếm này bằng công cụ lookup, với chủ đề 'công nghệ', loại tin là 'news' và khoảng thời gian là 'week'. Nếu cần, tôi có thể điều chỉnh hoặc xác nhận thêm thông tin trước khi thực hiện.",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "timeframe: expected 'week', got None"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "công nghệ",
+            "topic": "news"
+          },
+          "result": {
+            "tool": "web_search",
+            "error": "RuntimeError",
+            "message": "Missing TAVILY_API_KEY env var"
+          }
+        }
+      ],
+      "provider_response_metadata": {
+        "tool_call_mode": "structured_plan",
+        "planning_protocol": "tool-plan-v1",
+        "planning_template_hash": "4926e2b1cb9f9b864fa7cb8e9365c56fee81b58154222da4e87126221ad78706",
+        "plan_schema_hashes": {
+          "auto": "e3db1a2aca924f23d295b5d6984ff736b136e90e1e9a1dd0cacfbcf9fba6792f",
+          "required": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+          "none": "e01c96eddc27aa777be8dad69f20eec50c23f447663f2dfc53cfe76ed22ffb3f"
+        },
+        "request_prompt_hash": "a81acaa44eeffb847ba89884af0665fd02c2837f5e73dbb85dc8aae1c6f72be6",
+        "response_schema_hash": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+        "requested_tool_choice": "required",
+        "raw_plan": "{\"text\":\"Tin công nghệ trong tuần này sẽ được tìm kiếm thông qua một cuộc tra cứu trên web về chủ đề công nghệ, với thời gian là tuần này (week) và loại tin là tin tức (news). Tôi sẽ thực hiện tìm kiếm này bằng công cụ lookup, với chủ đề 'công nghệ', loại tin là 'news' và khoảng thời gian là 'week'. Nếu cần, tôi có thể điều chỉnh hoặc xác nhận thêm thông tin trước khi thực hiện.\",\"tool_calls\": [{\"args\": {\"query\": \"công nghệ\",\"topic\": \"news\"},\"name\": \"lookup\"}]}"
+      }
+    },
+    {
+      "id": "R07_search_type_arg",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_search_type",
+        "difficulty": "medium",
+        "what_it_tests": "'phổ biến/top' → search_type=Top (không phải Latest)."
+      },
+      "input": "Cho mình các tweet phổ biến (top) nhất về OpenAI",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "search_type": "Top"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn muốn tìm các bài đăng phổ biến (top) nhất về chủ đề 'OpenAI' trên X/Twitter. Bạn có muốn tôi tìm theo chủ đề 'OpenAI' với loại tìm kiếm 'Top' (phổ biến nhất), trong khoảng thời gian nào (mặc định là tuần), và bao nhiêu kết quả (mặc định là 5)? Nếu không, vui lòng xác nhận để tôi bắt đầu tìm kiếm.",
+              "response_type": "text"
+            }
+          }
+        ],
+        "actual_text": "Xin xác nhận: bạn muốn tìm các bài đăng phổ biến (top) nhất về chủ đề 'OpenAI' trên X/Twitter. Bạn có muốn tôi tìm theo chủ đề 'OpenAI' với loại tìm kiếm 'Top' (phổ biến nhất), trong khoảng thời gian nào (mặc định là tuần), và bao nhiêu kết quả (mặc định là 5)? Nếu không, vui lòng xác nhận để tôi bắt đầu tìm kiếm.",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "missing tool call social_search",
+          "extra tool call clarify"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn muốn tìm các bài đăng phổ biến (top) nhất về chủ đề 'OpenAI' trên X/Twitter. Bạn có muốn tôi tìm theo chủ đề 'OpenAI' với loại tìm kiếm 'Top' (phổ biến nhất), trong khoảng thời gian nào (mặc định là tuần), và bao nhiêu kết quả (mặc định là 5)? Nếu không, vui lòng xác nhận để tôi bắt đầu tìm kiếm.",
+            "response_type": "text"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn muốn tìm các bài đăng phổ biến (top) nhất về chủ đề 'OpenAI' trên X/Twitter. Bạn có muốn tôi tìm theo chủ đề 'OpenAI' với loại tìm kiếm 'Top' (phổ biến nhất), trong khoảng thời gian nào (mặc định là tuần), và bao nhiêu kết quả (mặc định là 5)? Nếu không, vui lòng xác nhận để tôi bắt đầu tìm kiếm.",
+            "response_type": "text",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ],
+      "provider_response_metadata": {
+        "tool_call_mode": "structured_plan",
+        "planning_protocol": "tool-plan-v1",
+        "planning_template_hash": "4926e2b1cb9f9b864fa7cb8e9365c56fee81b58154222da4e87126221ad78706",
+        "plan_schema_hashes": {
+          "auto": "e3db1a2aca924f23d295b5d6984ff736b136e90e1e9a1dd0cacfbcf9fba6792f",
+          "required": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+          "none": "e01c96eddc27aa777be8dad69f20eec50c23f447663f2dfc53cfe76ed22ffb3f"
+        },
+        "request_prompt_hash": "a79d34920b87a0c014f04eb91655a1db2ec113efc665e13a0408bb968e14fade",
+        "response_schema_hash": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+        "requested_tool_choice": "required",
+        "raw_plan": "{\"text\":\"Xin xác nhận: bạn muốn tìm các bài đăng phổ biến (top) nhất về chủ đề 'OpenAI' trên X/Twitter. Bạn có muốn tôi tìm theo chủ đề 'OpenAI' với loại tìm kiếm 'Top' (phổ biến nhất), trong khoảng thời gian nào (mặc định là tuần), và bao nhiêu kết quả (mặc định là 5)? Nếu không, vui lòng xác nhận để tôi bắt đầu tìm kiếm.\",\"tool_calls\": [{\"args\": {\"question\": \"Bạn muốn tìm các bài đăng phổ biến (top) nhất về chủ đề 'OpenAI' trên X/Twitter. Bạn có muốn tôi tìm theo chủ đề 'OpenAI' với loại tìm kiếm 'Top' (phổ biến nhất), trong khoảng thời gian nào (mặc định là tuần), và bao nhiêu kết quả (mặc định là 5)? Nếu không, vui lòng xác nhận để tôi bắt đầu tìm kiếm.\",\"response_type\": \"text\"},\"name\": \"clarify\"}]}"
+      }
+    },
+    {
+      "id": "R08_out_of_scope",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "out_of_scope",
+        "difficulty": "easy",
+        "what_it_tests": "Câu ngoài phạm vi research → KHÔNG gọi tool, từ chối/định hướng."
+      },
+      "input": "Giải giúp mình bài toán tích phân: nguyên hàm của x^2 là gì?",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Tôi không thể giúp giải bài toán tích phân vì đây là một yêu cầu về toán học, không liên quan đến nghiên cứu thông tin, nguồn, hoặc công cụ mà tôi được thiết kế để xử lý. Tuy nhiên, nguyên hàm của x^2 là (x^3)/3 + C, trong đó C là hằng số tích phân.",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [],
+      "provider_response_metadata": {
+        "tool_call_mode": "structured_plan",
+        "planning_protocol": "tool-plan-v1",
+        "planning_template_hash": "4926e2b1cb9f9b864fa7cb8e9365c56fee81b58154222da4e87126221ad78706",
+        "plan_schema_hashes": {
+          "auto": "e3db1a2aca924f23d295b5d6984ff736b136e90e1e9a1dd0cacfbcf9fba6792f",
+          "required": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+          "none": "e01c96eddc27aa777be8dad69f20eec50c23f447663f2dfc53cfe76ed22ffb3f"
+        },
+        "request_prompt_hash": "c55c9c5943d9dda91ebe77bbc47122294240e1bb79ce52929d3b3a47e29bafb1",
+        "response_schema_hash": "e3db1a2aca924f23d295b5d6984ff736b136e90e1e9a1dd0cacfbcf9fba6792f",
+        "requested_tool_choice": "auto",
+        "raw_plan": "{\"text\":\"Tôi không thể giúp giải bài toán tích phân vì đây là một yêu cầu về toán học, không liên quan đến nghiên cứu thông tin, nguồn, hoặc công cụ mà tôi được thiết kế để xử lý. Tuy nhiên, nguyên hàm của x^2 là (x^3)/3 + C, trong đó C là hằng số tích phân.\",\"tool_calls\":[]}"
+      }
+    },
+    {
+      "id": "R09_no_tool_capability",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "no_tool_meta",
+        "difficulty": "easy",
+        "what_it_tests": "Câu hỏi meta → trả lời thẳng, KHÔNG gọi tool."
+      },
+      "input": "Bạn là gì và làm được những gì?",
+      "expect": {
+        "no_tool": true,
+        "behavior": "answer_without_tool"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Tôi là một trợ lý nghiên cứu được thiết kế để hỗ trợ việc thu thập, phân tích và trình bày thông tin từ các nguồn khác nhau như mạng xã hội, trang web, bài báo khoa học và quy định nội bộ. Tôi có thể thực hiện các tác vụ như: tìm kiếm bài đăng trên X/Twitter theo tài khoản hoặc chủ đề, tra cứu tin tức hoặc thông tin trên web, đọc nội dung từ một URL cụ thể, tìm kiếm các bài báo khoa học trên arXiv, xác minh quy định nội bộ, loại bỏ các kết quả trùng lặp và trình bày kết quả dưới dạng bản tin hoặc danh sách có cấu trúc. Tôi không tự tạo nội dung, không đưa ra kết luận chưa được kiểm chứng và luôn trích dẫn nguồn gốc thông tin. Mọi hành động đều dựa trên dữ liệu thực tế và được xác minh, không bao giờ giả định hoặc suy đoán.",
+        "case_failure_type": "unnecessary_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [],
+      "provider_response_metadata": {
+        "tool_call_mode": "structured_plan",
+        "planning_protocol": "tool-plan-v1",
+        "planning_template_hash": "4926e2b1cb9f9b864fa7cb8e9365c56fee81b58154222da4e87126221ad78706",
+        "plan_schema_hashes": {
+          "auto": "e3db1a2aca924f23d295b5d6984ff736b136e90e1e9a1dd0cacfbcf9fba6792f",
+          "required": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+          "none": "e01c96eddc27aa777be8dad69f20eec50c23f447663f2dfc53cfe76ed22ffb3f"
+        },
+        "request_prompt_hash": "ead694b814a974c8aa656ee301d947c0f62e818a70f174162ec8266049d964df",
+        "response_schema_hash": "e3db1a2aca924f23d295b5d6984ff736b136e90e1e9a1dd0cacfbcf9fba6792f",
+        "requested_tool_choice": "auto",
+        "raw_plan": "{\"text\":\"Tôi là một trợ lý nghiên cứu được thiết kế để hỗ trợ việc thu thập, phân tích và trình bày thông tin từ các nguồn khác nhau như mạng xã hội, trang web, bài báo khoa học và quy định nội bộ. Tôi có thể thực hiện các tác vụ như: tìm kiếm bài đăng trên X/Twitter theo tài khoản hoặc chủ đề, tra cứu tin tức hoặc thông tin trên web, đọc nội dung từ một URL cụ thể, tìm kiếm các bài báo khoa học trên arXiv, xác minh quy định nội bộ, loại bỏ các kết quả trùng lặp và trình bày kết quả dưới dạng bản tin hoặc danh sách có cấu trúc. Tôi không tự tạo nội dung, không đưa ra kết luận chưa được kiểm chứng và luôn trích dẫn nguồn gốc thông tin. Mọi hành động đều dựa trên dữ liệu thực tế và được xác minh, không bao giờ giả định hoặc suy đoán.\",\"tool_calls\":[]}"
+      }
+    },
+    {
+      "id": "R10_missing_handle",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "clarify_missing_handle",
+        "difficulty": "medium",
+        "what_it_tests": "Thiếu handle → ask_user, KHÔNG đoán bừa người nào."
+      },
+      "input": "Tóm tắt 5 tweet mới nhất giúp mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn muốn tóm tắt 5 tweet mới nhất về chủ đề nào và từ tài khoản nào? (Ví dụ: AI, công nghệ, kinh tế, @SamAltman, @elonmusk)",
+              "response_type": "text"
+            }
+          }
+        ],
+        "actual_text": "Tôi hiểu yêu cầu của bạn là tóm tắt 5 tweet mới nhất. Tuy nhiên, bạn chưa cung cấp chủ đề hoặc tài khoản cụ thể để tìm kiếm. Để thực hiện điều này, tôi cần biết bạn muốn tìm những tweet về chủ đề nào (ví dụ: AI, công nghệ, kinh tế...) và từ tài khoản nào (ví dụ: @SamAltman, @elonmusk). Nếu không có chủ đề hoặc tài khoản cụ thể, tôi sẽ không thể thực hiện tìm kiếm. Hãy xác nhận hoặc cung cấp thêm thông tin để tôi có thể tiếp tục.",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn muốn tóm tắt 5 tweet mới nhất về chủ đề nào và từ tài khoản nào? (Ví dụ: AI, công nghệ, kinh tế, @SamAltman, @elonmusk)",
+            "response_type": "text"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn muốn tóm tắt 5 tweet mới nhất về chủ đề nào và từ tài khoản nào? (Ví dụ: AI, công nghệ, kinh tế, @SamAltman, @elonmusk)",
+            "response_type": "text",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ],
+      "provider_response_metadata": {
+        "tool_call_mode": "structured_plan",
+        "planning_protocol": "tool-plan-v1",
+        "planning_template_hash": "4926e2b1cb9f9b864fa7cb8e9365c56fee81b58154222da4e87126221ad78706",
+        "plan_schema_hashes": {
+          "auto": "e3db1a2aca924f23d295b5d6984ff736b136e90e1e9a1dd0cacfbcf9fba6792f",
+          "required": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+          "none": "e01c96eddc27aa777be8dad69f20eec50c23f447663f2dfc53cfe76ed22ffb3f"
+        },
+        "request_prompt_hash": "c30a86a4ba41289c21beacfd5a1fa4b991d4708b13d5d9a94ca0799c9d9af73d",
+        "response_schema_hash": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+        "requested_tool_choice": "required",
+        "raw_plan": "{\"text\":\"Tôi hiểu yêu cầu của bạn là tóm tắt 5 tweet mới nhất. Tuy nhiên, bạn chưa cung cấp chủ đề hoặc tài khoản cụ thể để tìm kiếm. Để thực hiện điều này, tôi cần biết bạn muốn tìm những tweet về chủ đề nào (ví dụ: AI, công nghệ, kinh tế...) và từ tài khoản nào (ví dụ: @SamAltman, @elonmusk). Nếu không có chủ đề hoặc tài khoản cụ thể, tôi sẽ không thể thực hiện tìm kiếm. Hãy xác nhận hoặc cung cấp thêm thông tin để tôi có thể tiếp tục.\",\"tool_calls\": [{\"args\": {\"question\": \"Bạn muốn tóm tắt 5 tweet mới nhất về chủ đề nào và từ tài khoản nào? (Ví dụ: AI, công nghệ, kinh tế, @SamAltman, @elonmusk)\", \"response_type\": \"text\"}, \"name\": \"clarify\"}]}"
+      }
+    },
+    {
+      "id": "R11_missing_url",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "clarify_missing_url",
+        "difficulty": "medium",
+        "what_it_tests": "Nói 'bài này' nhưng không có link → ask_user xin URL."
+      },
+      "input": "Tóm tắt bài viết này hộ mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": ""
+            }
+          }
+        ],
+        "actual_text": "Tôi có thể tóm tắt bài viết cho bạn, nhưng tôi cần URL của bài viết để đọc nội dung. Hãy cung cấp URL đầy đủ của bài viết bạn muốn tôi tóm tắt.",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "missing_info",
+        "failures": [
+          "missing tool call clarify",
+          "extra tool call fetch"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": ""
+          },
+          "result": {
+            "tool": "read_url",
+            "error": "RuntimeError",
+            "message": "Missing FIRECRAWL_API_KEY env var"
+          }
+        }
+      ],
+      "provider_response_metadata": {
+        "tool_call_mode": "structured_plan",
+        "planning_protocol": "tool-plan-v1",
+        "planning_template_hash": "4926e2b1cb9f9b864fa7cb8e9365c56fee81b58154222da4e87126221ad78706",
+        "plan_schema_hashes": {
+          "auto": "e3db1a2aca924f23d295b5d6984ff736b136e90e1e9a1dd0cacfbcf9fba6792f",
+          "required": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+          "none": "e01c96eddc27aa777be8dad69f20eec50c23f447663f2dfc53cfe76ed22ffb3f"
+        },
+        "request_prompt_hash": "86ef26f5c569e0b38da9d0d28f2cce733627402303beaf8ba86c5bf9bac3c542",
+        "response_schema_hash": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+        "requested_tool_choice": "required",
+        "raw_plan": "{\"text\":\"Tôi có thể tóm tắt bài viết cho bạn, nhưng tôi cần URL của bài viết để đọc nội dung. Hãy cung cấp URL đầy đủ của bài viết bạn muốn tôi tóm tắt.\",\"tool_calls\": [{\"args\": {\"url\": \"\"},\"name\": \"fetch\"}]}"
+      }
+    },
+    {
+      "id": "R12_confirm_before_send",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "confirm_before_write",
+        "difficulty": "medium",
+        "what_it_tests": "Hành động ghi (gửi) → xác nhận trước (ask_user yes_no), không tự gửi."
+      },
+      "input": "Đăng bản tin này lên Telegram giúp mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": true,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn muốn tôi đăng nội dung nào lên Telegram? Vui lòng cung cấp nội dung bản tin cụ thể.",
+              "response_type": "text"
+            }
+          }
+        ],
+        "actual_text": "Tôi không thể thực hiện hành động đăng bản tin lên Telegram vì chưa có nội dung cụ thể nào được cung cấp. Bạn vui lòng cung cấp nội dung bản tin mà bạn muốn đăng, và tôi sẽ hỗ trợ bạn xác nhận và đăng lên Telegram sau khi bạn xác nhận đầy đủ.",
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "wrong_boundary",
+        "failures": [
+          "response_type: expected 'yes_no', got 'text'"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn muốn tôi đăng nội dung nào lên Telegram? Vui lòng cung cấp nội dung bản tin cụ thể.",
+            "response_type": "text"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn muốn tôi đăng nội dung nào lên Telegram? Vui lòng cung cấp nội dung bản tin cụ thể.",
+            "response_type": "text",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ],
+      "provider_response_metadata": {
+        "tool_call_mode": "structured_plan",
+        "planning_protocol": "tool-plan-v1",
+        "planning_template_hash": "4926e2b1cb9f9b864fa7cb8e9365c56fee81b58154222da4e87126221ad78706",
+        "plan_schema_hashes": {
+          "auto": "e3db1a2aca924f23d295b5d6984ff736b136e90e1e9a1dd0cacfbcf9fba6792f",
+          "required": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+          "none": "e01c96eddc27aa777be8dad69f20eec50c23f447663f2dfc53cfe76ed22ffb3f"
+        },
+        "request_prompt_hash": "a37bb35597cd5e61216cef9bfd025e70e87381f05101fe5c37583b59daf3ef47",
+        "response_schema_hash": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+        "requested_tool_choice": "required",
+        "raw_plan": "{\"text\":\"Tôi không thể thực hiện hành động đăng bản tin lên Telegram vì chưa có nội dung cụ thể nào được cung cấp. Bạn vui lòng cung cấp nội dung bản tin mà bạn muốn đăng, và tôi sẽ hỗ trợ bạn xác nhận và đăng lên Telegram sau khi bạn xác nhận đầy đủ.\",\"tool_calls\": [{\"args\": {\"question\": \"Bạn muốn tôi đăng nội dung nào lên Telegram? Vui lòng cung cấp nội dung bản tin cụ thể.\", \"response_type\": \"text\"}, \"name\": \"clarify\"}]}"
+      }
+    },
+    {
+      "id": "R13_parallel_web_and_tweets",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "parallel_tool_calls",
+        "difficulty": "hard",
+        "what_it_tests": "Một request cần hai nguồn → gọi cả web_search và search_tweets; eval không phụ thuộc thứ tự tool call."
+      },
+      "input": "Tìm trên web tin AI hôm nay và tìm thêm tweet về AI.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          },
+          {
+            "name": "social_search",
+            "args": {
+              "query": "AI"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": true,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news"
+            }
+          },
+          {
+            "name": "social_search",
+            "args": {
+              "query": "AI",
+              "search_type": "Latest"
+            }
+          }
+        ],
+        "actual_text": "Tôi sẽ tìm tin tức về AI hôm nay trên web và tìm các bài đăng Twitter (tweet) về chủ đề AI. Để thực hiện điều này, tôi cần xác minh các tham số cụ thể:\n\n1. Về tin tức AI hôm nay: tôi sẽ dùng công cụ `lookup` với chủ đề 'AI', loại 'news' và thời gian là 'day'.\n\n2. Về tweet về AI: tôi sẽ dùng công cụ `social_search` với chủ đề 'AI', loại tìm kiếm là 'Latest' (bài mới nhất), và giới hạn 5 kết quả.\n\nTuy nhiên, trước khi thực hiện, tôi cần xác nhận rằng bạn muốn tìm tin tức AI về chủ đề cụ thể (ví dụ: phát triển AI, ứng dụng AI, sự kiện AI...) hoặc một chủ đề rộng hơn. Bạn có thể xác nhận hoặc bổ sung chi tiết không? Nếu không, tôi sẽ tiến hành với chủ đề tổng quát 'AI'.",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "timeframe: expected 'day', got None"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "AI",
+            "topic": "news"
+          },
+          "result": {
+            "tool": "web_search",
+            "error": "RuntimeError",
+            "message": "Missing TAVILY_API_KEY env var"
+          }
+        },
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "AI",
+            "search_type": "Latest"
+          },
+          "result": {
+            "tool": "search_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ],
+      "provider_response_metadata": {
+        "tool_call_mode": "structured_plan",
+        "planning_protocol": "tool-plan-v1",
+        "planning_template_hash": "4926e2b1cb9f9b864fa7cb8e9365c56fee81b58154222da4e87126221ad78706",
+        "plan_schema_hashes": {
+          "auto": "e3db1a2aca924f23d295b5d6984ff736b136e90e1e9a1dd0cacfbcf9fba6792f",
+          "required": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+          "none": "e01c96eddc27aa777be8dad69f20eec50c23f447663f2dfc53cfe76ed22ffb3f"
+        },
+        "request_prompt_hash": "43c6e05a761fef52ece918b6e69c8ed3f0d337aab8639a008b930720b8195e5d",
+        "response_schema_hash": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+        "requested_tool_choice": "required",
+        "raw_plan": "{\n  \"text\": \"Tôi sẽ tìm tin tức về AI hôm nay trên web và tìm các bài đăng Twitter (tweet) về chủ đề AI. Để thực hiện điều này, tôi cần xác minh các tham số cụ thể:\\n\\n1. Về tin tức AI hôm nay: tôi sẽ dùng công cụ `lookup` với chủ đề 'AI', loại 'news' và thời gian là 'day'.\\n\\n2. Về tweet về AI: tôi sẽ dùng công cụ `social_search` với chủ đề 'AI', loại tìm kiếm là 'Latest' (bài mới nhất), và giới hạn 5 kết quả.\\n\\nTuy nhiên, trước khi thực hiện, tôi cần xác nhận rằng bạn muốn tìm tin tức AI về chủ đề cụ thể (ví dụ: phát triển AI, ứng dụng AI, sự kiện AI...) hoặc một chủ đề rộng hơn. Bạn có thể xác nhận hoặc bổ sung chi tiết không? Nếu không, tôi sẽ tiến hành với chủ đề tổng quát 'AI'.\",\n  \"tool_calls\": [\n    {\n      \"args\": {\n        \"query\": \"AI\",\n        \"topic\": \"news\"\n      },\n      \"name\": \"lookup\"\n    },\n    {\n      \"args\": {\n        \"query\": \"AI\",\n        \"search_type\": \"Latest\"\n      },\n      \"name\": \"social_search\"\n    }\n  ]\n}"
+      }
+    },
+    {
+      "id": "R14_out_of_scope_coding",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "out_of_scope_coding",
+        "difficulty": "easy",
+        "what_it_tests": "Câu coding ngoài phạm vi research/news → KHÔNG gọi tool."
+      },
+      "input": "Viết giúp mình một hàm Python tính Fibonacci bằng recursion.",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Tôi có thể giúp bạn viết một hàm Python tính dãy Fibonacci bằng phương pháp đệ quy. Dưới đây là mã nguồn:\n\n```python\ndef fibonacci(n):\n    \"\"\"\n    Tính số thứ n trong dãy Fibonacci bằng đệ quy.\n    \n    Tham số:\n    n (int): Chỉ số của số trong dãy Fibonacci (với n >= 0).\n    \n    Trả về:\n    int: Số thứ n trong dãy Fibonacci.\n    \"\"\"\n    if n < 0:\n        raise ValueError(\"n phải là số nguyên không âm.\")\n    if n <= 1:\n        return n\n    return fibonacci(n - 1) + fibonacci(n - 2)\n\n# Ví dụ sử dụng:\n# In ra các số Fibonacci từ 0 đến 10\nfor i in range(11):\n    print(f\"F({i}) = {fibonacci(i)}\")\n```\n\nLưu ý: Hàm này sử dụng đệ quy nguyên thủy và có độ phức tạp thời gian O(2^n), nên chỉ hiệu quả với giá trị n nhỏ. Nếu bạn cần hiệu suất cao hơn, có thể sử dụng phương pháp lặp hoặc lưu trữ kết quả (memoization). Bạn muốn tôi bổ sung phiên bản tối ưu bằng memoization không?",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [],
+      "provider_response_metadata": {
+        "tool_call_mode": "structured_plan",
+        "planning_protocol": "tool-plan-v1",
+        "planning_template_hash": "4926e2b1cb9f9b864fa7cb8e9365c56fee81b58154222da4e87126221ad78706",
+        "plan_schema_hashes": {
+          "auto": "e3db1a2aca924f23d295b5d6984ff736b136e90e1e9a1dd0cacfbcf9fba6792f",
+          "required": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+          "none": "e01c96eddc27aa777be8dad69f20eec50c23f447663f2dfc53cfe76ed22ffb3f"
+        },
+        "request_prompt_hash": "ff5c066e8ce3ff1354a55bb5e9b38015478b5dbf5e30ff3357815e903f0cbee5",
+        "response_schema_hash": "e3db1a2aca924f23d295b5d6984ff736b136e90e1e9a1dd0cacfbcf9fba6792f",
+        "requested_tool_choice": "auto",
+        "raw_plan": "{\"text\": \"Tôi có thể giúp bạn viết một hàm Python tính dãy Fibonacci bằng phương pháp đệ quy. Dưới đây là mã nguồn:\\n\\n```python\\ndef fibonacci(n):\\n    \\\"\\\"\\\"\\n    Tính số thứ n trong dãy Fibonacci bằng đệ quy.\\n    \\n    Tham số:\\n    n (int): Chỉ số của số trong dãy Fibonacci (với n >= 0).\\n    \\n    Trả về:\\n    int: Số thứ n trong dãy Fibonacci.\\n    \\\"\\\"\\\"\\n    if n < 0:\\n        raise ValueError(\\\"n phải là số nguyên không âm.\\\")\\n    if n <= 1:\\n        return n\\n    return fibonacci(n - 1) + fibonacci(n - 2)\\n\\n# Ví dụ sử dụng:\\n# In ra các số Fibonacci từ 0 đến 10\\nfor i in range(11):\\n    print(f\\\"F({i}) = {fibonacci(i)}\\\")\\n```\\n\\nLưu ý: Hàm này sử dụng đệ quy nguyên thủy và có độ phức tạp thời gian O(2^n), nên chỉ hiệu quả với giá trị n nhỏ. Nếu bạn cần hiệu suất cao hơn, có thể sử dụng phương pháp lặp hoặc lưu trữ kết quả (memoization). Bạn muốn tôi bổ sung phiên bản tối ưu bằng memoization không?\",\"tool_calls\":[]}"
+      }
+    },
+    {
+      "id": "M01_clarify_then_fill",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_clarify_fill",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: carry limit=5 từ lượt 1 + map tên Elon Musk thành handle elonmusk từ lượt 2."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tóm tắt 5 tweet mới nhất giúp mình"
+        },
+        {
+          "role": "user",
+          "content": "Của Elon Musk nhé"
+        },
+        {
+          "role": "user",
+          "content": "Giữ đúng 5 tweet, đừng đổi số lượng"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 5
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": "Đã hiểu. Bạn yêu cầu tóm tắt 5 tweet mới nhất của Elon Musk, và muốn giữ đúng số lượng 5 không đổi. Tôi sẽ thực hiện yêu cầu này bằng cách lấy bài đăng gần đây của tài khoản Elon Musk trên X/Twitter, với giới hạn 5 bài đăng. Tôi sẽ không thay đổi số lượng, và sẽ không tìm kiếm hoặc mở rộng ngoài phạm vi yêu cầu này.",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "elonmusk",
+            "limit": 5
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ],
+      "provider_response_metadata": {
+        "tool_call_mode": "structured_plan",
+        "planning_protocol": "tool-plan-v1",
+        "planning_template_hash": "4926e2b1cb9f9b864fa7cb8e9365c56fee81b58154222da4e87126221ad78706",
+        "plan_schema_hashes": {
+          "auto": "e3db1a2aca924f23d295b5d6984ff736b136e90e1e9a1dd0cacfbcf9fba6792f",
+          "required": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+          "none": "e01c96eddc27aa777be8dad69f20eec50c23f447663f2dfc53cfe76ed22ffb3f"
+        },
+        "request_prompt_hash": "8181c17e8b61623748050042af2b2d12ca74d3deafcbe033a9a54e103db6f949",
+        "response_schema_hash": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+        "requested_tool_choice": "required",
+        "raw_plan": "{\"text\":\"Đã hiểu. Bạn yêu cầu tóm tắt 5 tweet mới nhất của Elon Musk, và muốn giữ đúng số lượng 5 không đổi. Tôi sẽ thực hiện yêu cầu này bằng cách lấy bài đăng gần đây của tài khoản Elon Musk trên X/Twitter, với giới hạn 5 bài đăng. Tôi sẽ không thay đổi số lượng, và sẽ không tìm kiếm hoặc mở rộng ngoài phạm vi yêu cầu này.\",\"tool_calls\": [{\"args\": {\"screenname\": \"elonmusk\", \"limit\": 5}, \"name\": \"timeline\"}]}"
+      }
+    },
+    {
+      "id": "M02_carryover_timeframe",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_carryover",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: chỉ xử lý latest turn, carry timeframe=day và topic=news, query robotics."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tin AI hôm nay có gì?"
+        },
+        {
+          "role": "user",
+          "content": "Còn về robotics thì sao?"
+        },
+        {
+          "role": "user",
+          "content": "Chỉ tìm robotics thôi, vẫn là tin hôm nay"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "robotics",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": true,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "robotics",
+              "topic": "news"
+            }
+          }
+        ],
+        "actual_text": "Tin AI hôm nay đã được hỏi, nhưng yêu cầu hiện tại là chỉ tìm về robotics thôi, vẫn là tin hôm nay. Vì vậy, tôi sẽ tập trung tìm các bài đăng hoặc tin tức về robotics trong thời gian gần đây (hôm nay).",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "timeframe: expected 'day', got None"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "robotics",
+            "topic": "news"
+          },
+          "result": {
+            "tool": "web_search",
+            "error": "RuntimeError",
+            "message": "Missing TAVILY_API_KEY env var"
+          }
+        }
+      ],
+      "provider_response_metadata": {
+        "tool_call_mode": "structured_plan",
+        "planning_protocol": "tool-plan-v1",
+        "planning_template_hash": "4926e2b1cb9f9b864fa7cb8e9365c56fee81b58154222da4e87126221ad78706",
+        "plan_schema_hashes": {
+          "auto": "e3db1a2aca924f23d295b5d6984ff736b136e90e1e9a1dd0cacfbcf9fba6792f",
+          "required": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+          "none": "e01c96eddc27aa777be8dad69f20eec50c23f447663f2dfc53cfe76ed22ffb3f"
+        },
+        "request_prompt_hash": "d10d827df63f064fa7ed14199f64446eece57ed88ac36ad6758ef8bfad62fae9",
+        "response_schema_hash": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+        "requested_tool_choice": "required",
+        "raw_plan": "{\n  \"text\": \"Tin AI hôm nay đã được hỏi, nhưng yêu cầu hiện tại là chỉ tìm về robotics thôi, vẫn là tin hôm nay. Vì vậy, tôi sẽ tập trung tìm các bài đăng hoặc tin tức về robotics trong thời gian gần đây (hôm nay).\",\n  \"tool_calls\": [\n    {\n      \"args\": {\n        \"query\": \"robotics\",\n        \"topic\": \"news\"\n      },\n      \"name\": \"lookup\"\n    }\n  ]\n}"
+      }
+    },
+    {
+      "id": "M03_correction_handle",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_correction",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: map tên thường, sửa Sam Altman→Andrej Karpathy, dùng handle karpathy và limit=3."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tweet mới nhất của Sam Altman"
+        },
+        {
+          "role": "user",
+          "content": "À nhầm, của Andrej Karpathy"
+        },
+        {
+          "role": "user",
+          "content": "Lấy 3 tweet mới nhất nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "karpathy",
+              "limit": 3
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "karpathy",
+              "limit": 3
+            }
+          }
+        ],
+        "actual_text": "À nhầm, của Andrej Karpathy",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "karpathy",
+            "limit": 3
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ],
+      "provider_response_metadata": {
+        "tool_call_mode": "structured_plan",
+        "planning_protocol": "tool-plan-v1",
+        "planning_template_hash": "4926e2b1cb9f9b864fa7cb8e9365c56fee81b58154222da4e87126221ad78706",
+        "plan_schema_hashes": {
+          "auto": "e3db1a2aca924f23d295b5d6984ff736b136e90e1e9a1dd0cacfbcf9fba6792f",
+          "required": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+          "none": "e01c96eddc27aa777be8dad69f20eec50c23f447663f2dfc53cfe76ed22ffb3f"
+        },
+        "request_prompt_hash": "f93001380cf974f2b9a3d65aa0cd9cd9e20a66b1300665e67e19e2cbda35e9cf",
+        "response_schema_hash": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+        "requested_tool_choice": "required",
+        "raw_plan": "{\"text\":\"À nhầm, của Andrej Karpathy\",\"tool_calls\": [{\"args\": {\"screenname\": \"karpathy\", \"limit\": 3}, \"name\": \"timeline\"}]}"
+      }
+    },
+    {
+      "id": "M04_clarify_then_url",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_clarify_url",
+        "difficulty": "medium",
+        "what_it_tests": "3 turns: sau khi được cung cấp URL, latest turn xác nhận chỉ đọc link đó → read_url đúng url."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tóm tắt bài này hộ mình"
+        },
+        {
+          "role": "user",
+          "content": "https://anthropic.com/news/claude"
+        },
+        {
+          "role": "user",
+          "content": "Chỉ đọc đúng link đó thôi"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://anthropic.com/news/claude"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://anthropic.com/news/claude"
+            }
+          }
+        ],
+        "actual_text": "Chỉ đọc đúng link đó thôi.",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://anthropic.com/news/claude"
+          },
+          "result": {
+            "tool": "read_url",
+            "error": "RuntimeError",
+            "message": "Missing FIRECRAWL_API_KEY env var"
+          }
+        }
+      ],
+      "provider_response_metadata": {
+        "tool_call_mode": "structured_plan",
+        "planning_protocol": "tool-plan-v1",
+        "planning_template_hash": "4926e2b1cb9f9b864fa7cb8e9365c56fee81b58154222da4e87126221ad78706",
+        "plan_schema_hashes": {
+          "auto": "e3db1a2aca924f23d295b5d6984ff736b136e90e1e9a1dd0cacfbcf9fba6792f",
+          "required": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+          "none": "e01c96eddc27aa777be8dad69f20eec50c23f447663f2dfc53cfe76ed22ffb3f"
+        },
+        "request_prompt_hash": "4277a68606ad1975575a065b120c4cbca7b29b8faa1086b1dfb2d3a06efe7596",
+        "response_schema_hash": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+        "requested_tool_choice": "required",
+        "raw_plan": "{\"text\":\"Chỉ đọc đúng link đó thôi.\",\"tool_calls\": [{\"args\": {\"url\": \"https://anthropic.com/news/claude\"}, \"name\": \"fetch\"}]}"
+      }
+    },
+    {
+      "id": "M05_correction_limit",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_arg_correction",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: map tên Elon Musk, carry handle elonmusk, sửa limit 10→3."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Lấy 10 tweet mới nhất của Elon Musk"
+        },
+        {
+          "role": "user",
+          "content": "Cho mình 3 thôi"
+        },
+        {
+          "role": "user",
+          "content": "Vẫn của Elon Musk nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 3
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 3
+            }
+          }
+        ],
+        "actual_text": "Đã hiểu. Bạn vẫn muốn lấy 3 bài đăng mới nhất của Elon Musk. Tôi sẽ thực hiện yêu cầu đó ngay lập tức.",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "elonmusk",
+            "limit": 3
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "RuntimeError",
+            "message": "Missing RAPIDAPI_KEY env var"
+          }
+        }
+      ],
+      "provider_response_metadata": {
+        "tool_call_mode": "structured_plan",
+        "planning_protocol": "tool-plan-v1",
+        "planning_template_hash": "4926e2b1cb9f9b864fa7cb8e9365c56fee81b58154222da4e87126221ad78706",
+        "plan_schema_hashes": {
+          "auto": "e3db1a2aca924f23d295b5d6984ff736b136e90e1e9a1dd0cacfbcf9fba6792f",
+          "required": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+          "none": "e01c96eddc27aa777be8dad69f20eec50c23f447663f2dfc53cfe76ed22ffb3f"
+        },
+        "request_prompt_hash": "d24b7edd003ef740d8a0703010af27e2b0ca4d93eaa7cba86d6a5c05f2a24009",
+        "response_schema_hash": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+        "requested_tool_choice": "required",
+        "raw_plan": "{\"text\":\"Đã hiểu. Bạn vẫn muốn lấy 3 bài đăng mới nhất của Elon Musk. Tôi sẽ thực hiện yêu cầu đó ngay lập tức.\",\"tool_calls\": [{\"args\": {\"screenname\": \"elonmusk\", \"limit\": 3}, \"name\": \"timeline\"}]}"
+      }
+    },
+    {
+      "id": "M06_switch_tool",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_switch_tool",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: explicitly bỏ Twitter, chuyển sang web_search news, giữ chủ đề OpenAI."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Mọi người nói gì về OpenAI trên Twitter?"
+        },
+        {
+          "role": "user",
+          "content": "Bỏ Twitter, chuyển sang tìm trên web tin tức đi"
+        },
+        {
+          "role": "user",
+          "content": "Giữ chủ đề OpenAI"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "OpenAI",
+              "topic": "news"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "OpenAI",
+              "topic": "news"
+            }
+          }
+        ],
+        "actual_text": "Đã chuyển từ Twitter sang tìm kiếm trên web tin tức về chủ đề OpenAI. Tôi sẽ tiếp tục tìm kiếm thông tin trên web về OpenAI theo chủ đề đó.",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "OpenAI",
+            "topic": "news"
+          },
+          "result": {
+            "tool": "web_search",
+            "error": "RuntimeError",
+            "message": "Missing TAVILY_API_KEY env var"
+          }
+        }
+      ],
+      "provider_response_metadata": {
+        "tool_call_mode": "structured_plan",
+        "planning_protocol": "tool-plan-v1",
+        "planning_template_hash": "4926e2b1cb9f9b864fa7cb8e9365c56fee81b58154222da4e87126221ad78706",
+        "plan_schema_hashes": {
+          "auto": "e3db1a2aca924f23d295b5d6984ff736b136e90e1e9a1dd0cacfbcf9fba6792f",
+          "required": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+          "none": "e01c96eddc27aa777be8dad69f20eec50c23f447663f2dfc53cfe76ed22ffb3f"
+        },
+        "request_prompt_hash": "74d2a88941a50509547fae7d4234f3ca6bb5ba93346da9f9fe5542568ec1efb2",
+        "response_schema_hash": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+        "requested_tool_choice": "required",
+        "raw_plan": "{\n  \"text\": \"Đã chuyển từ Twitter sang tìm kiếm trên web tin tức về chủ đề OpenAI. Tôi sẽ tiếp tục tìm kiếm thông tin trên web về OpenAI theo chủ đề đó.\",\n  \"tool_calls\": [\n    {\n      \"args\": {\n        \"query\": \"OpenAI\",\n        \"topic\": \"news\"\n      },\n      \"name\": \"lookup\"\n    }\n  ]\n}"
+      }
+    }
+  ],
+  "scorer_version": "schema-v2",
+  "actions_mode": "dry_run",
+  "provider_metadata": {
+    "tool_call_mode": "structured_plan",
+    "planning_protocol": "tool-plan-v1",
+    "planning_template_hash": "4926e2b1cb9f9b864fa7cb8e9365c56fee81b58154222da4e87126221ad78706",
+    "plan_schema_hashes": {
+      "auto": "e3db1a2aca924f23d295b5d6984ff736b136e90e1e9a1dd0cacfbcf9fba6792f",
+      "required": "06b7dfae209dd0c0060ad955328543a55632baba95f74b9b9982d527f802bcea",
+      "none": "e01c96eddc27aa777be8dad69f20eec50c23f447663f2dfc53cfe76ed22ffb3f"
+    }
+  },
+  "completed_at": "2026-11-10T15:53:24"
+}

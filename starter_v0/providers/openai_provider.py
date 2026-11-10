@@ -5,6 +5,7 @@ import os
 from typing import Any
 
 from providers.base import ModelResponse, ToolCall
+from providers.tool_planning import reject_constant, unique_keys
 
 
 class OpenAIProvider:
@@ -31,6 +32,8 @@ class OpenAIProvider:
         model: str | None = None,
         temperature: float = 0.0,
         tool_choice: Any | None = None,
+        response_format: dict[str, Any] | None = None,
+        reasoning_effort: str | None = None,
     ) -> ModelResponse:
         try:
             from openai import OpenAI
@@ -51,6 +54,10 @@ class OpenAIProvider:
             kwargs["tools"] = tools
         if tool_choice is not None:
             kwargs["tool_choice"] = tool_choice
+        if response_format is not None:
+            kwargs["response_format"] = response_format
+        if reasoning_effort is not None:
+            kwargs["reasoning_effort"] = reasoning_effort
 
         resp = client.chat.completions.create(**kwargs)
         msg = resp.choices[0].message
@@ -58,8 +65,8 @@ class OpenAIProvider:
         for call in msg.tool_calls or []:
             raw_args = call.function.arguments or "{}"
             try:
-                args = json.loads(raw_args)
-            except json.JSONDecodeError:
+                args = json.loads(raw_args, parse_constant=reject_constant, object_pairs_hook=unique_keys)
+            except ValueError:
                 # Small models often emit malformed JSON. Keep the call so eval grades it
                 # as a wrong-argument failure instead of hiding it as provider_error.
                 args = {"_invalid_json_arguments": raw_args}

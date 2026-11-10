@@ -124,7 +124,7 @@ Visual C++, có thể dùng các lệnh dưới đây từ thư mục `starter_v
 
 ```powershell
 uv venv --python 3.12 .venv312
-uv pip install --python .venv312\Scripts\python.exe --only-binary pyyaml pytest requests PyYAML pypdf
+uv pip install --python .venv312\Scripts\python.exe --only-binary PyYAML -r requirements.txt
 ```
 
 `uv` tự tải Python 3.12 nếu chưa có. `--only-binary pyyaml` yêu cầu bản PyYAML
@@ -153,6 +153,11 @@ không sử dụng mạng.
   `[{"title":"A","url":"https://example.com/a/"},{"title":"B","url":"https://example.com/a"}]`”.
   Tool mong đợi là `deduplicate`; `items` là danh sách trên, `key_by` có thể bỏ
   qua hoặc đặt `"url"`; kết quả giữ bản A và `removed_count` bằng `1`.
-- Registry và YAML đã sẵn sàng cho agent. Vẫn cần chạy eval bằng model để xác
-  nhận model chọn đúng tool; chưa có kết quả chạy model được ghi nhận cho tool
-  này.
+- Đã có bằng chứng model trong `runs/v3_B_group_ollama_20261110T113756483008.json`:
+  G04 bỏ trùng URL và G08 bỏ trùng tiêu đề đều nhận đủ danh sách, giữ đúng mục
+  đầu tiên và trả `removed_count=1`.
+- Group dataset hiện so sánh đầy đủ `items` và `key_by`. Scorer mới đọc được
+  list-of-dict và kiểm tra schema; bản chấm lại offline nằm trong
+  `analysis/v4_group_offline_replay.json`, không phải một lần gọi model mới.
+- UI demo offline dùng danh sách JSON thật của người dùng; có thể gửi danh sách
+  ở lượt trước rồi yêu cầu đổi sang xét tiêu đề. Không có HTTP hay API credit.

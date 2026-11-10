@@ -1,0 +1,11 @@
+case_id,historical_passed,replay_passed,failures
+G01_papers_routing,True,True,
+G02_policy_routing,True,True,
+G03_handle_strip_at,False,False,"limit: expected 3, got None"
+G04_dedupe_by_url,True,True,
+G05_thanks_no_tool,False,False,expected no tool call
+G06_multi_papers_to_text,True,True,
+G07_multi_latest_to_top,True,False,"query: expected 'Claude', got None; social_search: args: 'query' is a required property; social_search: args: Additional properties are not allowed ('screenname' was unexpected)"
+G08_multi_dedupe_by_title,True,True,
+G09_multi_policy_area_topk,False,False,"top_k: expected 2, got None; policy: args: Additional properties are not allowed ('max_k' was unexpected)"
+G10_multi_confirmed_send,True,True,

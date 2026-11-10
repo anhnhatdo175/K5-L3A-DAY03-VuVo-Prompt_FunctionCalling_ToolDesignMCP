@@ -1,0 +1,21 @@
+case_id,historical_passed,replay_passed,failures
+R01_user_tweets_routing,True,True,
+R02_search_tweets_routing,True,True,
+R03_web_news_routing,True,True,
+R04_read_url_routing,True,True,
+R05_limit_arg,True,True,
+R06_timeframe_arg,True,True,
+R07_search_type_arg,True,True,
+R08_out_of_scope,True,True,
+R09_no_tool_capability,True,True,
+R10_missing_handle,False,False,missing tool call clarify; extra tool call timeline
+R11_missing_url,False,False,missing tool call clarify
+R12_confirm_before_send,True,True,
+R13_parallel_web_and_tweets,True,True,
+R14_out_of_scope_coding,False,False,expected no tool call
+M01_clarify_then_fill,True,True,
+M02_carryover_timeframe,True,True,
+M03_correction_handle,False,False,"limit: expected 3, got None"
+M04_clarify_then_url,True,True,
+M05_correction_limit,True,True,
+M06_switch_tool,False,False,missing tool call lookup; extra tool call social_search; social_search: args: 'query' is a required property; social_search: args: Additional properties are not allowed ('screenname' was unexpected)

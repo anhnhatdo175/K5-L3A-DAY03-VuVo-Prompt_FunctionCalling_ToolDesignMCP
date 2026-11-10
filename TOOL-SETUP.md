@@ -34,11 +34,61 @@ Local model (bonus Small Local Model Challenge, không cần API key):
 
 ```bash
 # Cài Ollama: https://ollama.com/download
-ollama pull qwen2.5:7b
-python scripts/preflight_provider.py --provider ollama --model qwen2.5:7b
+ollama pull qwen3.5:4b-q4_K_M
+python scripts/preflight_provider.py --provider ollama --model qwen3.5:4b-q4_K_M
 ```
 
-Tuỳ chọn trong `.env`: `OLLAMA_BASE_URL` (mặc định `http://localhost:11434/v1`), `OLLAMA_MODEL` (mặc định `qwen2.5:7b`).
+Tuỳ chọn trong `.env`: `OLLAMA_BASE_URL` (mặc định `http://localhost:11434/v1`), `OLLAMA_MODEL` (mặc định `qwen3.5:4b-q4_K_M`).
+
+Trên Windows dùng Python 3.12 và cài đủ `starter_v0/requirements.txt` vào đúng
+môi trường chạy. SDK `openai` cần cho cả Ollama. UI dùng `streamlit` đã được khai
+báo trong requirements. `DEFAULT_PROVIDER=demo (offline)` mở demo local không
+gọi model/API; để đo provider thật, chọn provider tương ứng và tắt fallback.
+Không tính transcript có `fallback_to_demo` là bằng chứng model live thành công.
+
+### Local profile and reproducibility
+
+The current local profile uses `qwen3.5:4b-q4_K_M`, native tool calls and
+`OLLAMA_REASONING_EFFORT=none`. Defaults are also listed in `.env.example`.
+`OLLAMA_PROTOCOL_RETRIES=1` allows at most one retry when a required response
+contains no tool calls, or an auto response is entirely empty. With
+`OLLAMA_PROTOCOL_RETRY_FORMAT=structured_plan`, that retry uses a JSON schema
+containing **all enabled tools**. The model chooses every tool and argument;
+invalid or wrong nonempty native calls are not repaired. Every attempt and usage
+is retained in run/transcript metadata. A direct answer remains valid in auto mode.
+Set `OLLAMA_PROTOCOL_RETRIES=0` for native-only model comparisons; set
+`OLLAMA_CALL_MODE=structured_plan` only when explicitly comparing that protocol.
+These configurations have different call budgets, so label them separately.
+
+Measured local runtime: Ollama 0.40.16, context 8192, one parallel request,
+flash attention enabled and q8_0 KV cache. To reproduce these server settings in
+PowerShell (stop an existing server before starting another):
+
+```powershell
+$env:OLLAMA_CONTEXT_LENGTH='8192'
+$env:OLLAMA_NUM_PARALLEL='1'
+$env:OLLAMA_MAX_LOADED_MODELS='1'
+$env:OLLAMA_FLASH_ATTENTION='1'
+$env:OLLAMA_KV_CACHE_TYPE='q8_0'
+ollama serve
+```
+
+In another terminal, from `starter_v0`, using Python 3.12:
+
+```powershell
+.\.venv312\Scripts\python.exe scripts/preflight_provider.py --provider ollama
+.\.venv312\Scripts\python.exe run_eval.py --provider ollama --version v12-local --suite base --eval-cases data/eval_base.json
+.\.venv312\Scripts\python.exe run_eval.py --provider ollama --version v12-local --suite group --eval-cases data/eval_group.json
+.\.venv312\Scripts\python.exe run_eval.py --provider ollama --version v12-local --suite cross --eval-cases data/eval_regression.json
+.\.venv312\Scripts\python.exe -m streamlit run app.py
+```
+
+Eval keeps sending actions in dry-run mode unless `--allow-actions` is explicitly
+supplied. Routing/argument accuracy does not prove successful research API calls:
+Tavily, Firecrawl and RapidAPI still require their own keys. The independent
+regression dataset does not replace the fixed base/group suites. Original v3
+prompt and tool snapshots are preserved as `artifacts/system_prompt_v3.md` and
+`artifacts/tools_v3.yaml` for unchanged baseline comparisons.
 
 ## 2. Tavily — `lookup`
 
@@ -59,7 +109,7 @@ TAVILY_API_KEY=tvly-...
 Quick test:
 
 ```bash
-python -c "from tools import TOOL_FUNCTIONS as T; print(T['lookup']('AI', max_results=1)['items'][0]['title'])"
+python -c "from pathlib import Path; from env_loader import load_lab_env; load_lab_env(Path('.')); from tools import TOOL_FUNCTIONS as T; print(T['lookup']('AI', max_results=1)['items'][0]['title'])"
 ```
 
 ## 3. Firecrawl — `fetch`
@@ -81,7 +131,7 @@ FIRECRAWL_API_KEY=fc-...
 Quick test:
 
 ```bash
-python -c "from tools import TOOL_FUNCTIONS as T; print(T['fetch']('https://openai.com/research/')['items'][0]['title'])"
+python -c "from pathlib import Path; from env_loader import load_lab_env; load_lab_env(Path('.')); from tools import TOOL_FUNCTIONS as T; print(T['fetch']('https://openai.com/research/')['items'][0]['title'])"
 ```
 
 ## 4. RapidAPI Twitter API45 — `timeline`, `social_search`
@@ -105,8 +155,8 @@ RAPIDAPI_TWITTER_HOST=twitter-api45.p.rapidapi.com
 Quick tests:
 
 ```bash
-python -c "from tools import TOOL_FUNCTIONS as T; print(T['timeline']('sama', limit=1)['items'][0]['title'])"
-python -c "from tools import TOOL_FUNCTIONS as T; print(T['social_search']('OpenAI', limit=1)['items'][0]['title'])"
+python -c "from pathlib import Path; from env_loader import load_lab_env; load_lab_env(Path('.')); from tools import TOOL_FUNCTIONS as T; print(T['timeline']('sama', limit=1)['items'][0]['title'])"
+python -c "from pathlib import Path; from env_loader import load_lab_env; load_lab_env(Path('.')); from tools import TOOL_FUNCTIONS as T; print(T['social_search']('OpenAI', limit=1)['items'][0]['title'])"
 ```
 
 ## 5. arXiv Bonus — `papers`, `paper_text`
@@ -122,8 +172,8 @@ ARXIV_USER_AGENT=AI20k-Day03-Research-Agent/1.0 (your-team-name)
 Quick tests:
 
 ```bash
-python -c "from tools import TOOL_FUNCTIONS as T; print(T['papers']('AI agent evaluation', max_results=1)['items'][0]['title'])"
-python -c "from tools import TOOL_FUNCTIONS as T; print(T['paper_text']('1706.03762', max_pages=1)['chars_returned'])"
+python -c "from pathlib import Path; from env_loader import load_lab_env; load_lab_env(Path('.')); from tools import TOOL_FUNCTIONS as T; print(T['papers']('AI agent evaluation', max_results=1)['items'][0]['title'])"
+python -c "from pathlib import Path; from env_loader import load_lab_env; load_lab_env(Path('.')); from tools import TOOL_FUNCTIONS as T; print(T['paper_text']('1706.03762', max_pages=1)['chars_returned'])"
 ```
 
 Generated paper files go under `starter_v0/arxiv_papers/` and are ignored by git.
@@ -207,7 +257,7 @@ TELEGRAM_CHAT_ID=-1001234567890
 Direct tool test (verifies the bot token/chat only):
 
 ```bash
-python -c "from tools import TOOL_FUNCTIONS as T; print(T['send']('AI20k test message', confirmed=True))"
+python -c "from pathlib import Path; from env_loader import load_lab_env; load_lab_env(Path('.')); from tools import TOOL_FUNCTIONS as T; print(T['send']('AI20k test message', confirmed=True))"
 ```
 
 ## Final Checklist

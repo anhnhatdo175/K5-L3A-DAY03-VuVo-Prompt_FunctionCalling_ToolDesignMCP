@@ -1,0 +1,211 @@
+{
+  "dataset_id": "research_regression_v1",
+  "dataset_role": "regression",
+  "description": "Independent generalization checks with new prompts and data: 5 single-turn and 5 multi-turn cases. Expectations follow declared tool contracts; this dataset is separate from the fixed base and group datasets.",
+  "allowed_failure_types": [
+    "wrong_tool",
+    "wrong_arg_value",
+    "wrong_boundary",
+    "unnecessary_tool",
+    "out_of_scope",
+    "missing_info"
+  ],
+  "cases": [
+    {
+      "id": "X01_explicit_author_count",
+      "phase": "B",
+      "suite": "cross",
+      "query": "Cho tôi xem 4 bài đăng gần đây do tài khoản X @linuxfoundation viết.",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {"name": "timeline", "args": {"screenname": "linuxfoundation", "limit": 4}}
+        ]
+      },
+      "metadata": {
+        "skill": "explicit_handle_and_count",
+        "difficulty": "easy",
+        "what_it_tests": "Use the handle explicitly supplied by the user, strip @ and preserve the requested count without resolving a proper name."
+      }
+    },
+    {
+      "id": "X02_social_topic_popularity",
+      "phase": "B",
+      "suite": "cross",
+      "query": "Trên X, tìm 6 bài phổ biến nhất có từ khóa chính xác là robotaxi, từ nhiều tài khoản khác nhau.",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {"name": "social_search", "args": {"query": "robotaxi", "search_type": "Top", "limit": 6}}
+        ]
+      },
+      "metadata": {
+        "skill": "topic_not_author",
+        "difficulty": "easy",
+        "what_it_tests": "Search posts about a supplied keyword across authors, with the Top enum and explicit result count."
+      }
+    },
+    {
+      "id": "X03_missing_author",
+      "phase": "B",
+      "suite": "cross",
+      "query": "Đọc giúp tôi 4 bài đăng gần đây của một tài khoản X. Tôi chưa cho bạn biết tài khoản nào.",
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [
+          {"name": "clarify", "args": {"response_type": "text"}}
+        ]
+      },
+      "metadata": {
+        "skill": "clarify_unknown_author",
+        "difficulty": "medium",
+        "what_it_tests": "A missing author requires a structured clarification rather than an invented handle or a topic search."
+      }
+    },
+    {
+      "id": "X04_missing_article_link",
+      "phase": "B",
+      "suite": "cross",
+      "query": "Rút ý chính của bài báo ở đường dẫn tôi định gửi nhé; hiện tôi chưa dán đường dẫn vào đây.",
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [
+          {"name": "clarify", "args": {"response_type": "text"}}
+        ]
+      },
+      "metadata": {
+        "skill": "clarify_missing_url",
+        "difficulty": "medium",
+        "what_it_tests": "An article-reading request without a URL must call clarify, without guessing a URL or silently answering in prose."
+      }
+    },
+    {
+      "id": "X05_coding_outside_scope",
+      "phase": "B",
+      "suite": "cross",
+      "query": "Hãy viết một lớp Java để cài đặt hàng đợi vòng có kích thước cố định.",
+      "failure_type": "out_of_scope",
+      "expect": {"no_tool": true, "behavior": "refuse"},
+      "metadata": {
+        "skill": "no_tool_outside_research",
+        "difficulty": "medium",
+        "what_it_tests": "An implementation request outside the research tool scope must not trigger research or clarification tools. The existing scorer checks no-tool routing, not refusal wording."
+      }
+    },
+    {
+      "id": "X06_switch_source_keep_constraints",
+      "phase": "B",
+      "suite": "cross",
+      "turns": [
+        {"role": "user", "content": "Tìm bài đăng trên mạng xã hội với từ khóa chính xác geothermal."},
+        {"role": "user", "content": "Đổi nguồn: không tìm mạng xã hội nữa, chỉ tra tin tức trên web trong tháng này."},
+        {"role": "user", "content": "Vẫn dùng từ khóa geothermal và lấy 2 kết quả thôi."}
+      ],
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {"name": "lookup", "args": {"query": "geothermal", "topic": "news", "timeframe": "month", "max_results": 2}}
+        ]
+      },
+      "metadata": {
+        "skill": "source_switch_and_carryover",
+        "difficulty": "hard",
+        "what_it_tests": "The new web source overrides social routing while the exact keyword, monthly timeframe and final count are preserved."
+      }
+    },
+    {
+      "id": "X07_policy_filter_count",
+      "phase": "B",
+      "suite": "cross",
+      "turns": [
+        {"role": "user", "content": "Tra quy định nội bộ liên quan đến việc giữ bí mật thông tin đăng nhập API."},
+        {"role": "user", "content": "Giới hạn trong nhóm quy định sử dụng công cụ, tức tool_usage."},
+        {"role": "user", "content": "Giữ bộ lọc đó và trả về 4 đoạn liên quan nhất."}
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {"name": "policy", "args": {"policy_area": "tool_usage", "top_k": 4}}
+        ]
+      },
+      "metadata": {
+        "skill": "explicit_policy_filter_carryover",
+        "difficulty": "hard",
+        "what_it_tests": "The explicitly supplied policy area remains an argument when a later turn changes only the result count; query wording is intentionally not fixed."
+      }
+    },
+    {
+      "id": "X08_dedup_list_from_history",
+      "phase": "B",
+      "suite": "cross",
+      "turns": [
+        {"role": "user", "content": "Dữ liệu của tôi là [{\"title\":\"Delta Lab\",\"url\":\"https://example.net/delta-a\",\"rank\":9},{\"title\":\" delta lab \",\"url\":\"https://example.org/delta-b\",\"rank\":3},{\"title\":\"Harbor Study\",\"url\":\"https://example.net/harbor\",\"tags\":[\"marine\"]}]."},
+        {"role": "user", "content": "Tôi muốn loại các bản ghi trùng nhau trong danh sách vừa đưa."},
+        {"role": "user", "content": "Dùng tiêu đề làm khóa so sánh; giữ bản ghi đầu tiên và nguyên vẹn mọi trường."}
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "deduplicate",
+            "args": {
+              "items": [
+                {"title": "Delta Lab", "url": "https://example.net/delta-a", "rank": 9},
+                {"title": " delta lab ", "url": "https://example.org/delta-b", "rank": 3},
+                {"title": "Harbor Study", "url": "https://example.net/harbor", "tags": ["marine"]}
+              ],
+              "key_by": "title"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "dedup_history_metadata",
+        "difficulty": "hard",
+        "what_it_tests": "Carry the entire original list into deduplicate, preserve whitespace, metadata and order, and use the final requested title key."
+      }
+    },
+    {
+      "id": "X09_social_mode_count_correction",
+      "phase": "B",
+      "suite": "cross",
+      "turns": [
+        {"role": "user", "content": "Tìm 2 bài mới nhất trên X theo từ khóa chính xác helium."},
+        {"role": "user", "content": "Thay bằng những bài phổ biến nhất, không phải mới nhất."},
+        {"role": "user", "content": "Tăng lên 7 bài; giữ từ khóa helium và lựa chọn độ phổ biến vừa sửa."}
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {"name": "social_search", "args": {"query": "helium", "search_type": "Top", "limit": 7}}
+        ]
+      },
+      "metadata": {
+        "skill": "social_corrections_without_author",
+        "difficulty": "hard",
+        "what_it_tests": "Carry the corrected popularity mode while replacing the old count and preserving the supplied topic keyword."
+      }
+    },
+    {
+      "id": "X10_publish_not_approved",
+      "phase": "B",
+      "suite": "cross",
+      "turns": [
+        {"role": "user", "content": "Tôi đang chuẩn bị thông báo cho kênh Telegram đã cấu hình."},
+        {"role": "user", "content": "Bản nháp là: Buổi chia sẻ bắt đầu lúc 18:45."},
+        {"role": "user", "content": "Tôi chưa duyệt để gửi. Hãy xin xác nhận bản nháp này trước khi đăng."}
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "tool_calls": [
+          {"name": "clarify", "args": {"response_type": "yes_no"}}
+        ]
+      },
+      "metadata": {
+        "skill": "explicitly_unapproved_publication",
+        "difficulty": "hard",
+        "what_it_tests": "Known draft and destination do not constitute approval. Request yes/no confirmation and do not call send."
+      }
+    }
+  ]
+}
