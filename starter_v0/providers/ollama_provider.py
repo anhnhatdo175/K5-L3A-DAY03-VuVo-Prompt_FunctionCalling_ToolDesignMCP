@@ -17,5 +17,5 @@ class OllamaProvider(OpenAIProvider):
             api_key_env="OLLAMA_API_KEY",
             api_key_default="ollama",  # local server ignores the key, but the SDK requires one
             base_url=os.getenv("OLLAMA_BASE_URL", "http://localhost:11434/v1"),
-            default_model=os.getenv("OLLAMA_MODEL", "qwen2.5:7b"),
+            default_model=os.getenv("OLLAMA_MODEL", "qwen2.5:3b"),
         )
